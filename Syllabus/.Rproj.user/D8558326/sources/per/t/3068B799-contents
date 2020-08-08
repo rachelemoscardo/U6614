@@ -1,0 +1,301 @@
+---
+urlcolor: blue
+output:
+  pdf_document:
+    keep_tex: true
+    fig_caption: yes
+    latex_engine: pdflatex
+    template: ~/svm-r-markdown-template.tex
+geometry: margin=1in
+
+title: "HED 612: Introduction to Multivariate Regression & Program Evaluation"
+author: The University of Arizona
+date: "Spring 2020"
+
+instructor: "Karina Salazar"
+email: "ksalazar@email.arizona.edu"
+office: "COE 313"
+
+classroom: "COE 331"
+classhours: "Th 4:15 - 6:45pm"
+officehours: "Wed 12 - 2pm; & by appt"
+
+
+fontfamily: mathpazo
+fontsize: 11pt
+header-includes:
+   - \linespread{1.05}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE)
+#template: ~/Desktop/GitHub/rclass/syllabus/svm-r-markdown-template.tex
+```
+
+```{r, eval=FALSE}
+fri <- as.Date("2018-09-24")
+
+
+advdate <- function(obj, adv) {
+ tmon <- obj + 7*(adv-1)
+ tfri <- obj + 4 + 7*(adv-0)
+ tmon <- format(tmon, format="%m/%d")
+ tfri <- format(tfri, format="%m/%d")
+ zadv <- sprintf("%02d", adv)
+ if(adv == 11) {
+   tmp <- paste("Finals Week",sep='',", ", tmon, "-" ,tfri)
+ } else {
+   tmp <- paste("Week ",zadv,sep='',", ", tfri)
+ }
+ return(tmp)
+}
+advdate(fri, 11)
+```
+
+
+```{r}
+fri <- as.Date("2018-09-24")
+
+advdate <- function(obj, adv) {
+ tmon <- obj + 7*(adv-1)
+ tfri <- obj + 4 + 7*(adv-0)
+ tmon <- format(tmon, format="%m/%d")
+ tfri <- format(tfri, format="%m/%d")
+ zadv <- sprintf("%02d", adv)
+ #print(zadv)
+ #print(str(zadv))
+ if(adv == 11) {
+   tmp <- paste("Finals Week",sep='',", ",tfri)
+ } else if (adv==8) {
+   tmp <- paste("Thanksgiving",sep='',", ", tfri)
+   
+ } else if (adv<8) {
+   lec=adv+1
+   tmp <- paste("Lecture ",lec,sep='',", ", tfri)
+ } else {
+   tmp <- paste("Lecture ",adv,sep='',", ", tfri)
+ }
+ return(tmp)
+}
+#advdate(fri, 11)
+```
+# Course Description
+
+This course introduces students to applied linear regression analysis with a focus on program evaluation.  Program evaluation is the main methodological strategy used to assess the impact of programs, policies, and interventions. The primary purpose of regression analysis in program evaluation research is to assess the causal effect of one intervention  (the independent variable of interest) on an educational outcome (the dependent variable) in observational settings where random assignment to the independent variable of interest is not possible. The course will focus on learning regression with a continuous dependent variable, one independent variable of interest, and control variables to evaluate the effect of some program, policy, and/or intervention. We will devote substantial time to interpreting and visualizing regression output, as well as cover measures of model fit, multicollinearity, non-linear relationships (i.e., polynomials and logs), and interaction effects. 
+
+
+# Course Learning Goals
+There are three broad course goals:
+
+1. Students will develop a foundational understanding of applied linear regression  
+    - Develop testable hypotheses of some educational intervention on an educational outcome
+    - Estimate the impact of some educational intervention using ordinary least squares regression
+    - Interpret and visualize regression results
+1. Students will learn to critically consume empirical, quantitative research using program evaluation strategies
+    -	Read several technical, empirical studies
+    -	Critique empirical studies to reach a conclusion whether they provide a sound evidentiary basis 
+1. Develop core analytical and writing skills to thoughtfully produce empirical research  
+    - Develop a fundamental understanding of the purpose for each section of a research paper and develop strategies for writing each section
+    - Design a program evaluation empirical study to assess the impact of some educational intervention as a final project
+    - Present results of the final project in a conference-style presentation
+
+
+# Prerequisite Requirements 
+
+1.	Students must have taken at least a one-semester introductory statistics course (hypothesis testing, t-statistics, confidence intervals).  
+
+1.	Students should have some very basic experience using statistical programming software (e.g., SPSS, Stata, R, SAS). 
+
+1.	General computer directory skills. Students should be able to download files from the internet, rename these files, save them to a folder of your choosing, and open this folder.  
+    - During this course we will often be downloading datasets, opening .Rmd files and .R scripts, changing directories to the folder where we stored the data, and then opening the dataset we just downloaded.  Therefore, it is important that students feel comfortable doing these tasks. 
+
+
+# Course Readings
+
+Course readings will be assigned from:
+
+1.  Stock, J., & Watson, M. _Introduction to Econometrics_ (1st, 2nd, 3rd editions are fine; syllabus references 2nd edition)
+
+1.  Angrist, J., & Pischke, J. (2009). _Mostly Harmless Econometrics_.
+    - Digitally available through the UA library
+
+# Required Software and Hardware
+
+## Software
+
+The course will be taught in R, a free, open-source programming language. R has become the most popular language for statistical analysis, surpassing SPSS, Stata, and SAS. What differentiates R from these other languages is the thousands of open-source “libraries” created by R users. By learning R you can be confident that you know a programming language that can run any modeling technique you might need and has amazing capabilities for data collection and data visualization. 
+
+Instructions on installing R can be found on D2L.
+
+Please install the following software on your laptop prior to our first class session.
+
+- R
+- RStudio
+- TinyTex
+
+## Hardware
+
+- Please bring in laptop with above software installed each week
+
+
+# Discussion and Homework Questions
+
+We are using D2L as our class discussion forum where folks can ask homework questions/comments to share with the instructor and the entire class. If you're stuck on a homework question or are experiencing problems with R more generally odds are others are too. Posting questions and concerns on D2L is the easiest way for us to all benefit from each others knowledge. When asking questions on D2L, please include as many details to replicate the "error." Always indicate the homework assignment and question number that's causing you issues, insert code, screenshots, and text to your posts. 
+
+I will do my best to reply to all posts within 24 hours. I also encourage you all to share your thoughts/answers on posts by your classmates. Writing out explanations to student questions will improve your own knowledge and will benefit your classmates. 
+
+# Assignments & Grading  
+
+Your final grade will be based on the following components:
+
+## Weekly Problem Sets (40% of total grade)
+
+Weekly problem sets will consist of data analysis and writing up short answers that interpret your findings. In general, each problem set will give you practice using the skills and concepts introduced in previous lectures.  
+
+Problem sets are due by 4:15pm each Thursday before class. Late submissions will not receive points because we will discuss solutions during class. All assignments will be graded on a scale of 0 to 10. Your lowest score assignment will be dropped from the calculation of your final grade. 
+
+Students are encouraged to discuss problem sets with other students.  However, your answers must be written up individually and in your own words. 
+
+## Final Research Project (50% of total grade)
+Outline (10%), Paper (30%), Presentation (10%)
+
+Students will design a quantitative, program evaluation study on a topic of their choosing. The paper must focus on analyzing the effect of *one* independent variable of interest on some relevant outcome variable. Students may work on their own or in groups of two.
+
+Student may use secondary data (i.e., National Center for Education Statistics surveys) or their own data (i.e., dissertation data, institutional data, etc.) for this final project.
+
+The paper must have the following sections: introduction, literature review, conceptual framework, methods, data and sample, results, and discussion. 
+
+Students will be required to create a 12-minute "practice" conference presentation of their research projects. Presentations will be scheduled for the last day of class. 
+
+
+## Attendance and Participation (10% of total grade)
+
+Students are required to attend weekly class sessions. 
+
+If you need to miss a class session for any professional or personal reason, please let me know beforehand (if possible). Excused absences for professional or personal reasons will not result in a loss of attendance points.  However, you will be responsible for all material covered in that class and you will be expected to turn in homework assignments on time. 
+
+Students are expected to participate in the weekly class sessions by being attentive, by asking questions, by answering questions posed by classmates and by the professor. 
+
+# Course Policies  
+
+## Classroom environment
+
+We all have a responsibility to ensure that every member of the class feels valued, safe, and included. 
+
+With respect to the course material, learning statistics can be hard! This stuff still feels overwhelming to me!  So it is important that we all create an environment where students feel comfortable asking questions and talking about what they did not understand. 
+
+With respect to creating an inclusive environment, be mindful that what you say affects other people. So express your thoughts in a way that does not’t make people feel excluded.
+
+
+## Accessibility and Accommodations 
+
+At the University of Arizona, we strive to make learning experiences as accessible as possible. If you anticipate or experience barriers based on disability or pregnancy, please contact the Disability Resource Center (520-621-3268, https://drc.arizona.edu/) to establish reasonable accommodations.
+
+## Academic Honesty: 
+
+Academic Integrity at the University of Arizona is the principle that stands for honesty and ethical behavior in all homework, tests, and assignments.  All students should act with personal integrity and help to create an environment in which all can succeed.
+
+Violations of the UA Code of Academic Integrity are serious offenses.  As your instructor, I will deal with alleged violations in a fair and honest manner.  As students, you are expected to do your own work and follow class rules on all tests and assignments unless I indicate differently.  Alleged violations of the UA Code of Academic Integrity will be reported to the Dean of Students Office and will result in a sanction(s) (i.e., loss of credit on assignment, failure in class, suspension, etc.)  
+
+Students should review the UA Code of Academic Integrity which can be found at: https://deanofstudents.arizona.edu/policies/code-academic-integrity
+
+
+# Course Schedule and Required Reading
+
+The syllabus is subject to change at the discretion of the instructor with proper notice to the students. 
+
+Students in the course are likely to have varying levels of statistical knowledge and experience with R. Because it is difficult to anticipate our pace as a class, the following schedule should be treated as a guide. Topics will likely carry-over into the following week(s). We may also end up cutting later topics if, as a class, we need additional time to cover a previous topic thoroughly.
+
+Readings should be completed prior to that week's class session.
+
+## Week 1, 1/16/2020: Introduction & Working with R 
+
+- Reading: 
+    - Stock and Watson: Ch.1 
+
+## Week 2, 1/23/2020 Statistics Review
+
+- Reading: 
+    - Stock and Watson: Ch.3 
+
+## Week 3, 1/30/2020: Introduction to Bivariate Regression
+
+- Reading: 
+    - Stock and Watson: Ch. 4.1 - 4.2 
+    
+
+## Week 4, 2/6/2020: Bivariate Regression, Linear Regression Model & Estimating Parameters
+
+- Reading: 
+    - Stock and Watson: Ch. 4.1-4.2  
+    
+## Week 5, 2/13/2020: Bivariate Regression, Predicted Values & Model Fit
+
+- Reading: 
+    - Stock and Watson: Ch. 4.3 - 4.6 [skim OLS Assumptions]
+
+## Week 6, 2/20/2020: Bivariate Regression, Testing Hypotheses
+
+- Reading: 
+    - Stock and Watson: Ch. 5-5.1 
+
+## Week 7, 2/27/2019: Bivariate Regression, Interpreting $\hat{\beta_1}$ & $\hat{\beta_1}$ Confidence Intervals
+
+- Reading: 
+    - Stock and Watson: Ch. 5.2-5.3 
+
+
+## Week 8, 3/5/2020: Introduction to Multivariate Regression, OLS Assumptions & Omitted Variable Bias
+
+- Reading: 
+    - Stock and Watson: Ch. 5.4-5.7, Ch. 6-6.1
+
+
+## Spring Break, 3/12/2020:  NO CLASS
+
+## Week 9, 3/19/2020: Multivariate Regression, Omitted Variable Bias Cont.
+
+- Reading: 
+    - Stock and Watson: Ch. 6.2-6.8
+
+
+## Week 10, 3/26/2020:  Program Evaluation Research & Public Data For Final Projects
+
+- Reading: 
+    - Angrist and Pischke: Ch. 1 & Ch. 2
+
+## Week 11, 4/2/2020: Reading and Writing Quantitative Empirical Research, Program Evaluation Publications
+
+- Reading:
+  - TBD
+
+- Final Project:
+  - Student partners (if applicable) and topics due 
+
+## Week 12, 4/9/2019: Introduction to Non-Linear Relationships, Interaction Effects
+
+- Reading: 
+  - Chapter 8.3 - 8.5
+
+
+## Week 13: 4/16/2019: Interaction Effects Cont.
+
+- Reading: 
+  - Chapter 8.3 - 8.5
+
+- Final Project:
+  - Paper outline due  
+
+## Week 14: 4/23/2019: Interaction Effects Cont., Polynomials, Logs
+
+- Reading: 
+ - Chapter 8 - 8.2
+
+## Week 15: 4/30/2019: Final Research Project Workshop Day, No Class
+
+
+## Week 16, 5/7/2019: Final Research Project Presentations 
+
+- Final Project:
+  - Paper due @ 4:15pm
+

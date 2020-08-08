@@ -1,0 +1,111 @@
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020/W32TeX) (preloaded format=pdflatex 2020.7.29)  29 JUL 2020 12:23
+entering extended mode
+ restricted \write18 enabled.
+ %&-line parsing enabled.
+**svm-latex-syllabus.tex
+(./svm-latex-syllabus.tex
+LaTeX2e <2020-02-02> patch level 5
+L3 programming layer <2020-07-17>
+(c:/Users/Harold Stolper/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/base/arti
+cle.cls
+Document Class: article 2019/12/20 v1.4l Standard LaTeX document class
+
+(c:/Users/Harold Stolper/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/base/size
+10.clo
+File: size10.clo 2019/12/20 v1.4l Standard LaTeX file (size option)
+)
+\c@part=\count168
+\c@section=\count169
+\c@subsection=\count170
+\c@subsubsection=\count171
+\c@paragraph=\count172
+\c@subparagraph=\count173
+\c@figure=\count174
+\c@table=\count175
+\abovecaptionskip=\skip47
+\belowcaptionskip=\skip48
+\bibindent=\dimen134
+)
+(c:/Users/Harold Stolper/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/geometry/
+geometry.sty
+Package: geometry 2020/01/02 v5.9 Page Geometry
+
+(c:/Users/Harold Stolper/AppData/Roaming/TinyTeX/texmf-dist/tex/latex/graphics/
+keyval.sty
+Package: keyval 2014/10/28 v1.15 key=value parser (DPC)
+\KV@toks@=\toks15
+)
+(c:/Users/Harold Stolper/AppData/Roaming/TinyTeX/texmf-dist/tex/generic/iftex/i
+fvtex.sty
+Package: ifvtex 2019/10/25 v1.7 ifvtex legacy package. Use iftex instead.
+
+(c:/Users/Harold Stolper/AppData/Roaming/TinyTeX/texmf-dist/tex/generic/iftex/i
+ftex.sty
+Package: iftex 2020/03/06 v1.0d TeX engine tests
+))
+\Gm@cnth=\count176
+\Gm@cntv=\count177
+\c@Gm@tempcnt=\count178
+\Gm@bindingoffset=\dimen135
+\Gm@wd@mp=\dimen136
+\Gm@odd@mp=\dimen137
+\Gm@even@mp=\dimen138
+\Gm@layoutwidth=\dimen139
+\Gm@layoutheight=\dimen140
+\Gm@layouthoffset=\dimen141
+\Gm@layoutvoffset=\dimen142
+\Gm@dimlist=\toks16
+
+
+! Package keyval Error: $geometry$ undefined.
+
+See the keyval package documentation for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.1005 \ProcessOptionsKV[p]{Gm}
+                               %
+Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+)
+
+! LaTeX Error: Missing \begin{document}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.4 $
+     if(fontfamily)$
+You're in trouble here.  Try typing  <return>  to proceed.
+If that doesn't work, type  X <return>  to quit.
+
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <7> on input line 4.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <5> on input line 4.
+
+! LaTeX Error: File `$fontfamily$.sty' not found.
+
+Type X to quit or <RETURN> to proceed,
+or enter new name. (Default extension: sty)
+
+Enter file name: 
+! Emergency stop.
+<read *> 
+         
+l.6 $
+     else$^^M
+*** (cannot \read from terminal in nonstop modes)
+
+ 
+Here is how much of TeX's memory you used:
+ 765 strings out of 482854
+ 10926 string characters out of 5954483
+ 246199 words of memory out of 5000000
+ 16186 multiletter control sequences out of 15000+600000
+ 535088 words of font info for 29 fonts, out of 8000000 for 9000
+ 14 hyphenation exceptions out of 8191
+ 36i,1n,33p,220b,54s stack positions out of 5000i,500n,10000p,200000b,80000s
+!  ==> Fatal error occurred, no output PDF file produced!
