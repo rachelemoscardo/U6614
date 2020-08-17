@@ -57,7 +57,7 @@
 
 .content {
   padding: 0 10px;
-  font-family: "Times";
+  font-family: "Garamond";
   max-height: 0;
   overflow: auto;
   transition: max-height 0.2s ease-out;
@@ -178,6 +178,7 @@ div.ex1 {
 </head>
 
 <body>
+	<basefont face = "Garamond">
 
 
 <div class="row">
@@ -192,14 +193,14 @@ div.ex1 {
     <br/>
 
     <h3> 
-      <font face = "Times" size = "5" color = black > Spring 2020 </font>
+      <font face = "Garamond" size = "5" color = black > Fall 2020 </font>
     </h3>
 
     <br/>
     <br/>
 
     <p>
-      <font face = "Times" size = "3px"> The course is organized around learning foundational programming skills: git and github; regular expressions; iteration; writing functions; APIs; visualizations. </font>
+      <font face = "Garamond" size = "4"> This course will develop the skills to prepare, analyze, and present data for policy analysis and program evaluation using R</font>
     </p>
 
 
@@ -211,17 +212,23 @@ div.ex1 {
 
 
     <dl>
-      <dt font face = "Times" size = "3px">Ozan Jaquette</dt>
-      <dt font face = "Times" size = "3px">Assistant Professor</dt>
-      <dt font face = "Times" size = "3px">UCLA</dt>
+      <dt>
+      	<font face = "Garamond" size = "3" color = "#094191"> Harold Stolper </font>
+      </dt>
+	  <dt>
+      	<font face = "Garamond" size = "3" color = "#094191"> <i> Lecturer in the Discipline of International and Public Affairs </i> </font>
+      </dt>
+      <dt>
+      	<font face = "Garamond" size = "3" color = "#094191"> Columbia University </font>
+      </dt>
     </dl>
 
 
     <footer class="footer-nav">
        <ul class="footer-nav ul">
-        <li class="footer-nav li"><a href="mailto:ozanj@ucla.edu" size="2x" class="fa fa-envelope"></a></li>
-        <li class="footer-nav li"><a href="https://twitter.com/ozanjaquette" class="fa fa-twitter"></a></li>
-        <li class="footer-nav li"><a href="https://github.com/ozanj" class="fa fa-github"></a></li>
+        <li class="footer-nav li"><a href="mailto:hbs2103@columbia.edu" size="2x" class="fa fa-envelope"></a></li>
+        <li class="footer-nav li"><a href="https://twitter.com/insecurelytwote" class="fa fa-twitter"></a></li>
+        <li class="footer-nav li"><a href="https://github.com/hreplots" class="fa fa-github"></a></li>
       </ul>
     </footer>
 
@@ -231,402 +238,268 @@ div.ex1 {
   <div class="column right">
 
   <div id="syllabus" class="wrapper">
-    <button class="collapsible" color = "0A0602" >Syllabus & Class Resources</button>
+    <button class="collapsible" color = "0A0602" > <font face = "Garamond" size = "4"> Syllabus and class resources </font> </button>
     <div class="content">
     	<br/>
       <div class="indented">
-      	<a href="https://github.com/Rucla-ed/rclass2/raw/master/syllabus/syllabus.pdf" style="color:#094191">Link to Syllabus </a> <br />
-      	<a href="https://github.com/Rucla-ed/rclass2/blob/master/_resources/problemset/ps_expectations.md" style="color:#094191">Problem Set Expectations </a> <br /> 
-      	<a href="https://github.com/Rucla-ed/rclass2/raw/master/_resources/problemset/ps_template.R" style="color:#094191">Problem Set .R Template </a> <br /> 
-      	<a href="https://github.com/Rucla-ed/rclass2/blob/master/lectures/github/bash_on_windows.md" style="color:#094191">Running Bash on Windows </a> <br />
-
+      	<a href="https://github.com/hreplots/U6614/blob/master/Syllabus/Fall2020-Data_Analysis_for_Policy_Research_Using_R-SyllabusJul30.pdf" style="color:#094191"><font face = "Garamond" size = "3"> Syllabus </font> </a> <br />
       </div>
     </div>  
   </div>
 
-  <div id="lectures" class="wrapper">
-    <button class="collapsible" color = "0A0602" > Lectures (by topic) </button>
+  <div id="lecture" class="wrapper">
+    <button class="collapsible" color = "0A0602" > <font face = "Garamond" size = "4"> Lecture materials </font> </button>
     <div class="content">
     	<div class="container">
+
+
     		<div class="panel-group">
     			<div class="panel panel-default">
     				<div class="panel-heading">
     					<h4 class="panel-title">
-    						<a data-toggle="collapse" href="#collapse1">GitHub</a>
+    						<a data-toggle="collapse" href="#collapse1">Week 1 (9/8/2020)</a>
     					</h4>
     				</div>
     				<div id="collapse1" class="panel-collapse collapse">
-    					<div class="panel-body">HTML</div>
+    					<div class="panel-body">Pre-class materials</div>
     					<div class="indented">
-    						<a href="https://rucla-ed.github.io/rclass2/lectures/github/github_lecture.html" style="color:#094191">GitHub</a> <br />	
+    						<a href="https://github.com/hreplots/U6614/blob/master/Syllabus/Fall2020-Data_Analysis_for_Policy_Research_Using_R-SyllabusJul30.pdf" style="color:#094191">Syllabus</a> <br />
     					</div>
-    					<div class="panel-body">.Rmd</div>
+
+    					<div class="panel-body">In-class materials</div>
     					<div class="indented">
-    						<a href="https://github.com/Rucla-ed/rclass2/raw/master/lectures/github/github_lecture.Rmd" style="color:#094191">GitHub</a> <br />	
-    					</div>
-    					<div class="panel-body">Video Recordings</div>
-    					<div class="indented">
-    						<a href="https://www.dropbox.com/s/bt3u6oorgzy0egu/lecture1_20200330.mp4?dl=0" style="color:#094191">Lecture 1 (3/30/2020)</a> - <i>Covers sections 1-5 of lecture</i> <br />
-    						<a href="https://www.dropbox.com/s/58v2zj6prpekrxi/lecture2A_20200406.mp4?dl=0" style="color:#094191">Lecture 2, Part 1 (4/06/2020)</a> - <i>Covers section 7 of lecture</i> <br />
-    						<a href="https://www.dropbox.com/s/rt1j3s8rqvs4bis/lecture2B_20200406.mp4?dl=0" style="color:#094191">Lecture 2, Part 2 (4/06/2020)</a> - <i>Covers sections 6 & 8 of lecture</i> <br />
-    						<a href="https://www.dropbox.com/s/mu72hnqknda1292/lecture3A_20200413.mp4?dl=0" style="color:#094191">Lecture 3, Part 1 (4/13/2020)</a> - <i>Covers section 5 of lecture (revisited)</i> <br />
-    						<a href="https://www.dropbox.com/s/7rrpxugxyz156sr/lecture3B_20200413.mp4?dl=0" style="color:#094191">Lecture 3, Part 2 (4/13/2020)</a> - <i>Covers sections 9-10.1 of lecture</i> <br />
-    						<a href="https://www.dropbox.com/s/xxy6rvs1cqe3tq8/lecture3C_20200413.mp4?dl=0" style="color:#094191">Lecture 3, Part 3 (4/13/2020)</a> - <i>Covers sections 10.2-10.3 of lecture; Previews Twitter API</i> <br />
-    						<a href="https://www.dropbox.com/s/vuf8dhf38mpe5zy/lecture4C_20200420.mp4?dl=0" style="color:#094191">Lecture 4, Part 3 (4/20/2020)</a> - <i>Covers sections 12.1-12.3 of lecture</i> <br />
-    						<a href="https://www.dropbox.com/s/x5o960h4l52kvms/lecture4D_20200420.mp4?dl=0" style="color:#094191">Lecture 4, Part 4 (4/20/2020)</a> - <i>Covers section 11 of lecture</i>
+    						<a href="https://github.com/hreplots/U6614/blob/master/Lectures/Lecture1/Lecture1.pdf" style="color:#094191">Introduction and R Basics</a> <br />
+    						<a href="https://github.com/hreplots/U6614/blob/master/Lectures/Lecture1/Lecture1-inclass.r" style="color:#094191">R Code</a> <br />
     					</div>
     				</div>
     			</div>
     		</div>
-    		<div class="panel-group">
+
+
+			<div class="panel-group">
     			<div class="panel panel-default">
     				<div class="panel-heading">
     					<h4 class="panel-title">
-    						<a data-toggle="collapse" href="#collapse2">ggplot</a>
+    						<a data-toggle="collapse" href="#collapse2">Week 2 (9/15/2020)</a>
     					</h4>
     				</div>
     				<div id="collapse2" class="panel-collapse collapse">
-    					<div class="panel-body">HTML</div>
+    					<div class="panel-body">Pre-class materials</div>
     					<div class="indented">
-    						<a href="https://rucla-ed.github.io/rclass2/lectures/ggplot/ggplot_lecture.html" style="color:#094191">ggplot</a> <br />	
+    						<a href="https://hreplots.github.io/U6614/Lectures/Lecture2/Lecture2.1.html" style="color:#094191">Data Object Type and Structure</a> <br />
+    						<a href="https://hreplots.github.io/U6614/Lectures/Lecture2/Lecture2.2.html" style="color:#094191">Working with R Markdown</a> <br />
+    						<a href="https://hreplots.github.io/U6614/Lectures/Lecture2/Lecture2.3.html" style="color:#094191">Introduction to the Tidyverse</a> <br />
     					</div>
-    					<div class="panel-body">.Rmd</div>
+
+    					<div class="panel-body">In-class materials</div>
     					<div class="indented">
-    						<a href="https://github.com/Rucla-ed/rclass2/raw/master/lectures/ggplot/ggplot_lecture.Rmd" style="color:#094191">ggplot</a> <br />
-    					</div>
-    					<div class="panel-body">Video Recordings</div>
-    					<div class="indented">
-    						<a href="https://www.dropbox.com/s/ihwogjep3fr43u5/lecture3D_20200413.mp4?dl=0" style="color:#094191">Lecture 3, Part 4 (4/13/2020)</a> - <i>Covers sections 1-2 of lecture</i> <br />
-    						<a href="https://www.dropbox.com/s/hqqlc6r5u5avslv/lecture3E_20200413.mp4?dl=0" style="color:#094191">Lecture 3, Part 5 (4/13/2020)</a> - <i>Covers section 3 of lecture</i>
-    					</div>
-    				</div>
-    			</div>
-    		</div>
-    		<div class="panel-group">
-    			<div class="panel panel-default">
-    				<div class="panel-heading">
-    					<h4 class="panel-title">
-    						<a data-toggle="collapse" href="#collapse4">APIs & JSON</a>
-    					</h4>
-    				</div>
-    				<div id="collapse4" class="panel-collapse collapse">
-    					<div class="panel-body">HTML</div>
-    					<div class="indented">
-    						<a href="https://rucla-ed.github.io/rclass2/lectures/api_json/api_json_lecture.html" style="color:#094191">APIs & JSON</a> <br /></div>
-    					<div class="panel-body">.Rmd</div>
-    					<div class="indented">
-    						<a href="https://github.com/Rucla-ed/rclass2/raw/master/lectures/api_json/api_json_lecture.Rmd" style="color:#094191">APIs & JSON</a> <br />
-    					</div>
-    					<div class="panel-body">Video Recordings</div>
-    					<div class="indented">
-    						<a href="https://www.dropbox.com/s/h9b59jidf1ez29d/lecture4A_20200420.mp4?dl=0" style="color:#094191">Lecture 4, Part 1 (4/20/2020)</a> - <i>Covers sections 1-4 of lecture</i> <br />
-    						<a href="https://www.dropbox.com/s/v2l0xzvnxnfhaqr/lecture4B_20200420.mp4?dl=0" style="color:#094191">Lecture 4, Part 2 (4/20/2020)</a> - <i>Covers section 5 of lecture</i>
+    						<a href="https://hreplots.github.io/U6614/Lectures/Lecture2/Lecture2-UnderstandingDatasets.html" style="color:#094191">Understanding Datasets</a> <br />
+    						<a href="https://github.com/hreplots/U6614/blob/master/Lectures/Lecture2/coronavirus.rda" style="color:#094191">Dataset: coronavirus.rda</a> <br />
+    						<a href="https://github.com/hreplots/U6614/blob/master/Lectures/Lecture2/Lecture2-inclass.R" style="color:#094191">R Code</a> <br />
     					</div>
     				</div>
     			</div>
     		</div>
+
     		<div class="panel-group">
     			<div class="panel panel-default">
     				<div class="panel-heading">
     					<h4 class="panel-title">
-    						<a data-toggle="collapse" href="#collapse3">Strings & Regex</a>
+    						<a data-toggle="collapse" href="#collapse3">Week 3 (9/22/2020)</a>
     					</h4>
     				</div>
     				<div id="collapse3" class="panel-collapse collapse">
-    					<div class="panel-body">HTML</div>
+    					<div class="panel-body">Pre-class materials</div>
     					<div class="indented">
-    						<a href="https://rucla-ed.github.io/rclass2/lectures/strings/strings_lecture.html" style="color:#094191">Strings & Regex</a> <br /></div>
-    					<div class="panel-body">.Rmd</div>
-    					<div class="indented">
-    						<a href="https://github.com/Rucla-ed/rclass2/raw/master/lectures/strings/strings_lecture.Rmd" style="color:#094191">Strings & Regex</a> <br />
+    						<a href="https://hreplots.github.io/U6614/Lectures/Lecture3/Lecture3.1.html" style="color:#094191">Data Analysis Tools</a> <br />
     					</div>
-    					<div class="panel-body">Video Recordings</div>
+
+    					<div class="panel-body">In-class materials</div>
     					<div class="indented">
-    						<a href="https://www.dropbox.com/s/m2i1nlxqxudc8pq/lecture5A_20200427.mp4?dl=0" style="color:#094191">Lecture 5, Part 1 (4/27/2020)</a> - <i>Covers sections 1-2 & Appendix of lecture</i> <br />
-    						<a href="https://www.dropbox.com/s/u7m76nek2wpzp4n/lecture5B_20200427.mp4?dl=0" style="color:#094191">Lecture 5, Part 2 (4/27/2020)</a> - <i>Covers sections 3-4 of lecture</i> <br />
-    						<a href="https://www.dropbox.com/s/m711inqea0pdm4m/lecture5C_20200427.mp4?dl=0" style="color:#094191">Lecture 5, Part 3 (4/27/2020)</a> - <i>Covers section 5 of lecture</i> <br />
-    						<a href="https://www.dropbox.com/s/r7dbgs55rlatjp4/lecture6A_20200504.mp4?dl=0" style="color:#094191">Lecture 6, Part 1 (5/4/2020)</a> - <i>Covers sections 6-8.1 of lecture</i> <br />
-    						<a href="https://www.dropbox.com/s/8inhy6u2d4z4elb/lecture6B_20200504.mp4?dl=0" style="color:#094191">Lecture 6, Part 2 (5/4/2020)</a> - <i>Covers sections 8.2-8.5 of lecture</i> <br />
-    						<a href="https://www.dropbox.com/s/x9sf3qt98v4z37z/lecture6C_20200504.mp4?dl=0" style="color:#094191">Lecture 6, Part 3 (5/4/2020)</a> - <i>Covers section 9 of lecture</i> <br />
-    						<a href="https://www.dropbox.com/s/hiclmurgbnouoaq/lecture7A_20200511.mp4?dl=0" style="color:#094191">Lecture 7, Part 1 (5/11/2020)</a> - <i>Covers section 10 of lecture</i> <br />
-    						<a href="https://www.dropbox.com/s/i4hgbk4z5hbk2av/lecture7B_20200511.mp4?dl=0" style="color:#094191">Lecture 7, Part 2 (5/11/2020)</a> - <i>Covers sections 11.1-11.2 of lecture</i> <br />
-    						<a href="https://www.dropbox.com/s/sop70iuczvl3al6/lecture7C_20200511.mp4?dl=0" style="color:#094191">Lecture 7, Part 3 (5/11/2020)</a> - <i>Covers section 11.2.1 of lecture</i>
+    						<a href="https://hreplots.github.io/U6614/Lectures/Lecture3/Lecture3-CategorizingIdentity.html" style="color:#094191">Categorizing Racial & Ethnic Identity in the US</a> <br />
+    						<a href="https://github.com/hreplots/U6614/blob/master/Lectures/Lecture3/arrests_all.csv" style="color:#094191">Dataset: arrests_all.csv</a> <br />
+    						<a href="https://github.com/hreplots/U6614/blob/master/Lectures/Lecture3/microdata_BDS_inclass.csv" style="color:#094191">Dataset: microdata_BDS_inclass.csv</a> <br />
+    						<a href="https://github.com/hreplots/U6614/blob/master/Lectures/Lecture3/microdata_LAS_inclass.csv" style="color:#094191">Dataset: microdata_LAS_inclass.csv</a> <br />
+    						<a href="https://github.com/hreplots/U6614/blob/master/Lectures/Lecture3/Lecture3-inclass.R" style="color:#094191">R Code</a> <br />
     					</div>
     				</div>
     			</div>
     		</div>
+
+
+			<div class="panel-group">
+    			<div class="panel panel-default">
+    				<div class="panel-heading">
+    					<h4 class="panel-title">
+    						<a data-toggle="collapse" href="#collapse4">Week 4 (9/29/2020)</a>
+    					</h4>
+    				</div>
+    				<div id="collapse4" class="panel-collapse collapse">
+    					<div class="panel-body">Pre-class materials</div>
+    					<div class="indented">
+    						<a href="https://hreplots.github.io/U6614/Lectures/Lecture4/Lecture4.1.html" style="color:#094191">Data Analysis Tools Part 2</a> <br />
+    						<a href="https://hreplots.github.io/U6614/Lectures/Lecture4/Lecture4.2.html" style="color:#094191">Inference and Regression</a> <br />
+    					</div>
+
+    					<div class="panel-body">In-class materials</div>
+    					<div class="indented">
+    						<a href="https://github.com/hreplots/U6614/blob/master/Lectures/Lecture4/arrests_all.csv" style="color:#094191">Dataset: arrests_all.csv</a> <br />
+    						<a href="https://github.com/hreplots/U6614/blob/master/Lectures/Lecture4/Subway%20Ridership%20by%20Station%20-%20BK.csv" style="color:#094191">Dataset: Subway Ridership by Station - BK.csv</a> <br />
+    						<a href="https://github.com/hreplots/U6614/blob/master/Lectures/Lecture4/station_povdataclean_2016.csv" style="color:#094191">Dataset: station_povdataclean_2016.csv</a> <br />
+    						<a href="https://github.com/hreplots/U6614/blob/master/Lectures/Lecture4/Lecture4-inclass.R" style="color:#094191">R Code</a> <br />
+    					</div>
+    				</div>
+    			</div>
+    		</div>
+
     		<div class="panel-group">
     			<div class="panel panel-default">
     				<div class="panel-heading">
     					<h4 class="panel-title">
-    						<a data-toggle="collapse" href="#collapse6">Programming</a>
+    						<a data-toggle="collapse" href="#collapse5">Week 5 (10/6/2020)</a>
+    					</h4>
+    				</div>
+    				<div id="collapse5" class="panel-collapse collapse">
+    					<div class="indented">
+    						To be updated
+    					</div>
+
+    				</div>
+    			</div>
+    		</div>
+
+    		<div class="panel-group">
+    			<div class="panel panel-default">
+    				<div class="panel-heading">
+    					<h4 class="panel-title">
+    						<a data-toggle="collapse" href="#collapse6">Week 6 (10/13/2020)</a>
     					</h4>
     				</div>
     				<div id="collapse6" class="panel-collapse collapse">
-    				  <div class="panel-body">HTML</div>
     					<div class="indented">
-    						<a href="https://rucla-ed.github.io/rclass2/lectures/programming/programming_lecture.html" style="color:#094191">Programming</a> <br />	
+    						To be updated
     					</div>
-    					<div class="panel-body">.Rmd</div>
-    					<div class="indented">
-    						<a href="https://github.com/Rucla-ed/rclass2/raw/master/lectures/programming/programming_lecture.Rmd" style="color:#094191">Programming</a> <br />	
-    					</div>
-    					<div class="panel-body">Video Recordings</div>
-    					<div class="indented">
-    						<a href="https://www.dropbox.com/s/jwdjxi4x36yq9ez/lecture8A_20200518.mp4?dl=0" style="color:#094191">Lecture 8, Part 1 (5/18/2020)</a> - <i>Covers section 2 of lecture</i> <br />
-    						<a href="https://www.dropbox.com/s/32rtcb325xfp74v/lecture8B_20200518.mp4?dl=0" style="color:#094191">Lecture 8, Part 2 (5/18/2020)</a> - <i>Covers sections 3.1-3.3.2 of lecture</i> <br />
-    						<a href="https://www.dropbox.com/s/zutw6mdbxl9ruqw/lecture8C_20200518.mp4?dl=0" style="color:#094191">Lecture 8, Part 3 (5/18/2020)</a> - <i>Covers sections 3.3.3-3.5 of lecture</i> <br />
-    						<a href="https://www.dropbox.com/s/leu1rvtk8wdvej3/lecture8D_20200518.mp4?dl=0" style="color:#094191">Lecture 8, Part 4 (5/18/2020)</a> - <i>Covers section 3.6 of lecture</i> <br />
-    						<a href="https://www.dropbox.com/s/74cwglyd4ndtzca/lecture10A_20200601.mp4?dl=0" style="color:#094191">Lecture 10, Part 1 (6/1/2020)</a> - <i>Covers sections 4-5.1 of lecture</i> <br />
-    						<a href="https://www.dropbox.com/s/00y7ajbheor9tt5/lecture10B_20200601.mp4?dl=0" style="color:#094191">Lecture 10, Part 2 (6/1/2020)</a> - <i>Covers sections 5.2-5.2.3 of lecture</i> <br />
-    						<a href="https://www.dropbox.com/s/lm3rqw2463lo88w/lecture10C_20200601.mp4?dl=0" style="color:#094191">Lecture 10, Part 3 (6/1/2020)</a> - <i>Covers section 5.3-5.4 of lecture</i>
-    					</div>
+
     				</div>
     			</div>
     		</div>
-    	</div>   		
-    	</div>
-    </div>
 
-
-  <div id="assignments" class="wrapper">
-    <button class="collapsible">Weekly readings and assignments</button>
-    <div class="content">
-    	<div class="container">
     		<div class="panel-group">
     			<div class="panel panel-default">
     				<div class="panel-heading">
     					<h4 class="panel-title">
-    						<a data-toggle="collapse" href="#collapse7">Week 1 (Do after 3/30/20 class)</a>
+    						<a data-toggle="collapse" href="#collapse7">Week 7 (10/20/2020)</a>
     					</h4>
     				</div>
     				<div id="collapse7" class="panel-collapse collapse">
-    					<div class="panel-body">Readings</div>
     					<div class="indented">
-    						<a href="https://github.com/Rucla-ed/rclass2/raw/master/syllabus/syllabus.pdf" style="color:#094191">Syllabus </a> <br />
-    						<a href="https://guides.github.com/features/issues/" style="color:#094191">Mastering Issues </a> <br />
-    						<a href="https://www.atlassian.com/git/tutorials/setting-up-a-repository" style="color:#094191">Setting up a repository </a> <br />
-    						<a href="https://www.educative.io/blog/bash-shell-command-cheat-sheet" style="color:#094191">Bash cheat sheet (skip creating custom commands) </a> <br />
-    						<a href="https://www.youtube.com/watch?v=ephId3mYu9o&t" style="color:#094191">Youtube video (absolute & relative file paths) </a> <br />
-    						<a href="https://www.daolf.com/posts/git-series-part-1/" style="color:#094191">Understanding git (deeper understanding of .git directory, not required to do problem set 1)</a> <br />
+    						To be updated
     					</div>
-    					<div class="panel-footer">Problem set 1 due 04/06/20 @ 8:00am</div>
-    					<div class="indented">
-    						<a href="https://github.com/Rucla-ed/rclass2/raw/master/problem_sets/week_1/problemset1.pdf" style="color:#094191">Problem set pdf</a> <br />
-    						<a href="https://raw.githubusercontent.com/Rucla-ed/rclass2/master/problem_sets/week_1/problemset1.Rmd" style="color:#094191">Problem set .Rmd</a> <br />
-    					</div>
+
     				</div>
     			</div>
     		</div>
+
     		<div class="panel-group">
     			<div class="panel panel-default">
     				<div class="panel-heading">
     					<h4 class="panel-title">
-    						<a data-toggle="collapse" href="#collapse8">Week 2 (Do after 04/06/20 class)</a>
+    						<a data-toggle="collapse" href="#collapse8">Week 8 (10/27/2020)</a>
     					</h4>
     				</div>
     				<div id="collapse8" class="panel-collapse collapse">
-    					<div class="panel-body">Readings</div>
     					<div class="indented">
-    						<a href="https://www.toolsqa.com/git/git-status-command-in-git/" style="color:#094191">Git status command</a> <br /> 
-    						<a href="https://www.toolsqa.com/git/git-diff/" style="color:#094191">Git dff</a> <br/>						
-    						<a href="https://git-scm.com/book/en/v2/Git-Basics-Viewing-the-Commit-History" style="color:#094191">Viewing the Commit History</a> <br /> 
-    						<a href="https://www.pixelstech.net/article/1549115148-git-reset-vs-git-revert" style="color:#094191">Git reset vs Git revert </a> <br /> 							
-    						<a href="https://www.atlassian.com/git/tutorials/undoing-changes" style="color:#094191">Undoing Commits & Changes</a> <br />
-    						<a href="http://shafiul.github.io/gitbook/1_the_git_object_model.html" style="color:#094191">The Git Object Model</a> <br/>
+    						To be updated
     					</div>
-    					<div class="panel-footer">Problem set 2 due 04/13/20 @ 8:00am</div>
-    					<div class="indented">
-    						<a href="https://github.com/Rucla-ed/rclass2/raw/master/problem_sets/week_2/problemset2.pdf" style="color:#094191">Problem set pdf</a> <br />
-    						<a href="https://raw.githubusercontent.com/Rucla-ed/rclass2/master/problem_sets/week_2/problemset2.Rmd" style="color:#094191">Problem set .Rmd</a> <br />
-    					</div>
+
     				</div>
     			</div>
     		</div>
+
     		<div class="panel-group">
     			<div class="panel panel-default">
     				<div class="panel-heading">
     					<h4 class="panel-title">
-    						<a data-toggle="collapse" href="#collapse9">Week 3 (Do after 04/13/20 class)</a>
+    						<a data-toggle="collapse" href="#collapse9">Week 9 (11/3/2020)</a>
     					</h4>
     				</div>
     				<div id="collapse9" class="panel-collapse collapse">
-    					<div class="panel-body">Readings</div>
     					<div class="indented">
-    						<a href="https://www.atlassian.com/git/tutorials/using-branches" style="color:#094191">Git branch</a> <br />
-    						<a href="https://www.atlassian.com/git/tutorials/using-branches/git-merge" style="color:#094191">Git merge</a> <br />
-    						<a href="https://www.atlassian.com/git/tutorials/using-branches/merge-conflicts" style="color:#094191">Git merge conflicts</a> <br />  
-    						<a href="https://r4ds.had.co.nz/data-visualisation.html" style="color:#094191">R for Data Science: Ch.3 Data Visualization </a> <br /> 
+    						Election day (no class)
     					</div>
-    					<div class="panel-footer">Problem set 3 due 04/20/20 @ 8:00am</div>
-    					<div class="indented">
-    						<a href="https://github.com/Rucla-ed/rclass2/raw/master/problem_sets/week_3/problemset3.pdf" style="color:#094191">Problem set pdf</a> <br />
-    						<a href="https://raw.githubusercontent.com/Rucla-ed/rclass2/master/problem_sets/week_3/problemset3.Rmd" style="color:#094191">Problem set .Rmd</a> <br />
-    					</div>
+
     				</div>
     			</div>
     		</div>
+
     		<div class="panel-group">
     			<div class="panel panel-default">
     				<div class="panel-heading">
     					<h4 class="panel-title">
-    						<a data-toggle="collapse" href="#collapse10">Week 4 (Do after 04/20/20 class)</a>
+    						<a data-toggle="collapse" href="#collapse10">Week 10 (11/10/2020)</a>
     					</h4>
     				</div>
     				<div id="collapse10" class="panel-collapse collapse">
-    					<div class="panel-body">Readings</div>
     					<div class="indented">
-    						<a href="https://github.com/btskinner/rscorecard/blob/master/README.md#further-references" style="color:#094191">Rscorecard References (College Scorecard Website & Data Documentation)</a> <br />
-    						<a href="https://www.youtube.com/watch?v=e3bjQX9jIBk" style="color:#094191">Pull requests (video)</a> <br />
-    						<a href="https://www.digitalocean.com/community/tutorials/an-introduction-to-json" style="color:#094191">Introduction to JSON</a> <br />
+    						To be updated
     					</div>
-    					<div class="panel-footer">Problem set 4 due 04/27/20 @ 8:00am</div>
-    					<div class="indented">
-    						<a href="https://github.com/Rucla-ed/rclass2/raw/master/problem_sets/week_4/problemset4.pdf" style="color:#094191">Problem set pdf</a> <br />
-    						<a href="https://raw.githubusercontent.com/Rucla-ed/rclass2/master/problem_sets/week_4/problemset4.Rmd" style="color:#094191">Problem set .Rmd</a> <br />
-    					</div>
+
     				</div>
     			</div>
     		</div>
+
     		<div class="panel-group">
     			<div class="panel panel-default">
     				<div class="panel-heading">
     					<h4 class="panel-title">
-    						<a data-toggle="collapse" href="#collapse11">Week 5 (Do after 04/27/20 class)</a>
+    						<a data-toggle="collapse" href="#collapse11">Week 11 (11/17/2020)</a>
     					</h4>
     				</div>
     				<div id="collapse11" class="panel-collapse collapse">
-    					<div class="panel-body">Readings</div>
     					<div class="indented">
-    					  <a href="https://r4ds.had.co.nz/strings.html" style="color:#094191">R for Data Science: Ch.14 Strings - Only Sections 14.1-14.2</a> <br /> 
-    					  <a href="https://r4ds.had.co.nz/dates-and-times.html" style="color:#094191">R for Data Science: Ch.16 Dates and times</a>
+    						To be updated
     					</div>
-    					<div class="panel-footer">Problem set 5 due 05/04/20 @ 8:00am</div>
-    					<div class="indented">
-    						<a href="https://github.com/Rucla-ed/rclass2/raw/master/problem_sets/week_5/problemset5.pdf" style="color:#094191">Problem set pdf</a> <br />
-    						<a href="https://raw.githubusercontent.com/Rucla-ed/rclass2/master/problem_sets/week_5/problemset5.Rmd" style="color:#094191">Problem set .Rmd</a> <br />
-    					</div>
+
     				</div>
     			</div>
     		</div>
+
     		<div class="panel-group">
     			<div class="panel panel-default">
     				<div class="panel-heading">
     					<h4 class="panel-title">
-    						<a data-toggle="collapse" href="#collapse12">Week 6 (Do after 05/4/20 class)</a>
+    						<a data-toggle="collapse" href="#collapse12">Week 12 (11/24/2020)</a>
     					</h4>
     				</div>
     				<div id="collapse12" class="panel-collapse collapse">
-    					<div class="panel-body">Readings</div>
     					<div class="indented">
-    					  <a href="https://ozanj.github.io/rclass/lectures/lecture3/lecture3_ucla.pdf#page=20" style="color:#094191">Intro to R Class: Lecture 3 - Only Slides 20-55</a> <br /> 
-    					  <a href="https://r4ds.had.co.nz/strings.html" style="color:#094191">R for Data Science: Ch.14 Strings - Only Sections 14.3-14.5 (<i>only regex() part in last section</i>)</a>
+    						To be updated
     					</div>
-    					<div class="panel-footer">Problem set 6 due 05/11/20 @ 8:00am</div>
-    					<div class="indented">
-    						<a href="https://github.com/Rucla-ed/rclass2/raw/master/problem_sets/week_6/problemset6.pdf" style="color:#094191">Problem set pdf</a> <br />
-    						<a href="https://raw.githubusercontent.com/Rucla-ed/rclass2/master/problem_sets/week_6/problemset6.Rmd" style="color:#094191">Problem set .Rmd</a> <br />
-    					</div>
+
     				</div>
     			</div>
     		</div>
-    		<div class="panel-group">
-    			<div class="panel panel-default">
-    				<div class="panel-heading">
-    					<h4 class="panel-title">
-    						<a data-toggle="collapse" href="#collapse13">Week 7 (Do after 05/11/20 class)</a>
-    					</h4>
-    				</div>
-    				<div id="collapse13" class="panel-collapse collapse">
-    					<div class="panel-body">Readings</div>
-    					<div class="indented">
-    						<a href="https://www.w3schools.com/html/html_intro.asp" style="color:#094191">HTML Introduction- w3schools (and the following sections:)
-    							<ul>
-    								<li><a href="https://www.w3schools.com/html/html_elements.asp" style="color:#094191">Elements</a></li>
-		    					 	<li><a href="https://www.w3schools.com/html/html_attributes.asp" style="color:#094191">Attributes</a></li>
-		    					 	<li><a href="https://www.w3schools.com/html/html_headings.asp" style="color:#094191">Headings</a></li>
-		    					 	<li><a href="https://www.w3schools.com/html/html_paragraphs.asp" style="color:#094191">Paragraphs</a></li>
-		    					 	<li><a href="https://www.w3schools.com/html/html_formatting.asp" style="color:#094191">Formatting</a></li>
-		    					 	<li><a href="https://www.w3schools.com/html/html_css.asp" style="color:#094191">CSS</a></li>
-    					 		</ul></a>
-    					 		<a href="http://rvest.tidyverse.org/" style="color:#094191">Rvest package</a><br/>
-    					 		<a href="https://www.btskinner.io/rworkshop/modules/web_scraping.html" style="color:#094191">Web scraping in R by Ben Skinner (Optional)</a>
-    					</div>
-    					<div class="panel-footer">Problem set 7 due 05/18/20 @ 8:00am</div>
-    					<div class="indented">
-    						<a href="https://github.com/Rucla-ed/rclass2/raw/master/problem_sets/week_7/problemset7.pdf" style="color:#094191">Problem set pdf</a> <br />
-    						<a href="https://raw.githubusercontent.com/Rucla-ed/rclass2/master/problem_sets/week_7/problemset7.Rmd" style="color:#094191">Problem set .Rmd</a> <br />
-    					</div>
-    				</div>
-    			</div>
-    		</div>
-    		<div class="panel-group">
-    			<div class="panel panel-default">
-    				<div class="panel-heading">
-    					<h4 class="panel-title">
-    						<a data-toggle="collapse" href="#collapse14">Week 8 (Do after 05/18/20 class)</a>
-    					</h4>
-    				</div>
-    				<div id="collapse14" class="panel-collapse collapse">
-    					<div class="panel-body">Readings</div>
-    					<div class="indented">
-    					 	<a href="https://adv-r.hadley.nz/names-values.html" style="color:#094191">Advanced R: Ch.2-4</a><br/>
-    					 	<a href="https://r4ds.had.co.nz/iteration.html" style="color:#094191">R for Data Science: Ch.21 Iteration - Only Sections 21.1-21.3</a>							
-    					</div>
-    					<div class="panel-footer">Problem set 8 due 06/01/20 @ 8:00am</div>
-    					<div class="indented">
-    						<a href="https://github.com/Rucla-ed/rclass2/raw/master/problem_sets/week_8/problemset8.pdf" style="color:#094191">Problem set pdf</a> <br />
-    						<a href="https://raw.githubusercontent.com/Rucla-ed/rclass2/master/problem_sets/week_8/problemset8.Rmd" style="color:#094191">Problem set .Rmd</a> <br />
-    						<a href="https://raw.githubusercontent.com/Rucla-ed/rclass2/master/problem_sets/week_8/lastname_script.R" style="color:#094191">lastname_script.R</a> <br />
-    						<a href="https://raw.githubusercontent.com/Rucla-ed/rclass2/master/problem_sets/week_8/ipeds_file_list.txt" style="color:#094191">ipeds_file_list.txt</a> <br />
-    					</div>
-    				</div>
-    			</div>
-    		</div>
-    		<div class="panel-group">
-    			<div class="panel panel-default">
-    				<div class="panel-heading">
-    					<h4 class="panel-title">
-    						<a data-toggle="collapse" href="#collapse15">Week 9 (No Class on 05/25/20)</a>
-    					</h4>
-    				</div>
-    				<div id="collapse15" class="panel-collapse collapse">
-    					<div class="panel-body">Readings</div>
-    					<div class="indented">
-    					 	<a href="https://adv-r.hadley.nz/names-values.html" style="color:#094191">Advanced R: Ch.2-4</a><br/>
-    					 	<a href="https://r4ds.had.co.nz/iteration.html" style="color:#094191">R for Data Science: Ch.21 Iteration - Only Sections 21.1-21.3</a>							
-    					</div>
-    					<div class="panel-footer">Problem set 8 due 06/01/20 @ 8:00am</div>
-    				</div>
-    			</div>
-    		</div>
-    		<div class="panel-group">
-    			<div class="panel panel-default">
-    				<div class="panel-heading">
-    					<h4 class="panel-title">
-    						<a data-toggle="collapse" href="#collapse16">Week 10 (Do after 06/01/20 class)</a>
-    					</h4>
-    				</div>
-    				<div id="collapse16" class="panel-collapse collapse">
-    					<div class="panel-body">Readings</div>
-    					<div class="indented">
-    						<a href="https://r4ds.had.co.nz/functions.html" style="color:#094191">R for Data Science: Ch.19 Functions</a><br/>
-    					</div>
-    					<div class="panel-footer">Problem set 9 due 06/17/20 @ 5:00pm</div>
-    					<div class="indented">
-    						<a href="https://github.com/Rucla-ed/rclass2/raw/master/problem_sets/week_10/problemset9.pdf" style="color:#094191">Problem set pdf</a> <br />
-    						<a href="https://raw.githubusercontent.com/Rucla-ed/rclass2/master/problem_sets/week_10/problemset9.Rmd" style="color:#094191">Problem set .Rmd</a> <br />
-    						<a href="https://raw.githubusercontent.com/Rucla-ed/rclass2/master/problem_sets/week_10/lastname_script.R" style="color:#094191">lastname_script.R</a> <br />
-    						<a href="https://raw.githubusercontent.com/Rucla-ed/rclass2/master/problem_sets/week_10/ipeds_file_list.txt" style="color:#094191">ipeds_file_list.txt</a> <br />
-    					</div>
-    				</div>
-    			</div>
-    		</div>
-    	</div>
-    </div>
-</div>
-</div>
-</div>
+
+
+			
+
+    </div>  
+  </div>
+
+  
+    		
+  
+ </div>
+
+  <div id="assignment" class="wrapper">
+    <button class="collapsible" color = "0A0602" > <font face = "Garamond" size = "4"> Assignments </font> </button>
+    <div class="content">
+    	<br/>
+      <div class="indented">
+      	<a href="https://github.com/hreplots/U6614/blob/master/Lectures/Assignments/assignment_rmarkdown_template.Rmd" style="color:#094191"><font face = "Garamond" size = "3"> Assignment 1 (due 9/14 midnight) </font> </a> <br />
+      </div>
+    </div>  
+  </div>
 
 
 </div>
