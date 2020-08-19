@@ -39,11 +39,35 @@
   font-size: 15px;
 }
 
+.collapsible2 {
+  background-color: white;
+  color: black;
+  cursor: pointer;
+  padding: 15px;
+  width: 100%;
+  border: 2px solid #e7e7e7;
+  text-align: left;
+  outline: none;
+  font-size: 15px;
+}
+
 .active, .collapsible:hover {
   background-color: #F7F7F7;
 }
 
+.active, .collapsible2:hover {
+  background-color: #F7F7F7;
+}
+
 .collapsible:after {
+  content: '\002B';
+  color: black;
+  font-weight: bold;
+  float: right; 
+  margin-left: 5px;
+}
+
+.collapsible2:after {
   content: '\002B';
   color: black;
   font-weight: bold;
@@ -57,7 +81,7 @@
 
 .content {
   padding: 0 10px;
-  font-family: "Garamond";
+  font-family: "Arial";
   max-height: 0;
   overflow: auto;
   transition: max-height 0.2s ease-out;
@@ -178,7 +202,7 @@ div.ex1 {
 </head>
 
 <body>
-	<basefont face = "Garamond">
+	<basefont face = "Arial">
 
 
 <div class="row">
@@ -187,20 +211,20 @@ div.ex1 {
 
   <div class="column left">
     <h1>
-      <font face = "Garamond" size = "6" color = "#094191" line-height = "" > INAF U6614: Data Analysis for Policy Research Using R </font>
+      <font face = "Arial" size = "6" color = "#094191" line-height = "" > INAF U6614: Data Analysis for Policy Research Using R </font>
     </h1>
 
     <br/>
 
     <h3> 
-      <font face = "Garamond" size = "5" color = black > Fall 2020 </font>
+      <font face = "Arial" size = "5" color = black > Fall 2020 </font>
     </h3>
 
     <br/>
     <br/>
 
     <p>
-      <font face = "Garamond" size = "4"> This course will develop the skills to prepare, analyze, and present data for policy analysis and program evaluation using R</font>
+      <font face = "Arial" size = "4"> This course will develop the skills to prepare, analyze, and present data for policy analysis and program evaluation using R</font>
     </p>
 
 
@@ -213,13 +237,13 @@ div.ex1 {
 
     <dl>
       <dt>
-      	<font face = "Garamond" size = "3" color = "#094191"> Harold Stolper </font>
+      	<font face = "Arial" size = "3" color = "#094191"> Harold Stolper </font>
       </dt>
 	  <dt>
-      	<font face = "Garamond" size = "3" color = "#094191"> <i> Lecturer in the Discipline of International and Public Affairs </i> </font>
+      	<font face = "Arial" size = "3" color = "#094191"> <i> Lecturer in the Discipline of International and Public Affairs </i> </font>
       </dt>
       <dt>
-      	<font face = "Garamond" size = "3" color = "#094191"> Columbia University </font>
+      	<font face = "Arial" size = "3" color = "#094191"> Columbia University </font>
       </dt>
     </dl>
 
@@ -237,18 +261,28 @@ div.ex1 {
   
   <div class="column right">
 
-  <div id="syllabus" class="wrapper">
-    <button class="collapsible" color = "0A0602" > <font face = "Garamond" size = "4"> Syllabus and class resources </font> </button>
+  <div id="announcement" class="wrapper">
+    <button class="collapsible2" color = "0A0602" > <font face = "Arial" size = "4"> Announcements </font> </button>
     <div class="content">
     	<br/>
       <div class="indented">
-      	<a href="https://github.com/hreplots/U6614/blob/master/Syllabus/Fall2020-Data_Analysis_for_Policy_Research_Using_R-SyllabusJul30.pdf" style="color:#094191"><font face = "Garamond" size = "3"> Syllabus </font> </a> <br />
+      	Final paper due 12/18/2020
+      </div>
+    </div>  
+  </div>
+
+  <div id="syllabus" class="wrapper">
+    <button class="collapsible" color = "0A0602" > <font face = "Arial" size = "4"> Syllabus and class resources </font> </button>
+    <div class="content">
+    	<br/>
+      <div class="indented">
+      	<a href="https://github.com/hreplots/U6614/blob/master/Syllabus/Fall2020-Data_Analysis_for_Policy_Research_Using_R-Syllabus.pdf" style="color:#094191"><font face = "Arial" size = "3"> Syllabus </font> </a> <br />
       </div>
     </div>  
   </div>
 
   <div id="lecture" class="wrapper">
-    <button class="collapsible" color = "0A0602" > <font face = "Garamond" size = "4"> Lecture materials </font> </button>
+    <button class="collapsible" color = "0A0602" > <font face = "Arial" size = "4"> Lecture materials </font> </button>
     <div class="content">
     	<div class="container">
 
@@ -257,18 +291,18 @@ div.ex1 {
     			<div class="panel panel-default">
     				<div class="panel-heading">
     					<h4 class="panel-title">
-    						<a data-toggle="collapse" href="#collapse1">Week 1 (9/8/2020)</a>
+    						<a data-toggle="collapse" href="#collapse1">Week 1: Introduction, R Basics and Workflow (9/8/2020)</a>
     					</h4>
     				</div>
     				<div id="collapse1" class="panel-collapse collapse">
     					<div class="panel-body">Pre-class materials</div>
     					<div class="indented">
-    						<a href="https://github.com/hreplots/U6614/blob/master/Syllabus/Fall2020-Data_Analysis_for_Policy_Research_Using_R-SyllabusJul30.pdf" style="color:#094191">Syllabus</a> <br />
+    						<a href="https://github.com/hreplots/U6614/blob/master/Syllabus/Fall2020-Data_Analysis_for_Policy_Research_Using_R-Syllabus.pdf" style="color:#094191">Syllabus</a> <br />
     					</div>
 
     					<div class="panel-body">In-class materials</div>
     					<div class="indented">
-    						<a href="https://github.com/hreplots/U6614/blob/master/Lectures/Lecture1/Lecture1.pdf" style="color:#094191">Introduction and R Basics</a> <br />
+    						<a href="https://github.com/hreplots/U6614/blob/master/Lectures/Lecture1/Lecture1.pdf" style="color:#094191">Lecture 1: Introduction and R Basics</a> <br />
     						<a href="https://github.com/hreplots/U6614/blob/master/Lectures/Lecture1/Lecture1-inclass.r" style="color:#094191">R Code</a> <br />
     					</div>
     				</div>
@@ -280,20 +314,20 @@ div.ex1 {
     			<div class="panel panel-default">
     				<div class="panel-heading">
     					<h4 class="panel-title">
-    						<a data-toggle="collapse" href="#collapse2">Week 2 (9/15/2020)</a>
+    						<a data-toggle="collapse" href="#collapse2">Week 2: Data Types & Structures, R Markdown, Intro to the Tidyverse (9/15/2020)</a>
     					</h4>
     				</div>
     				<div id="collapse2" class="panel-collapse collapse">
     					<div class="panel-body">Pre-class materials</div>
     					<div class="indented">
-    						<a href="https://hreplots.github.io/U6614/Lectures/Lecture2/Lecture2.1.html" style="color:#094191">Data Object Type and Structure</a> <br />
-    						<a href="https://hreplots.github.io/U6614/Lectures/Lecture2/Lecture2.2.html" style="color:#094191">Working with R Markdown</a> <br />
-    						<a href="https://hreplots.github.io/U6614/Lectures/Lecture2/Lecture2.3.html" style="color:#094191">Introduction to the Tidyverse</a> <br />
+    						<a href="https://hreplots.github.io/U6614/Lectures/Lecture2/Lecture2.1.html" style="color:#094191">Lecture 2.1: Data Object Type and Structure</a> <br />
+    						<a href="https://hreplots.github.io/U6614/Lectures/Lecture2/Lecture2.2.html" style="color:#094191">Lecture 2.2: Working with R Markdown</a> <br />
+    						<a href="https://hreplots.github.io/U6614/Lectures/Lecture2/Lecture2.3.html" style="color:#094191">Lecture 2.3: Introduction to the Tidyverse</a> <br />
     					</div>
 
     					<div class="panel-body">In-class materials</div>
     					<div class="indented">
-    						<a href="https://hreplots.github.io/U6614/Lectures/Lecture2/Lecture2-UnderstandingDatasets.html" style="color:#094191">Understanding Datasets</a> <br />
+    						<a href="https://hreplots.github.io/U6614/Lectures/Lecture2/Lecture2-UnderstandingDatasets.html" style="color:#094191">Lecture 2: Understanding Datasets</a> <br />
     						<a href="https://github.com/hreplots/U6614/blob/master/Lectures/Lecture2/coronavirus.rda" style="color:#094191">Dataset: coronavirus.rda</a> <br />
     						<a href="https://github.com/hreplots/U6614/blob/master/Lectures/Lecture2/Lecture2-inclass.R" style="color:#094191">R Code</a> <br />
     					</div>
@@ -305,18 +339,18 @@ div.ex1 {
     			<div class="panel panel-default">
     				<div class="panel-heading">
     					<h4 class="panel-title">
-    						<a data-toggle="collapse" href="#collapse3">Week 3 (9/22/2020)</a>
+    						<a data-toggle="collapse" href="#collapse3">Week 3: Importing, Cleaning & Summarizing Data, Intro to ggplot (9/22/2020)</a>
     					</h4>
     				</div>
     				<div id="collapse3" class="panel-collapse collapse">
     					<div class="panel-body">Pre-class materials</div>
     					<div class="indented">
-    						<a href="https://hreplots.github.io/U6614/Lectures/Lecture3/Lecture3.1.html" style="color:#094191">Data Analysis Tools</a> <br />
+    						<a href="https://hreplots.github.io/U6614/Lectures/Lecture3/Lecture3.1.html" style="color:#094191">Lecture 3.1: Data Analysis Tools</a> <br />
     					</div>
 
     					<div class="panel-body">In-class materials</div>
     					<div class="indented">
-    						<a href="https://hreplots.github.io/U6614/Lectures/Lecture3/Lecture3-CategorizingIdentity.html" style="color:#094191">Categorizing Racial & Ethnic Identity in the US</a> <br />
+    						<a href="https://hreplots.github.io/U6614/Lectures/Lecture3/Lecture3-CategorizingIdentity.html" style="color:#094191">Lecture 3: Categorizing Racial & Ethnic Identity in the US</a> <br />
     						<a href="https://github.com/hreplots/U6614/blob/master/Lectures/Lecture3/arrests_all.csv" style="color:#094191">Dataset: arrests_all.csv</a> <br />
     						<a href="https://github.com/hreplots/U6614/blob/master/Lectures/Lecture3/microdata_BDS_inclass.csv" style="color:#094191">Dataset: microdata_BDS_inclass.csv</a> <br />
     						<a href="https://github.com/hreplots/U6614/blob/master/Lectures/Lecture3/microdata_LAS_inclass.csv" style="color:#094191">Dataset: microdata_LAS_inclass.csv</a> <br />
@@ -331,14 +365,14 @@ div.ex1 {
     			<div class="panel panel-default">
     				<div class="panel-heading">
     					<h4 class="panel-title">
-    						<a data-toggle="collapse" href="#collapse4">Week 4 (9/29/2020)</a>
+    						<a data-toggle="collapse" href="#collapse4">Week 4: Joins, Aggregation, Inference & Regression (9/29/2020)</a>
     					</h4>
     				</div>
     				<div id="collapse4" class="panel-collapse collapse">
     					<div class="panel-body">Pre-class materials</div>
     					<div class="indented">
-    						<a href="https://hreplots.github.io/U6614/Lectures/Lecture4/Lecture4.1.html" style="color:#094191">Data Analysis Tools Part 2</a> <br />
-    						<a href="https://hreplots.github.io/U6614/Lectures/Lecture4/Lecture4.2.html" style="color:#094191">Inference and Regression</a> <br />
+    						<a href="https://hreplots.github.io/U6614/Lectures/Lecture4/Lecture4.1.html" style="color:#094191">Lecture 4.1: Data Analysis Tools Part 2</a> <br />
+    						<a href="https://hreplots.github.io/U6614/Lectures/Lecture4/Lecture4.2.html" style="color:#094191">Lecture 4.2: Inference and Regression</a> <br />
     					</div>
 
     					<div class="panel-body">In-class materials</div>
@@ -356,7 +390,7 @@ div.ex1 {
     			<div class="panel panel-default">
     				<div class="panel-heading">
     					<h4 class="panel-title">
-    						<a data-toggle="collapse" href="#collapse5">Week 5 (10/6/2020)</a>
+    						<a data-toggle="collapse" href="#collapse5">Week 5: Exploratory Data Analysis, Weighting (10/6/2020)</a>
     					</h4>
     				</div>
     				<div id="collapse5" class="panel-collapse collapse">
@@ -372,7 +406,7 @@ div.ex1 {
     			<div class="panel panel-default">
     				<div class="panel-heading">
     					<h4 class="panel-title">
-    						<a data-toggle="collapse" href="#collapse6">Week 6 (10/13/2020)</a>
+    						<a data-toggle="collapse" href="#collapse6">Week 6: Data Visualization with ggplot (10/13/2020)</a>
     					</h4>
     				</div>
     				<div id="collapse6" class="panel-collapse collapse">
@@ -388,7 +422,7 @@ div.ex1 {
     			<div class="panel panel-default">
     				<div class="panel-heading">
     					<h4 class="panel-title">
-    						<a data-toggle="collapse" href="#collapse7">Week 7 (10/20/2020)</a>
+    						<a data-toggle="collapse" href="#collapse7">Week 7: Panel Data Methods (10/20/2020)</a>
     					</h4>
     				</div>
     				<div id="collapse7" class="panel-collapse collapse">
@@ -404,7 +438,7 @@ div.ex1 {
     			<div class="panel panel-default">
     				<div class="panel-heading">
     					<h4 class="panel-title">
-    						<a data-toggle="collapse" href="#collapse8">Week 8 (10/27/2020)</a>
+    						<a data-toggle="collapse" href="#collapse8">Week 8: More Data Cleaning, Working with String & Date Variables (10/27/2020)</a>
     					</h4>
     				</div>
     				<div id="collapse8" class="panel-collapse collapse">
@@ -420,7 +454,7 @@ div.ex1 {
     			<div class="panel panel-default">
     				<div class="panel-heading">
     					<h4 class="panel-title">
-    						<a data-toggle="collapse" href="#collapse9">Week 9 (11/3/2020)</a>
+    						<a data-toggle="collapse" href="#collapse9">Week 9: NO CLASS - ELECTION DAY (11/3/2020)</a>
     					</h4>
     				</div>
     				<div id="collapse9" class="panel-collapse collapse">
@@ -436,7 +470,7 @@ div.ex1 {
     			<div class="panel panel-default">
     				<div class="panel-heading">
     					<h4 class="panel-title">
-    						<a data-toggle="collapse" href="#collapse10">Week 10 (11/10/2020)</a>
+    						<a data-toggle="collapse" href="#collapse10">Week 10: Programming Review (11/10/2020)</a>
     					</h4>
     				</div>
     				<div id="collapse10" class="panel-collapse collapse">
@@ -452,7 +486,7 @@ div.ex1 {
     			<div class="panel panel-default">
     				<div class="panel-heading">
     					<h4 class="panel-title">
-    						<a data-toggle="collapse" href="#collapse11">Week 11 (11/17/2020)</a>
+    						<a data-toggle="collapse" href="#collapse11">Week 11: Mapping with R (11/17/2020)</a>
     					</h4>
     				</div>
     				<div id="collapse11" class="panel-collapse collapse">
@@ -468,7 +502,7 @@ div.ex1 {
     			<div class="panel panel-default">
     				<div class="panel-heading">
     					<h4 class="panel-title">
-    						<a data-toggle="collapse" href="#collapse12">Week 12 (11/24/2020)</a>
+    						<a data-toggle="collapse" href="#collapse12">Week 12: Data Visualization Principles, Data Project Workshop (11/24/2020)</a>
     					</h4>
     				</div>
     				<div id="collapse12" class="panel-collapse collapse">
@@ -480,8 +514,39 @@ div.ex1 {
     			</div>
     		</div>
 
+    		<div class="panel-group">
+    			<div class="panel panel-default">
+    				<div class="panel-heading">
+    					<h4 class="panel-title">
+    						<a data-toggle="collapse" href="#collapse13">Week 13: Final Presentations (12/01/2020)</a>
+    					</h4>
+    				</div>
+    				<div id="collapse13" class="panel-collapse collapse">
+    					<div class="indented">
+    						To be updated
+    					</div>
 
-			
+    				</div>
+    			</div>
+    		</div>
+
+    		<div class="panel-group">
+    			<div class="panel panel-default">
+    				<div class="panel-heading">
+    					<h4 class="panel-title">
+    						<a data-toggle="collapse" href="#collapse14">Week 14: Final Presentations (12/08/2020)</a>
+    					</h4>
+    				</div>
+    				<div id="collapse14" class="panel-collapse collapse">
+    					<div class="indented">
+    						To be updated
+    					</div>
+
+    				</div>
+    			</div>
+    		</div>
+
+
 
     </div>  
   </div>
@@ -492,11 +557,11 @@ div.ex1 {
  </div>
 
   <div id="assignment" class="wrapper">
-    <button class="collapsible" color = "0A0602" > <font face = "Garamond" size = "4"> Assignments </font> </button>
+    <button class="collapsible" color = "0A0602" > <font face = "Arial" size = "4"> Assignments </font> </button>
     <div class="content">
     	<br/>
       <div class="indented">
-      	<a href="https://github.com/hreplots/U6614/blob/master/Lectures/Assignments/assignment_rmarkdown_template.Rmd" style="color:#094191"><font face = "Garamond" size = "3"> Assignment 1 (due 9/14 midnight) </font> </a> <br />
+      	<a href="https://github.com/hreplots/U6614/blob/master/Lectures/Assignments/assignment_rmarkdown_template.Rmd" style="color:#094191"><font face = "Arial" size = "3"> Assignment 1 (due 9/14 by midnight via Courseworks) </font> </a> <br />
       </div>
     </div>  
   </div>
@@ -520,6 +585,22 @@ for (i = 0; i < coll.length; i++) {
       content.style.maxHeight = content.scrollHeight + "px";
     } 
   });
+}
+
+var coll2 = document.getElementsByClassName("collapsible2");
+var i;
+
+for (i = 0; i < coll2.length; i++) {
+  coll2[i].addEventListener("click", function() {
+    this.classList.toggle("active");
+    var content = this.nextElementSibling;
+    if (content.style.maxHeight){
+      content.style.maxHeight = null;
+    } else {
+      content.style.maxHeight = content.scrollHeight + "px";
+    } 
+  });
+  coll2[i].click(); 
 }
 
 </script>
