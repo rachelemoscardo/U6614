@@ -655,7 +655,7 @@ function GetDate(link){
     hour12: true
     }
     var time = local_date.toLocaleString('en-US', options)
-    var update_date = ' (Last updated on ' + new_local_date + ' ' + time + ')'
+    var update_date = ' (Last updated on ' + new_local_date + ' ' + time + ' ET' + ')'
     return update_date
   } else {
     return ''
