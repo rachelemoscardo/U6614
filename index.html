@@ -644,18 +644,15 @@ function GetDate(link){
     Httpreq.send(null)
     var json_obj = JSON.parse(Httpreq.responseText)
     var date = json_obj[0]['commit']['author']['date']
-    var local_date = new Date(date)
-    var month = local_date.getMonth() + 1
-    var day = local_date.getDate()
-    var year = local_date.getFullYear().toString().substring(2,4)
-    var new_local_date = month + "/" + day + "/" + year
     var options = {
       hour: 'numeric',
     minute: 'numeric',
-    hour12: true
+    hour12: true,
+    timeZone: "America/New_York"
     }
-    var time = local_date.toLocaleString('en-US', options)
-    var update_date = ' (Last updated on ' + new_local_date + ' ' + time + ' ET' + ')'
+
+    var local_date = new Date(date).toLocaleDateString('en-US', options)
+    var update_date = ' (Last updated on ' + local_date + ' ET' + ')'
     return update_date
   } else {
     return ''
