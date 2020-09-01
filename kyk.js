@@ -35,7 +35,7 @@ function GetPath(link){
   } else {
     output = link.split('hreplots.github.io/U6614/').pop()
   }
-  return 'http://104.248.150.210:2317/?owner=hreplots&repo=U6614&path=' + output + '/'
+  return 'http://104.248.150.210:2317/?owner=hreplots&repo=U6614&path=' + output
 }
 
 function GetDate(link){
