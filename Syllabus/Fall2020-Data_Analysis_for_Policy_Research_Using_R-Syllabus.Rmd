@@ -17,13 +17,14 @@ date: "Fall 2020"
 email: "hbs2103@columbia.edu"
 #office: "TBD"
 officehours: Group/walk-in Tues 5:30-6:30pm | [book](https://helloharold.youcanbook.me) indiv. appt.
+website: "https://hreplots.github.io/U6614/"
 
 #web: 
 classmeetings: "Tues 2:10-4pm, online"
 recitation: "Thurs 6:10-8pm, hybrid"
 #recitationroom: "Hybrid (online/IAB 501a)"
 ta: "Kevin Wibisono (kw2870)"
-taoh: "TBD"
+taoh: "Mon 11:30am-1:30pm"
 
 fontfamily: mathpazo
 fontsize: 11pt
