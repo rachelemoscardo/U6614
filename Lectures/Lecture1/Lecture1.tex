@@ -1,37 +1,33 @@
-% Options for packages loaded elsewhere
-\PassOptionsToPackage{unicode}{hyperref}
+\PassOptionsToPackage{unicode=true}{hyperref} % options for packages loaded elsewhere
 \PassOptionsToPackage{hyphens}{url}
 \PassOptionsToPackage{dvipsnames,svgnames*,x11names*}{xcolor}
 %
-\documentclass[
-  8pt,
-  ignorenonframetext,
-  dvipsnames]{beamer}
+\documentclass[8pt,ignorenonframetext,dvipsnames]{beamer}
 \usepackage{pgfpages}
 \setbeamertemplate{caption}[numbered]
 \setbeamertemplate{caption label separator}{: }
 \setbeamercolor{caption name}{fg=normal text.fg}
 \beamertemplatenavigationsymbolsempty
-% Prevent slide breaks in the middle of a paragraph
+% Prevent slide breaks in the middle of a paragraph:
 \widowpenalties 1 10000
 \raggedbottom
 \setbeamertemplate{part page}{
-  \centering
-  \begin{beamercolorbox}[sep=16pt,center]{part title}
-    \usebeamerfont{part title}\insertpart\par
-  \end{beamercolorbox}
+\centering
+\begin{beamercolorbox}[sep=16pt,center]{part title}
+  \usebeamerfont{part title}\insertpart\par
+\end{beamercolorbox}
 }
 \setbeamertemplate{section page}{
-  \centering
-  \begin{beamercolorbox}[sep=12pt,center]{part title}
-    \usebeamerfont{section title}\insertsection\par
-  \end{beamercolorbox}
+\centering
+\begin{beamercolorbox}[sep=12pt,center]{part title}
+  \usebeamerfont{section title}\insertsection\par
+\end{beamercolorbox}
 }
 \setbeamertemplate{subsection page}{
-  \centering
-  \begin{beamercolorbox}[sep=8pt,center]{part title}
-    \usebeamerfont{subsection title}\insertsubsection\par
-  \end{beamercolorbox}
+\centering
+\begin{beamercolorbox}[sep=8pt,center]{part title}
+  \usebeamerfont{subsection title}\insertsubsection\par
+\end{beamercolorbox}
 }
 \AtBeginPart{
   \frame{\partpage}
@@ -48,44 +44,40 @@
 \usepackage{lmodern}
 \usepackage{amssymb,amsmath}
 \usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
 \ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
   \usepackage[T1]{fontenc}
   \usepackage[utf8]{inputenc}
-  \usepackage{textcomp} % provide euro and other symbols
-\else % if luatex or xetex
+  \usepackage{textcomp} % provides euro and other symbols
+\else % if luatex or xelatex
   \usepackage{unicode-math}
-  \defaultfontfeatures{Scale=MatchLowercase}
-  \defaultfontfeatures[\rmfamily]{Ligatures=TeX,Scale=1}
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
 \fi
-% Use upquote if available, for straight quotes in verbatim environments
+% use upquote if available, for straight quotes in verbatim environments
 \IfFileExists{upquote.sty}{\usepackage{upquote}}{}
-\IfFileExists{microtype.sty}{% use microtype if available
-  \usepackage[]{microtype}
-  \UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage[]{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
 }{}
-\makeatletter
-\@ifundefined{KOMAClassName}{% if non-KOMA class
-  \IfFileExists{parskip.sty}{%
-    \usepackage{parskip}
-  }{% else
-    \setlength{\parindent}{0pt}
-    \setlength{\parskip}{6pt plus 2pt minus 1pt}}
-}{% if KOMA class
-  \KOMAoptions{parskip=half}}
-\makeatother
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
 \usepackage{xcolor}
-\IfFileExists{xurl.sty}{\usepackage{xurl}}{} % add URL line breaks if available
-\IfFileExists{bookmark.sty}{\usepackage{bookmark}}{\usepackage{hyperref}}
+\usepackage{hyperref}
 \hypersetup{
-  pdftitle={Data Analysis for Policy Research Using R},
-  pdfauthor={Harold Stolper},
-  colorlinks=true,
-  linkcolor=Maroon,
-  filecolor=Maroon,
-  citecolor=Blue,
-  urlcolor=blue,
-  pdfcreator={LaTeX via pandoc}}
-\urlstyle{same} % disable monospaced font for URLs
+            pdftitle={Data Analysis for Policy Research Using R},
+            pdfauthor={Harold Stolper},
+            colorlinks=true,
+            linkcolor=Maroon,
+            filecolor=Maroon,
+            citecolor=Blue,
+            urlcolor=blue,
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
 \newif\ifbibliography
 \usepackage{color}
 \usepackage{fancyvrb}
@@ -129,14 +121,29 @@
 \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
 \usepackage{longtable,booktabs}
 \usepackage{caption}
-% Make caption package work with longtable
+% These lines are needed to make table captions work with longtable:
 \makeatletter
 \def\fnum@table{\tablename~\thetable}
 \makeatother
-\setlength{\emergencystretch}{3em} % prevent overfull lines
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
 \providecommand{\tightlist}{%
   \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
-\setcounter{secnumdepth}{-\maxdimen} % remove section numbering
+\setcounter{secnumdepth}{0}
+
+% set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
+
 
 %packages
 \usepackage{graphicx}
@@ -233,6 +240,7 @@
 \end{comment}
 
 \title{Data Analysis for Policy Research Using R}
+\providecommand{\subtitle}[1]{}
 \subtitle{Introduction and R Basics}
 \author{Harold Stolper}
 \date{}
@@ -240,24 +248,25 @@
 \begin{document}
 \frame{\titlepage}
 
-\begin{frame}[allowframebreaks]
-  \tableofcontents[hideallsubsections]
+\begin{frame}
+\tableofcontents[hideallsubsections]
 \end{frame}
 \hypertarget{introductions}{%
 \section{Introductions}\label{introductions}}
 
 \begin{frame}{Student introductions}
 \protect\hypertarget{student-introductions}{}
+
 \begin{enumerate}
 \tightlist
 \item
   Preferred name
 \item
-  Pronouns (if comfortable)
+  Pronouns (if you'd like to)
 \item
-  Previous R exposure/experience
+  Previous R exposure/experience (if any)
 \item
-  And answer one of these two questions:
+  Answer one of these two questions:
 
   \begin{itemize}
   \tightlist
@@ -276,14 +285,34 @@
     e.g.~music, writing, fashion, a meme, sports, etc.
   \end{itemize}
 \end{enumerate}
+
 \end{frame}
 
 \begin{frame}{Kevin Wibisono, Teaching Assistant}
 \protect\hypertarget{kevin-wibisono-teaching-assistant}{}
+
+MS in Data Science, graduating December 2020.
+
+\medskip
+
+\begin{itemize}
+\tightlist
+\item
+  Pronouns: he/him/his.
+\item
+  Originated from Jakarta, Indonesia.
+\item
+  Studied Applied Mathematics and Statistics at National University of
+  Singapore (2015-2019).
+\item
+  Research Assistant for the Urban Design Lab at Columbia University.
+\end{itemize}
+
 \end{frame}
 
 \begin{frame}{Harold Stolper, instructor}
 \protect\hypertarget{harold-stolper-instructor}{}
+
 Graduated from SIPA many moons ago, returned to Columbia for my PhD in
 economics.
 
@@ -307,6 +336,7 @@ Past 5 years:
 \medskip
 
 Transitioning from Stata to R after years of using and teaching Stata.
+
 \end{frame}
 
 \hypertarget{what-is-r-and-how-will-we-use-it}{%
@@ -315,6 +345,7 @@ It?}\label{what-is-r-and-how-will-we-use-it}}
 
 \begin{frame}{What is R?}
 \protect\hypertarget{what-is-r}{}
+
 \begin{itemize}
 \tightlist
 \item
@@ -334,10 +365,12 @@ It?}\label{what-is-r-and-how-will-we-use-it}}
   manipulation, calculation and graphical display.''
   (\href{https://www.r-project.org/about.html}{R-project.org})
 \end{itemize}
+
 \end{frame}
 
 \begin{frame}{How will we use R?}
 \protect\hypertarget{how-will-we-use-r}{}
+
 \begin{itemize}
 \tightlist
 \item
@@ -347,7 +380,7 @@ It?}\label{what-is-r-and-how-will-we-use-it}}
   \begin{itemize}
   \tightlist
   \item
-    After installing R and RStudio, we'll be working entirely in the
+    After you install R and RStudio, we'll be working entirely in the
     RStudio interface.
   \end{itemize}
 \end{itemize}
@@ -358,40 +391,35 @@ It?}\label{what-is-r-and-how-will-we-use-it}}
 \tightlist
 \item
   \href{https://rmarkdown.rstudio.com/lesson-1.html}{R Markdown} files
-  are used in RStudio to ``both save and execute code generate high
+  are used in RStudio to ``both save and execute code, and generate high
   quality reports that can be shared with an audience.''
 
   \begin{itemize}
   \tightlist
   \item
-    This lecture was created using R Markdown.
+    These pdf lecture slides were created with R Markdown.
   \item
-    Beginning next week, everything you submit for this class will be a
-    document generated with R Markdown.
+    Subsequent weeks we'll rely on html-based lessons created with R
+    Markdown.
+  \item
+    Beginning next week, everything \textbf{you} submit for this class
+    will be a document generated with R Markdown.
   \end{itemize}
 \end{itemize}
+
 \end{frame}
 
 \begin{frame}[fragile]{Base R vs.~user-defined R packages}
-\protect\hypertarget{base-r-vs.-user-defined-r-packages}{}
-R uses ``packages'' as a bundle of code, data and documention.
+\protect\hypertarget{base-r-vs.user-defined-r-packages}{}
 
-There are default
-\href{https://stat.ethz.ch/R-manual/R-devel/library/base/html/00Index.html}{base
-packages} that come with R. Some examples:
+R uses ``packages'' as bundles of code, data and documentation.
 
-\begin{itemize}
-\tightlist
-\item
-  \texttt{as.character}~\\
-\item
-  \texttt{print}~\\
-\item
-  \texttt{setwd}
-\end{itemize}
+The default R
+\href{https://stat.ethz.ch/R-manual/R-devel/library/base/html/00Index.html}{base}
+package includes much of the basic functionality you will be using.
 
-And there are \href{http://r-pkgs.had.co.nz/intro.html}{R packages}
-developed and shared by others. Some R packages include:
+Then there are \href{http://r-pkgs.had.co.nz/intro.html}{R packages}
+developed and shared by others. Some R packages we'll be using include:
 
 \begin{itemize}
 \tightlist
@@ -402,40 +430,43 @@ developed and shared by others. Some R packages include:
 \end{itemize}
 
 More about these in later weeks\ldots{}
+
 \end{frame}
 
 \begin{frame}[fragile]{Installing and loading R packages}
 \protect\hypertarget{installing-and-loading-r-packages}{}
+
 You only need to install a package once. To install an R package use
 \texttt{install.package()} function.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\#install.packages("tidyverse")}
+\CommentTok{#install.packages("tidyverse")}
 \end{Highlighting}
 \end{Shaded}
 
-But you need to load a package every time you plan to use it using the
-\texttt{library()} function.
+But before you can use it you need to load a package every time you open
+R using the \texttt{library()} function.
 
 \begin{Shaded}
 \begin{Highlighting}[]
 \KeywordTok{library}\NormalTok{(tidyverse)}
-\CommentTok{\#\textgreater{} Warning: package \textquotesingle{}tidyverse\textquotesingle{} was built under R version 4.0.2}
-\CommentTok{\#\textgreater{} {-}{-} Attaching packages {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-} tidyverse 1.3.0 {-}{-}}
-\CommentTok{\#\textgreater{} v ggplot2 3.3.2     v purrr   0.3.4}
-\CommentTok{\#\textgreater{} v tibble  3.0.1     v dplyr   1.0.0}
-\CommentTok{\#\textgreater{} v tidyr   1.1.0     v stringr 1.4.0}
-\CommentTok{\#\textgreater{} v readr   1.3.1     v forcats 0.5.0}
-\CommentTok{\#\textgreater{} {-}{-} Conflicts {-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-}{-} tidyverse\_conflicts() {-}{-}}
-\CommentTok{\#\textgreater{} x dplyr::filter() masks stats::filter()}
-\CommentTok{\#\textgreater{} x dplyr::lag()    masks stats::lag()}
+\CommentTok{#> -- Attaching packages ---------------------------------------------- tidyverse 1.3.0 --}
+\CommentTok{#> v ggplot2 3.3.2     v purrr   0.3.3}
+\CommentTok{#> v tibble  3.0.1     v dplyr   0.8.5}
+\CommentTok{#> v tidyr   1.0.2     v stringr 1.4.0}
+\CommentTok{#> v readr   1.3.1     v forcats 0.5.0}
+\CommentTok{#> -- Conflicts ------------------------------------------------- tidyverse_conflicts() --}
+\CommentTok{#> x dplyr::filter() masks stats::filter()}
+\CommentTok{#> x dplyr::lag()    masks stats::lag()}
 \end{Highlighting}
 \end{Shaded}
+
 \end{frame}
 
-\begin{frame}{What can you do with R+RStudio+RMarkdown?}
-\protect\hypertarget{what-can-you-do-with-rrstudiormarkdown}{}
+\begin{frame}{What can you do with R + RStudio + RMarkdown?}
+\protect\hypertarget{what-can-you-do-with-r-rstudio-rmarkdown}{}
+
 Things you can also do using Stata:
 
 \begin{itemize}
@@ -467,10 +498,12 @@ Things you can't do in Stata:
     Dashboards
   \end{itemize}
 \end{itemize}
+
 \end{frame}
 
 \begin{frame}{What will we be doing in this class?}
 \protect\hypertarget{what-will-we-be-doing-in-this-class}{}
+
 We'll be learning how to use R to explore data to inform policy.
 
 That means we'll be spending a lot of time working through R, but also
@@ -496,10 +529,108 @@ Quant I and II:
   \textbf{Policy writing and interpretation:} translating statistical
   analysis in accessible terms
 \end{itemize}
+
 \end{frame}
 
-\hypertarget{syllabus-questions}{%
-\section{Syllabus / Questions?}\label{syllabus-questions}}
+\hypertarget{course-logistics}{%
+\section{Course Logistics}\label{course-logistics}}
+
+\begin{frame}{Syllabus and file management}
+\protect\hypertarget{syllabus-and-file-management}{}
+
+Course links:
+
+\begin{itemize}
+\tightlist
+\item
+  All course files will be posted on the course website:
+  \url{https://hreplots.github.io/U6614/}
+\end{itemize}
+
+\medskip
+
+We'll still be using Courseworks for several purposes:
+
+\begin{itemize}
+\tightlist
+\item
+  organizing Zoom links for classes and recitation
+\item
+  sign-up for TA office hours
+\item
+  submitting assignments and project deliverables
+\item
+  course communications and discussion using Piazza (register
+  \href{https://piazza.com/demo_login?nid=keiqq7y84rt5y2\&auth=6c81e06}{here})
+\end{itemize}
+
+\medskip
+
+\end{frame}
+
+\begin{frame}{Synchronous and asynchronous instruction}
+\protect\hypertarget{synchronous-and-asynchronous-instruction}{}
+
+\begin{enumerate}
+\item
+  Review asynchronous lessons in advance of class
+
+  \begin{itemize}
+  \tightlist
+  \item
+    will be posted to the course website by Thursday night
+  \item
+    class meetings will begin with a very short multiple choice quiz on
+    the asynchronous material
+  \end{itemize}
+\end{enumerate}
+
+\medskip
+
+\begin{enumerate}
+\setcounter{enumi}{1}
+\item
+  Synchronous instruction
+
+  \begin{itemize}
+  \tightlist
+  \item
+    short Zoom quiz
+  \item
+    discussion of data applications including assignments
+  \item
+    workshop-style instruction with R
+
+    \begin{itemize}
+    \tightlist
+    \item
+      prepare for class by downloading the week's R script \& data from
+      the course website
+    \item
+      maintain a logical file structure to organize files
+      (e.g.~Lectures/Lecture1)
+    \end{itemize}
+  \item
+    we'll set \emph{community guidelines} for in-class participation/R
+    support next week
+  \end{itemize}
+\end{enumerate}
+
+\medskip
+
+\textbf{Questions?}
+
+\end{frame}
+
+\hypertarget{rstudio}{%
+\section{RStudio}\label{rstudio}}
+
+``\href{https://rstudio.com/products/rstudio/}{RStudio} is an integrated
+development environment (IDE) for R. It includes a console,
+syntax-highlighting editor that supports direct code execution, as well
+as tools for plotting, history, debugging and workspace management.''
+
+\includegraphics[width=0.9\textwidth,height=\textheight]{rstudio-capture1.PNG}
 
 \hypertarget{r-projects-and-directory-structure}{%
 \section{R Projects and Directory
@@ -507,15 +638,16 @@ Structure}\label{r-projects-and-directory-structure}}
 
 \begin{frame}[fragile]{Working directory}
 \protect\hypertarget{working-directory}{}
+
 R looks for files in your \textbf{working directory}
 
-Function \texttt{getwd()} shows the current working directory (also
-shown at the top of the RStudio console.)
+The function \texttt{getwd()} shows the current working directory (also
+shown at the top of the RStudio console).
 
 \begin{Shaded}
 \begin{Highlighting}[]
 \KeywordTok{getwd}\NormalTok{()}
-\CommentTok{\#\textgreater{} [1] "C:/Users/Harold Stolper/Google Drive/SIPA/R {-} Data Analysis/Fall 2020/Lectures/Lecture1"}
+\CommentTok{#> [1] "/Users/wibisono/Desktop/U6614/Lectures/Lecture1"}
 \end{Highlighting}
 \end{Shaded}
 
@@ -527,12 +659,17 @@ directory
 \KeywordTok{list.files}\NormalTok{()}
 \end{Highlighting}
 \end{Shaded}
+
+\emph{Note that functions can accept arguments inside of parentheses,
+but the simple functions shown above do not require any arguments.}
+
 \end{frame}
 
 \begin{frame}[fragile]{So what is the working directory?}
 \protect\hypertarget{so-what-is-the-working-directory}{}
+
 When you run code from the \textbf{R Console} or an \textbf{R Script},
-or from \textbf{code chunks} in an RMarkdown file (.rmd), the working
+or from \textbf{code chunks} in an R Markdown file (.rmd), the working
 directory is\ldots{}
 
 \begin{itemize}
@@ -547,7 +684,7 @@ directory is\ldots{}
 \begin{Shaded}
 \begin{Highlighting}[]
 \KeywordTok{getwd}\NormalTok{()}
-\CommentTok{\#\textgreater{} [1] "C:/Users/Harold Stolper/Google Drive/SIPA/R {-} Data Analysis/Fall 2020/Lectures/Lecture1"}
+\CommentTok{#> [1] "/Users/wibisono/Desktop/U6614/Lectures/Lecture1"}
 \end{Highlighting}
 \end{Shaded}
 
@@ -556,10 +693,12 @@ directory is\ldots{}
 \item
   For this class we'll generally be using R projects to keep organized.
 \end{itemize}
+
 \end{frame}
 
 \begin{frame}[fragile]{The path is how we refer to a directory}
 \protect\hypertarget{the-path-is-how-we-refer-to-a-directory}{}
+
 \textbf{Absolute file path}: a complete list of directories needed to
 locate a file or folder.
 
@@ -597,17 +736,24 @@ is my name pm)\tabularnewline
 ../../ & moves up two level\tabularnewline
 \bottomrule
 \end{longtable}
+
 \end{frame}
 
 \begin{frame}{What is an R project? Why are we using them?}
 \protect\hypertarget{what-is-an-r-project-why-are-we-using-them}{}
+
 What is an ``R project''?
 
 \begin{itemize}
 \tightlist
 \item
-  A file that keeps all ``project'' files organized together: -- input
-  data, R scripts, analytical results, and figures.
+  A file that keeps all ``project'' files organized together:
+
+  \begin{itemize}
+  \tightlist
+  \item
+    input data, R scripts, analytical results, and figures.
+  \end{itemize}
 \item
   When you open an R project, your working directory is automatically
   set to the directory where your R project lives.
@@ -630,6 +776,7 @@ Why will we be asking you to create and work with R projects?
   point to files in sub-folders without making any changes to
   file-paths.
 \end{itemize}
+
 \end{frame}
 
 \hypertarget{r-basics}{%
@@ -637,21 +784,13 @@ Why will we be asking you to create and work with R projects?
 
 \begin{frame}{Executing code in R}
 \protect\hypertarget{executing-code-in-r}{}
+
 Three ways to execute commands in R
 
 \begin{enumerate}
 \tightlist
 \item
   \textbf{Console:} type/paste commands to run ``on the fly''
-\item
-  \textbf{Code chunks} in R Markdown (.rmd files)
-
-  \begin{itemize}
-  \tightlist
-  \item
-    Can execute one command at a time, one chunk at a time, or ``knit''
-    the entire file into a document (e.g.~html or pdf)
-  \end{itemize}
 \item
   \textbf{R scripts} (.r files)
 
@@ -663,29 +802,38 @@ Three ways to execute commands in R
     Can execute one command at a time, several commands at a time, or
     the entire script
   \end{itemize}
-\end{enumerate}
-\end{frame}
-
-\begin{frame}{Shortcuts for executing commands}
-\protect\hypertarget{shortcuts-for-executing-commands}{}
-Three ways to execute commands in R
-
-\begin{enumerate}
-\tightlist
 \item
-  Type/paste commands directly into the ``console'' (and press ENTER)
-\item
-  `code chunks' in RMarkdown (.Rmd files)
+  \textbf{Code chunks} in R Markdown (.rmd files)
 
   \begin{itemize}
   \tightlist
   \item
-    \textbf{Cmd/Ctrl + Enter}: execute highlighted line(s) within chunk
-  \item
-    \textbf{Cmd/Ctrl + Shift + k}: ``knit'' entire document
+    Can execute one command at a time, one chunk at a time, or ``knit''
+    the entire file into a document (e.g.~html or pdf)
   \end{itemize}
+\end{enumerate}
+
+\end{frame}
+
+\begin{frame}{Shortcuts for executing commands}
+\protect\hypertarget{shortcuts-for-executing-commands}{}
+
+\begin{enumerate}
+\tightlist
 \item
-  R scripts (.R files)
+  Code chunks in R Markdown files
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \emph{Cmd/Ctrl + Enter}: execute highlighted line(s) within chunk
+  \item
+    \emph{Cmd/Ctrl + Shift + k}: ``knit'' entire document
+  \end{itemize}
+
+  \medskip
+\item
+  R scripts (.r files)
 
   \begin{itemize}
   \tightlist
@@ -696,10 +844,12 @@ Three ways to execute commands in R
     run entire script
   \end{itemize}
 \end{enumerate}
+
 \end{frame}
 
-\begin{frame}[fragile]{Assignment}
-\protect\hypertarget{assignment}{}
+\begin{frame}[fragile]{Assignment in R}
+\protect\hypertarget{assignment-in-r}{}
+
 \textbf{Assignment} means assigning a value/set of values to an
 ``object''
 
@@ -714,30 +864,33 @@ Three ways to execute commands in R
     in other languages \texttt{=} is the assignment operator
   \end{itemize}
 \item
-  good practice to put a space before and after assignment operator
+  code is dense and hard to read, so it's good practice to put a space
+  before and after assignment operator
 \end{itemize}
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\CommentTok{\# Create an object a and assign value}
-\NormalTok{a \textless{}{-}}\StringTok{ }\DecValTok{5}
+\CommentTok{# Create an object a and assign value}
+\NormalTok{a <-}\StringTok{ }\DecValTok{5}
 \NormalTok{a}
-\CommentTok{\#\textgreater{} [1] 5}
+\CommentTok{#> [1] 5}
 
-\CommentTok{\# Create an object b and assign value}
-\NormalTok{b \textless{}{-}}\StringTok{ "yay!"}
+\CommentTok{# Create an object b and assign value}
+\NormalTok{b <-}\StringTok{ "yay!"}
 \NormalTok{b}
-\CommentTok{\#\textgreater{} [1] "yay!"}
+\CommentTok{#> [1] "yay!"}
 \end{Highlighting}
 \end{Shaded}
 
-Note 1: comments start with one or more \texttt{\#} symbols
+\emph{Note 1: comments start with one or more \texttt{\#} symbols}
 
-Note 2: R is caps sensitive!
+\emph{Note 2: R is caps sensitive!}
+
 \end{frame}
 
 \begin{frame}{Objects and assignment}
 \protect\hypertarget{objects-and-assignment}{}
+
 R stores information in objects (like all ``object-oriented''
 programming languages).
 
@@ -760,14 +913,19 @@ Some objects:
 \item
   plots
 \item
-  dataframes (the datasets of R!)
+  data frames (the datasets of R!)
 \end{itemize}
+
+Throughout this course, we'll be loading data objects to work with as
+well as assigning values to new objects.
+
 \end{frame}
 
 \begin{frame}{Functions}
 \protect\hypertarget{functions}{}
+
 Functions do things to different objects. They often accept arguments --
-we ``pass'' arguments to functions.
+we say ``pass'' arguments to functions.
 
 Functions are also objects themselves that can be ``called'' to do
 things like:
@@ -786,12 +944,14 @@ things like:
   extract information from objects (e.g.~the number of rows of data)
 \end{itemize}
 
-Base R includes lots of functions. We'll be working with additional
-packages that include some handy functions.
+Base R includes lots of functions. We'll be working with base R
+functions and handy functions from additional packages.
+
 \end{frame}
 
 \begin{frame}{Let's jump in!}
 \protect\hypertarget{lets-jump-in}{}
+
 Our goals for today's R workshop example are very modest:
 
 \begin{itemize}
@@ -804,111 +964,84 @@ Our goals for today's R workshop example are very modest:
   Install and load a package
   (\href{https://www.gapminder.org/}{gapminder}).
 \item
-  Use base R functions to inspect a dataframe included with this
+  Use base R functions to inspect a data frame included with this
   package.
 \item
   Use some functions to perform some very basic analysis.
 \item
   Assign results from our analysis to new objects and display them.
 \end{itemize}
+
 \end{frame}
 
 \hypertarget{assignment-1}{%
 \section{Assignment 1}\label{assignment-1}}
 
-\begin{frame}{Assignment 1: submit an R script via CW by 9am next
-Tuesday}
-\protect\hypertarget{assignment-1-submit-an-r-script-via-cw-by-9am-next-tuesday}{}
-Include the code to answer the following, with comments to organize your
-responses to the questions in steps 3 through 7.
+\begin{frame}{Assignment 1: submit an R script via CW before midnight
+next Monday}
+\protect\hypertarget{assignment-1-submit-an-r-script-via-cw-before-midnight-next-monday}{}
 
-\begin{enumerate}
+See \textbf{Assignment1.r} for details.
+
+\medskip
+
+Complete the assignment by including the necessary code, organized by
+(sub)question, and use comments for non-code responses.
+
+\medskip
+
+Submit only your R script through CW using the following file name
+syntax: \textbf{``Assignment1-YOURUNI.r''} via CW
+
+\begin{itemize}
 \tightlist
 \item
-  Create a new R project called assignment1.
+  e.g. ``Assignment1-hbs2103.r''
+\end{itemize}
 
-  \begin{itemize}
-  \tightlist
-  \item
-    This is for your internal project management, do not submit your R
-    project file.
-  \end{itemize}
-\item
-  Create an R script called assignment1.r and include code for the steps
-  to follow.
-\item
-  Load the gapminder data using the library function.
-
-  \begin{itemize}
-  \tightlist
-  \item
-    You'll need to install the gapminder package if you didn't follow in
-    class today.
-  \end{itemize}
-\item
-  Show the data structure of the gapminder dataframe in the gapminder
-  package.
-\item
-  What is the average gdpPercap across all observations in the dataset?
-
-  \begin{itemize}
-  \tightlist
-  \item
-    Use ?gapminder to access gapminder documentation and find the units
-    for gdpPercap.
-  \item
-    How would you interpret this mean? i.e.~what is it the mean of?
-  \end{itemize}
-\item
-  Plot year vs.~gdpPercap.
-
-  \begin{itemize}
-  \tightlist
-  \item
-    Describe what the plot says about economic growth over time.
-  \end{itemize}
-\item
-  Create a barplot showing the number of observations in each continent.
-
-  \begin{itemize}
-  \tightlist
-  \item
-    Start by using the table function with continents as its argument.
-  \item
-    Next pass the object created by this function to the barplot
-    function.
-  \end{itemize}
-\end{enumerate}
 \end{frame}
 
 \begin{frame}{General assignment guidance}
 \protect\hypertarget{general-assignment-guidance}{}
+
 \begin{itemize}
 \tightlist
 \item
-  Use blank spaces liberally, code is hard to read and spaces help!
+  \textbf{Use blank spaces liberally}, code is hard to read and spaces
+  help!
 \item
-  Use comments liberally throughout your R script to describe your
-  steps.
+  \textbf{Use comments liberally} throughout your R script to describe
+  your steps.
 \item
-  Troubleshooting is a skill! Here are some tips and resources:
+  \textbf{Try to keep your code within the margins} to make it more
+  readable.
+
+  \begin{itemize}
+  \tightlist
+  \item
+    R should know it can keep reading on the next line before
+    executing\ldots{} unless you break after executable code
+  \end{itemize}
+\item
+  Troubleshooting is a critical skill! Here are some tips and resources:
 
   \begin{itemize}
   \tightlist
   \item
     Consult the R script from today's class for examples.
   \item
-    Get used to using R's built in documentation by using ?
+    Get used to using R's built in documentation by using ``?''
   \item
-    Use Google liberally for examples that work.
+    Use Google liberally to identify functions and find examples that
+    work.
   \item
     When you're stuck, focus on finding examples to get your own code to
     work, even if you don't feel comfortable with all the syntax just
     yet.
   \end{itemize}
 \item
-  Consulting with others is good! Copying, however, is not the way to
-  learn to code.
+  Consulting with others is fine! Copying, however, is not the way to
+  learn to code or any language.
 
   \begin{itemize}
   \tightlist
@@ -917,6 +1050,7 @@ responses to the questions in steps 3 through 7.
     parties.}
   \end{itemize}
 \end{itemize}
+
 \end{frame}
 
 \end{document}
