@@ -210,6 +210,8 @@ We'll still be using Courseworks for several purposes:
 
 # RStudio
 
+### What is RStudio?
+
 "[RStudio](https://rstudio.com/products/rstudio/) is an integrated development environment (IDE) for R. It includes a console, syntax-highlighting editor that supports direct code execution, as well as tools for plotting, history, debugging and workspace management."
 
 ![](rstudio-capture1.PNG){width=90%}
