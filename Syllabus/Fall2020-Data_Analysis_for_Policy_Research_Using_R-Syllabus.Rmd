@@ -178,7 +178,7 @@ Weekly assignments are due by midnight on Monday night. Assignments will be grad
 
 Your project grade will include an-class presentation of your work to-date near the end of the semester (20% of your total grade), and a short report (30% of your total grade). The data project will also involve three required meetings with the teaching team for project advising, and include several intermediate deliverables: (1) submitting research ideas; and (2) and a proposal with summary statistics. Intermediate deliverables will not receive their own grade, but late intermediate submissions will result in a one grade deduction from your overall project grade for every day late (e.g. from an A to A-). 
 
-## Zoom Quizes on Asynchronous (Pre-Lecture) Material (10%)
+## Zoom Quizzes on Asynchronous (Pre-Lecture) Material (10%)
 
 Zoom quizzes at the beginning of class will account for 10% of your total grade. These quizzes will consist of multiple choice questions, and are designed to encourage you to engage with the asynchronous (pre-class) lessons in advance of class so we can put new R functionality to work in class, and focus on application and discussion.
 
