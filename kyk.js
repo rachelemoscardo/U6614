@@ -60,7 +60,7 @@ function GetDate(link){
   }
 }
 
-var coll3 = document.getElementsByClassName("update");
+var coll3 = document.getElementsByClassName("updatex");
 var i;
 
 for (i = 0; i < coll3.length; i++) {
