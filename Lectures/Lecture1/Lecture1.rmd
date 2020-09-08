@@ -272,7 +272,7 @@ getwd()
 
 | **Key** | **Description** |
 | ------ | -------- |
-| ~    | tilde is a shortcut for user's home directory (mine is my name pm)   |
+| ~    | tilde is a shortcut for the user's home directory   |
 | ../    | moves up a level   |
 | ../../    | moves up two level   |
 
@@ -423,5 +423,31 @@ Submit only your R script through CW using the following file name syntax: **"As
    
    
 
+# Course expectations
+
+### Course expectations
+
+1. Review asynchronous (pre-class) lessons **before class**
+
+2. Live attendance of class sessions is **required**
+
+    + Zoom quizzes, in-class discussion and R workshop participation
+
+3. 4 weekly assignments ("data memos")
+
+4. Data projects (starting week 5)
+
+    + will culminate with a presentation and report at end of semester
+    + see syllabus for dates of intermediate deliverables
+    + 3 required meetings with the teaching team to discuss progress
+    
+5. Piazza discussion board participation
+
+6. Recitation and office hours
+
+\medskip
+
+**Questions?**
+   
 
 
