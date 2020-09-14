@@ -37,6 +37,8 @@ library(gapminder)
 ##    (this exercise is based on STAT545 by Jenny Bryan)
 ## -----------------------------------------------------------------------------
 
+gapminder <- gapminder
+
 #let's use some functions inspect the structure of the gapminder object
 str(gapminder) #str (structure) is the function, gapminder is the argument
 #notice that each variable has its own data type (Factor, int, num)
@@ -65,7 +67,7 @@ head(gapminder, n = 10)
 ## -----------------------------------------------------------------------------
 
 #let's use some base R functions to understand the basic structure of the data frame
-names(gapminder) #get the column names
+names(gapminder) #get the column names; can also be colnames(gapminder)
 dim(gapminder) #get the number of rows and columns
 ncol(gapminder) #get the number of columns (alternatively, dim(gapminder)[2])
 nrow(gapminder) #get the number of rows (alternatively, dim(gapminder)[1])
@@ -92,6 +94,9 @@ plot((y = lifeExp) ~ (x = year), data = gapminder)
 
 #alternative 2
 plot(gapminder$year, gapminder$lifeExp)
+
+plot(x = gapminder$year, y = gapminder$lifeExp, main = "Scatter plot of life expectancy and year",
+     xlab = "Year", ylab = "Life Expectancy (in years)")
 
 #let's look at the documentation
 ?plot
