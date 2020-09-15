@@ -117,6 +117,9 @@ summary(arrests_las)
 ##    b. Create race_eth
 ## -----------------------------------------------------------------------------
 
+# Save arrests_bds.clean to use in Lecture 5
+# saveRDS(arrests_bds.clean, "../Lecture5/arrests_bds.clean.rds")
+    
 # 3a. let's investigate a bit
   # here is a quick and easy way to show crosstabs using base R
   table(arrests_bds.clean$race_clean, arrests_bds.clean$hispanic, useNA = "always")

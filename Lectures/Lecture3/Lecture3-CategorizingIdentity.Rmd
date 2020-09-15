@@ -22,9 +22,15 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-Race and ethnicity are two aspects of personal identity that we'll be exploring with data throughout this class. This document is a collection of observations based on short articles that can help us think about what to make of the data we encounter, and how to process data to better explore the connections between race, ethnicity and policy.
+# Introduction: race, ethnicity, and "data for good"
 
-Richer and more nuanced data on personal identity can help us better understand the ways that systems of oppression interact with identity to limit opportunity. Data can improve transparency and [disrupt algorithmic bias](https://www.jstor.org/stable/10.5325/jinfopoli.8.2018.0078#metadata_info_tab_contents). But how do we get the most of the limited data we have access to now?
+Race and ethnicity are two aspects of personal identity that we'll be using data to examine in different policy contexts. This document is a collection of observations based on short articles that can help us think about what to make of the data we encounter, what voices are represented/missing, and how to process data to better explore the connections between race, ethnicity and policy.
+
+**What do we hope to achieve by analyzing data on different aspects of personal identity? What should we avoid doing?** Data can help improve transparency from our institutions and  [disrupt algorithmic bias](https://www.jstor.org/stable/10.5325/jinfopoli.8.2018.0078#metadata_info_tab_contents). Data can amplify personal stories and lived experience. But it can also be [reductive](https://twitter.com/BlackDisability/status/1297996682232246274).
+
+**What would "better" data look like, and what could we do with it?** Richer and more nuanced data on personal identity can help us better understand the ways that systems of oppression interact with different aspects of identity to limit opportunity. And inform more equitable policies and notions of distributive/restorative justice.
+
+**How do we get the most of the limited data we have access to now? How do we use the data at hand for "good"? What information are we missing and what are the implications?** These are questions that we will come back to throughout the semester, as we learn from each other about what data we'd like to see exist in the future and what "data for good" should look and feel like.
 
 
 # US Census categories: the limits of taking identity data at face value
@@ -45,24 +51,28 @@ The evolution of race and ethnicity categories recognized in the US Census demon
 
 Federally recognized categories evolved along with social context about what it means to be Hispanic or Asian in the US, for example... but not according to any clear and consistent logic. Race and ethnicity data is thus limited by institutional definitions of race and ethnicity identity.
 
-The takeaway for policy analysis is not to take the pre-defined categories at face value, but to think about recoding race and ethnicity data into identity categories that are most meaningful given the policy context under study.
+One takeaway for policy analysis is not to take the pre-defined categories at face value, but to think about recoding race and ethnicity data into identity categories that are most meaningful given the policy context under study.
 
-![](censusracequestion.jpg){width=40%}
+#### 2020 Census questions on race: {-}
+
+![](censusracequestion.jpg){width=50%}
 
 # Multi-dimensional identity and intersectionality
 
-Simplicity can be a good thing when it comes to data accessibility, but reducing people to a single dimension of identity is obviously limiting in many ways. Modeling how intersectional identity relates to outcomes should allow for [multiplicative interactions](https://weallcount.com/2019/06/21/intersectionality-data-2/) between dimensions of identity rather than additively separable components of identity. 
+Simplicity is often a good thing that can make information more accessible, but reducing people to a single dimension of identity is obviously limiting in many ways. Modeling how intersectional identity relates to outcomes should allow for [multiplicative interactions](https://weallcount.com/2019/06/21/intersectionality-data-2/) between dimensions of identity rather than additively separable components of identity. 
 
-What if the policy context focuses on measures that reduce identity to a single dimension? For example, if native English fluency is particularly relevant for a given research question, that might suggest preserving and centering measures of Hispanic identity in the data. If policing and colourism is the focal point, perhaps data coding should give precedence to Black racial identity over Hispanic ethnicity? 
+But what if the data and surrounding discourse focus on measures that reduce multiracial/ethnic identity to a single dimension? Is a desire to simplify (and sample size limitations) a valid reason to assign individuals to one of several mutually exclusive identity categories. Which identity category should an individual who identifies as both Black and Latinx individuals be assigned to? Would assigning them to a separate multiracial category add valuable context, or would it muddle our understanding of what it means to be Black and Latinx, respectively, by assigning them to a third category? Is this sort of simplification just too reductive? 
 
-Or even better, maybe we can restructure the data to measure the prevalence of a certain dimension of identity within broader groups (e.g. neighborhoods or cohorts) rather than prescribing limited measures of identity to individuals. This is something we'll come back when we study NYPD enforcement in the coming weeks.
+How much should the context impact the specific approach to coding identity? For example, should Hispanic identity be more salient in an analysis examining the role of native English fluency? If the focus is on policing and colourism, should Black racial identity be centered in the analysis?
+
+Or even better, maybe we can restructure the data to measure the prevalence of a certain dimension of identity within broader groups (e.g. neighborhoods or cohorts) rather than prescribing limited measures of identity to individuals. This sort of aggregation is something we'll come back to when we study NYPD enforcement in the coming weeks.
 
 
 # Should we use more "progressive" identity labels?
 
 Identity is deeply personal, and so are the labels people use. The Census asks people if they identify as "Hispanic, Latino, or Spanish origin." Some unknown share of younger, progressive Americans who would say they identify as Hispanic might prefer to identify as Latinx, for example. When presenting your own analysis of raw data that uses gendered race and ethnicity labels with colonial roots, should you replace them with more progressive, gender-neutral labels? 
 
-I'd say the answer is an unsatisfying... maybe. Would your decision to relabel Hispanic identity as Latinx substantially mispresent the underlying data, or enrich the meaning of identity on balance? How will the identity labels affect how different audiences engage with your analysis?
+My own opinion is an unsatisfying... maybe. Would your decision to relabel Hispanic identity as Latinx substantially misrepresent the underlying data, or enrich the meaning of identity on balance? How will the identity labels affect how different audiences engage with your analysis?
 
 <iframe width="560" height="315" src="https://www.youtube.com/embed/0Zx4m2ok6D0" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
@@ -73,7 +83,7 @@ The New York Times didn't start [capitalizing  Black](https://www.nytimes.com/20
 
 # The missing MENA category
 
-Lam Thuy Vo explains in her article for [Vox](https://www.vox.com/2016/8/18/12404688/census-race-history-intersectionality) that, according to the US Office of Management and Budget, "someone classified as White is someone who has origins in any of the original peoples of Europe, the Middle East, or North Africa". In other words, as far as the federal government is concerned, Arabs, Iranians and others of the Middle East and North Africa (MENA) descent are considered white. [Al Jazeera](https://www.aljazeera.com/news/2020/04/mena-category-2020-census-200401114334500.html) summarizes recent (failed) attempts at adding the MENA category to the Ceneus:
+Lam Thuy Vo explains in her article for [Vox](https://www.vox.com/2016/8/18/12404688/census-race-history-intersectionality) that, according to the US Office of Management and Budget, "someone classified as White is someone who has origins in any of the original peoples of Europe, the Middle East, or North Africa". In other words, as far as the federal government is concerned, Arabs, Iranians and others of the Middle East and North Africa (MENA) descent are considered white. [Al Jazeera](https://www.aljazeera.com/news/2020/04/mena-category-2020-census-200401114334500.html) summarizes recent (failed) attempts at adding the MENA category to the Census:
 
 > A MENA category would represent a diverse set of dismissed identities with specific needs ... Getting census data would be a good start to meet those needs.
 
@@ -109,3 +119,5 @@ Advocated countered that existing data gaps pose a bigger threat:
 - Where do you think Black Hispanic women do/should fit into the below graphic? Why do you think it does/doesn't matter?
 
 ![](equalpaydaygraphic.jpg){width=65%}
+\
+Source: [The Guardian](https://www.theguardian.com/us-news/datablog/2017/apr/04/equal-pay-day-us-wage-gap-gender-race-ethnicity) and @monachalabi on Instagram

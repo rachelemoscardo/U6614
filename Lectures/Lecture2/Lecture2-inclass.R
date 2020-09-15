@@ -1,6 +1,6 @@
 ################################################################################
 ##
-## [ PROJ ] < Lecture or Assignment Number >
+## [ PROJ ] < Lecture2 >
 ## [ FILE ] < lecture2-inclass.r >
 ## [ AUTH ] < YOUR NAME>
 ## [ INIT ] < Date you started the file >
@@ -23,136 +23,223 @@ getwd()
 ## -----------------------------------------------------------------------------
 ## 1. load and inspect Coronavirus data
 ##    data source: https://github.com/RamiKrispin/coronavirus/tree/master/data
+##
 ##    a. inspect the data frame and data types for each column
-##    b. use the mutate function to create a new column called type.fac = as.factor(type),
+##        make sure to explore the type column
+##
+##    b. use the mutate function to create a new column:
+##        type.fac = as.factor(type),
 ##        check if it worked by calling the str() function
+##
 ##    c. include this column in a new data frame called covid.df1, 
 ##        use a pipe to exclude the original type column,
 ##        print the first 5 observations
+##
 ##    d. inspect type.fac using the levels() function,
 ##        what package is the levels() function located in?
-##    e. use the filter function to only include rows that represent "confirmed" cases,
+##
+##    e. use filter() to only include rows representing "confirmed" cases,
 ##        store as a new object covid_confirmed.df,
 ##        print the first 5 observations,
 ##        confirm you did indeed drop rows representing deaths and recoveries
-##    f. remove the covid.df1 object from memory using the rm() function
+##
+##    f. take a look at the province column:
+##        are there any data cleaning actions we should take?
+##
+##    g. remove the covid.df1 object from memory using the rm() function
 ## -----------------------------------------------------------------------------
 
-# somewhat unusually, we have a dataset saved in the old .rda file format
-load("coronavirus.rda")
+#somewhat unusually, we have a dataset saved in the old .rda file format
+  load("coronavirus.rda")
 
-# 1a.
-str(coronavirus) # note that we haven't discussed date variables yet
-  # we can also inspect the data frame by double-clicking in the Environment tab
 
-# 1b. 
-mutate(coronavirus, type.fac = as.factor(type))
-str(mutate(coronavirus, type.fac = as.factor(type)))
+#1a.
+  str(coronavirus) 
+    #note that we haven't discussed date variables yet
+    #we can also inspect the data frame by double-clicking in the Environment tab
+  summary(coronavirus$type)
+  table(coronavirus$type)
+  ?levels
+  levels(coronavirus$type) #returns NULL bc type is not a factor!
+
+#1b. 
+  mutate(coronavirus, type.fac = as.factor(type)) #here, we are not storing this result in the memory
+  str(mutate(coronavirus, type.fac = as.factor(type)))
+
+
+#1c. 
+  covid.df1 <- mutate(coronavirus, type.fac = as.factor(type)) %>%
+                select(-type) #removing the type column
   
-# 1c. 
-covid.df1 <- mutate(coronavirus, type.fac = as.factor(type)) %>%
-              select(-type)
-head(covid.df1, n = 5)  
+  #alternatively
+  covid.df1 <- coronavirus %>%
+    mutate(type.fac = as.factor(type)) %>%
+    select(-type)
+  
+  head(covid.df1, n = 5)  
+  
+  #some helpful syntax for later: 
+    #subsetting the first row of covid.df1
+      covid.df1[1,]
+    #subsetting the first cell of covid.df1 (i.e. first row for date column)
+      covid.df1[1,1]
+      
 
-# 1d. hint: recall how we used the $ to refer to a column within a data frame
-?levels
-levels(covid.df1$type.fac)
+#1d.
+  levels(covid.df1$type.fac)
 
-# 1e.
-covid_confirmed.df <- filter(covid.df1, type.fac == "confirmed")
-head(covid_confirmed.df, n = 5)
-summary(covid_confirmed.df$type.fac)
-  # this worked, but it still thinks there are 2 other empty categories (levels)
-  # here is a long way to fix that
-  covid_confirmed.df <- mutate(covid_confirmed.df, type = as.character(type.fac)) %>%
-                        mutate(covid_confirmed.df, type.fac = as.factor(type)) %>%
-                        select(-type)
+
+#1e.
+  covid_confirmed.df <- filter(covid.df1, type.fac == "confirmed")
+  
+  #alternatively,
+  covid_confirmed.df <- covid.df1 %>%
+    filter(type.fac == "confirmed")
+  
+  head(covid_confirmed.df, n = 5)
+  summary(covid_confirmed.df$type.fac)
+    # this worked, but it still thinks there are 2 other empty categories (levels)
+    # here is a long way to fix that
+    covid_confirmed.df <- covid_confirmed.df %>%
+      mutate(type = as.character(type.fac),
+             type.fac = as.factor(type)) %>%
+      select(-type)
+    #idea: convert the factor into a character first, then bring it to factor again
+    #when we convert the factor into a character, the information about the levels with 
+    #no observation is lost
+    
+    summary(covid_confirmed.df$type.fac)
 
 #1f.
-rm(covid.df1)
+  table(covid_confirmed.df$province)
+  
+  #some examples:
+  covid_confirmed.df %>% filter(country == "China", date == "2020-01-22")  
+  covid_confirmed.df %>% filter(country == "Denmark", date == "2020-01-22")  
+  
+  #for now, let's just assign unique values to country (Country-Province)
+  covid_confirmed.df <- covid_confirmed.df %>% 
+    mutate(country = if_else(province == "", country, paste(country, "-", province)))
+    #henceforth: country = country or administrative entity reporting case data
+
+#1g.
+  rm(covid.df1)
+
+#for reference, here is the code to remove all objects from the workspace:
+#rm(list = ls())
+
 
 ## -----------------------------------------------------------------------------
 ## 2. Describe the corona.confirmed.df data frame
-##    a. what is the unit of observation?
-##    b. how many countries are observed?
-##    c. how many days are observed?
+##
+##    a. what is the unit of observation? (note any inconsistencies/questions)
+##
+##    b. how many countries (or administrative entities reporting data) are observed?
+##
+##    c. how many days are observed? earliest and latest date?
 ## -----------------------------------------------------------------------------
 
-# 2a.
-str(covid_confirmed.df)
-view(covid_confirmed.df)
+#2a.
+  str(covid_confirmed.df)
+  view(covid_confirmed.df)
 
-# 2b. hint: we need to calculate a statistic for a given column of data
-?summarise
-summarise(covid_confirmed.df, n_distinct(country))
 
-# 2c. 
-summarise(covid_confirmed.df, n_distinct(date))
+#2b. hint: we need to calculate a statistic for a given column of data
+  ?summarise
+  
+  summarise(covid_confirmed.df, n_distinct(country))
+  
+  covid_confirmed.df %>% 
+    summarise(num_of_countries = n_distinct(country))
+  
+  #short way: use in your .rmd file to reference code to answer questions
+   n_distinct(covid_confirmed.df$country)
+
+#2c. 
+  covid_confirmed.df %>% summarise(num_of_days = n_distinct(date),
+                                   firstday = min(date),
+                                   latday = max(date))
 
 
 ## -----------------------------------------------------------------------------
 ## 3. Let's look at confirmed case counts for the most recent day: 
-##    a. find most recent day using the summarise function, assign to new object lastday
-##    b. find most recent day using the arrange function
-##    c. use the filter function to subset observations for the most recent day,
+##
+##    a. find most recent date using the summarise() function, 
+##        assign this date to a new object called lastday
+##
+##    b. find most recent day using the arrange function instead of summarise
+##
+##    c. use the filter function to subset observations for the most recent day
+##        (don't hardcode a date to filter on, refer to lastday object from a),
 ##        store in new data frame covid_confirmed_last.df,
 ##        confirm it worked
-##    d. what was the max case count for the last day? top 5 countries by case count?
+##
+##    d. what was max case count in any country for the most recent day? 
+##
+##    e. list the top 5 countries by case count for the most recent day
+##
+##    f. how many countries had 0 cases for the most recent day?
 ## -----------------------------------------------------------------------------
 
-# 3a. 
-summarise(covid_confirmed.df, max(date))
+#3a. 
 
-# 3b. 
-  # approach 1
-  arrange(covid_confirmed.df, desc(date))
-  head(arrange(covid_confirmed.df, desc(date)) %>% select(date), n = 1)
-  
-  # approach 2
-  arrange(covid_confirmed.df, desc(date)) %>% select(date) %>% head(n = 1)
-  
-# 3c. 
-  # approach 1: hardcode last date
-  covid_confirmed_last.df <- filter(covid_confirmed.df, date == "2020-07-18")
-  summarise(covid_confirmed_last.df, min(date))
 
-  # approach 2:
-  # let's store the last day we obtained using summarise()
-  # hint: inspect the results of summarise using typeof()
-  # how do we access just the date? we can use base R syntax.
-  lastday <- summarise(covid_confirmed.df, max(date))[,1]
-  covid_confirmed_last.df <- filter(covid_confirmed.df, date == lastday)
-  summarise(covid_confirmed_last.df, min(date))
+#3b. 
 
-# 3d.
-summarise(covid_confirmed_last.df, max(cases))
-select(covid_confirmed_last.df, country, cases) %>%
-  arrange(desc(cases)) %>%
-  head(n = 5)
+
+#3c. 
+  #HINT: your condition needs to refer to the last day.
+  # if you created lastday as a data frame in part a,
+  # then in your filter() call you need to subset the element of data 
+  # that includes the date information (in thie case just the first row).
+  # See Lecture2.1/Section 4.2 for examples of how to subset matrix/df elements
+
+
+
+  #confirm this worked
+
+
+
+#3d.
+
+
+#3e. 
+
+
+
+#3f.
+
+
 
 ## -----------------------------------------------------------------------------
-## 4. Let's look at the stats for New Zealand: 
-##    a. use the filter function to subset observations for New Zealand, 
-##        assign to new data frame, covid_confirmed_nz.df,
+## 4. Let's look at the case counts for Oman: 
+##
+##    a. use the filter function to subset observations for Oman, 
+##        assign to new data frame, covid_confirmed_oman.df,
+##        sort in descending date order
 ##        check it worked
-##    b. use summarise to find the daily mean, min and max for NZ over the whole pandemic,
+##
+##    b. use summarise to find the daily mean, min and max for Oman over the whole pandemic,
 ##        name each statistic appropriately (i.e. name each column in the 1-row table of stats)
+##
 ##    c. what was the average daily case count over past 30 days?
-##        hint: use the arrange function to sort date in descending order,
-##              refer to the lecture 2.1 on objects for syntax to refer to the first 30 rows,
-##              
+##        hint: see Lecture2.1/Section 4.2 for syntax to refer to first 30 rows
+##          if you're having trouble, you can try using the row_number function
+##
+##    d. what was the average daily case count over the first 30 days of data?
 ## -----------------------------------------------------------------------------
   
-# 4a. 
-covid_confirmed_nz.df <- filter(covid_confirmed.df, country == "New Zealand")
-summarise(covid_confirmed_nz.df, n_distinct(country))
+#4a. 
 
-# 4b.
-summarise(covid_confirmed_nz.df, nz_mean = mean(cases), nz_min = min(cases), nz_max = max(cases))
 
-# 4c.
-arrange(covid_confirmed_nz.df, desc(date))[1:30,] %>%
-  summarise(nz_july_mean = mean(cases))
+#4b.
+
+
+#4c.
+
+
+#4d.
+
 
 
 ## -----------------------------------------------------------------------------
