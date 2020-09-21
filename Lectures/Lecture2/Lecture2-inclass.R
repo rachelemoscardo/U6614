@@ -71,6 +71,7 @@ getwd()
   covid.df1 <- mutate(coronavirus, type.fac = as.factor(type)) %>%
                 select(-type) #removing the type column
   
+
   #alternatively
   covid.df1 <- coronavirus %>%
     mutate(type.fac = as.factor(type)) %>%
@@ -97,6 +98,7 @@ getwd()
     filter(type.fac == "confirmed")
   
   head(covid_confirmed.df, n = 5)
+  
   summary(covid_confirmed.df$type.fac)
     # this worked, but it still thinks there are 2 other empty categories (levels)
     # here is a long way to fix that
@@ -104,6 +106,7 @@ getwd()
       mutate(type = as.character(type.fac),
              type.fac = as.factor(type)) %>%
       select(-type)
+    
     #idea: convert the factor into a character first, then bring it to factor again
     #when we convert the factor into a character, the information about the levels with 
     #no observation is lost
@@ -158,7 +161,7 @@ getwd()
 #2c. 
   covid_confirmed.df %>% summarise(num_of_days = n_distinct(date),
                                    firstday = min(date),
-                                   latday = max(date))
+                                   lastday = max(date))
 
 
 ## -----------------------------------------------------------------------------
