@@ -115,10 +115,8 @@ str(arrests_las)
                                  levels = c("Black", "White", "Asian/Pacific Islander", "Other")))
   
       #validation: confirm the recode worked as intended
-        levels(arrests_bds.clean_temp$race_clean)
-        arrests_bds.clean %>% count(race_clean, sort = TRUE)
-        table(arrests_bds.clean$race_clean, arrests_bds.clean$race, 
-              useNA = "always")
+
+    
       
   #NOTE: recode doesn't work well with pipes like other dplyr functions,
   #      instead we use the function as a part of another function argument
@@ -135,8 +133,7 @@ str(arrests_las)
         mutate(hispanic = factor(hispanic, levels = c("Hispanic", "Non-Hispanic"))) 
   
     #validation: confirm the recode worked as intended
-      summary(arrests_bds.clean$hispanic)
-      table(arrests_bds.clean$race_clean, arrests_bds.clean$hispanic, useNA = "always")
+
       
       
 #NOTE: we used separate pipes to clean ethnicity & race, could do in a single pipe
@@ -159,10 +156,9 @@ str(arrests_las)
       select(-race_clean_char, -hispanic_char)
       
     
-  #inspect results and validate
-    str(arrests_bds.clean)  
-    table(arrests_bds.clean$race_eth, arrests_bds.clean$hispanic, useNA = "always")
-  
+  #validation: inspect contents of race_eth
+ 
+    
   
 ## -----------------------------------------------------------------------------
 ## 4a. Repeat step 2 for LAS:
@@ -170,7 +166,7 @@ str(arrests_las)
 ##      NOTE: Hispanic identity is included in both las_race_key & hispanic_flag
 ##    
 ##   b. Make sure you end up with a data frame with the following variable names,
-##      and identical coding as inarrests_bds_clean:
+##      and identical coding as in arrests_bds_clean:
 ##    - race_eth, age, male, dismissal (not in the BDS data), st_id, loc2
 ## -----------------------------------------------------------------------------
 
@@ -184,14 +180,18 @@ str(arrests_las)
     
 ## -----------------------------------------------------------------------------
 ## 5. Append BDS and LAS microdata -- stack rows with rbind
+##
 ##    a. create a column (pd) to identify PD data source (= "las" or "bds")
+##
 ##    b. Append arrests_bds.clean and arrests_las.clean
 ##        - use rbind.fill from the plyr package
 ##          - bc of a conflict w/another package, use a "lazy load" of plyr:
 ##             plyr::rbind.fill()
 ##        - store combined data as new df called arrests_all
 ##        - inspect race_eth for accuracy/consistency
+##
 ##    c. use the nrow function to display the total number of arrests
+##
 ##    d. export new df as "arrests_all.csv", and save as rds file in Lecture4 folder for next week
 ##       HINT: use the write_csv function introduced in Lecture 3.1)
 ## -----------------------------------------------------------------------------
@@ -218,6 +218,7 @@ str(arrests_las)
   
 ## -----------------------------------------------------------------------------
 ## 6. Descriptive statistics by race_eth (grouping)
+##
 ##    a. group arrests.clean by race_eth,
 ##       show arrest counts for each race_eth category using summarise(),
 ##       store as its own df race_eth_counts
