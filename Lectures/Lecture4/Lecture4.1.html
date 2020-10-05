@@ -1782,7 +1782,7 @@ div.tocify {
 </div>
 <div id="anti_join" class="section level3" number="2.2.2">
 <h3 number="2.2.2"><span class="header-section-number">2.2.2</span> <code>anti_join</code></h3>
-<p><code>semi_join(df1, df2, by = col_to_join_by)</code> will only retain observations from <code>df1</code> <strong>with no matching values</strong> in <code>df2</code>. This is useful for inspecting unmatched observations. Let’s start by filtering out gapminder observations for all years besides 2002 and 2007.</p>
+<p><code>anti_join(df1, df2, by = col_to_join_by)</code> will only retain observations from <code>df1</code> <strong>with no matching values</strong> in <code>df2</code>. This is useful for inspecting unmatched observations. Let’s start by filtering out gapminder observations for all years besides 2002 and 2007.</p>
 <div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true"></a><span class="co">#anti join by country-year with gap on the left, healthexp on the right</span></span>
 <span id="cb32-2"><a href="#cb32-2" aria-hidden="true"></a>gap_joined_anti &lt;-<span class="st"> </span><span class="kw">anti_join</span>(gap, healthexp, <span class="dt">by =</span> <span class="kw">c</span>(<span class="st">&quot;country&quot;</span>, <span class="st">&quot;year&quot;</span>)) <span class="op">%&gt;%</span><span class="st"> </span></span>
 <span id="cb32-3"><a href="#cb32-3" aria-hidden="true"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">country =</span> <span class="kw">as.factor</span>(country)) </span>
