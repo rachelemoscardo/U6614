@@ -45,12 +45,15 @@ getwd()
                           na.strings = c("")) #can specify string values to read in as NA (here blanks)
 
 #1b.
-
+st_arrests <- arrests_all %>% 
+  group_by(st_id, loc2) %>% 
+  summarise(arrests_all = n() ) %>% 
+  arrange(desc(arrests_all))
   
   
   
 #1c.
-
+ggplot(data = st_arrests, aes(x = arrests_all)) + geom_histogram()
   
 
 ## -----------------------------------------------------------------------------
@@ -95,7 +98,10 @@ str(st_ridership)
   #a vector of columns we don't need to keep
   drop_vars <- c("swipes2011", "swipes2012", "swipes2013", "swipes2014", "swipes2015")
   
-  st_joined_grouped <- #FILL IN CODE HERE#
+  st_joined_grouped <- inner_join(st_poverty, st_ridership) %>% 
+    inner_join(st_arrests) %>% 
+    select(!drop_vars) %>% 
+    group_by(st_id, mta_name)
   
   #inspect
   str(st_joined_grouped)
@@ -136,9 +142,10 @@ str(st_ridership)
   
 #3a.
   stations <- st_joined_grouped %>% 
-    #FILL IN CODE HERE
-            #note we can directly test condition as a logical comparison
-            #here we convert logical results into a numeric (i.e. a dummy var!)
+    filter(st_id != 66) %>% 
+    mutate(arrperswipe = arrests_all / (swipes2016 / 100000),
+           highpov = as.numeric(povrt_all_2016 > median(st_joined_grouped$povrt_all_2016) ),
+           nblack = as.numeric(shareblack > .5) )
   
   #crosstab highpov and black
   table(stations$highpov, stations$nblack)
@@ -159,7 +166,7 @@ str(st_ridership)
   #validation: now check top 10 stations by arrest intensity
   stations %>% 
     arrange(desc(arrperswipe)) %>% 
-    select(st_id, mta_name, arrperswipe, arrests_all, shareblack, povrt_all_2016, highpov, black) %>% 
+    select(st_id, mta_name, arrperswipe, arrests_all, shareblack, povrt_all_2016, highpov, nblack) %>% 
     head(n = 10)
   
   
@@ -182,7 +189,7 @@ str(st_ridership)
   ?summary.lm
   summary(ols1l)$adj.r.squared  #adj R-square
   summary(ols1l)$coefficients   #coefficients
-  #beta1_hat
+  summary(ols1l)$coefficients[2,4] #beta1_hat
   #p-value on beta1_hat
 
       
