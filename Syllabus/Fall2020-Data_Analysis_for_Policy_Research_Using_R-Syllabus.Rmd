@@ -286,16 +286,11 @@ The syllabus is subject to change at the discretion of the instructor with prope
 \medskip
 
 
-## Week 10, 11/10/2020: Working with String & Date Variables (Part 1)
+## Week 10, 11/10/2020: Working with String & Date Variables 
 
 - In-class data: Indonesian Village Fund data
 - _Required meeting #2 with Instructor_
 
-\medskip
-
-## Week 10, 11/10/2020: Working with String & Date Variables (Part 2)
-
-- In-class data: Indonesian Village Fund data
 \medskip
 
 
