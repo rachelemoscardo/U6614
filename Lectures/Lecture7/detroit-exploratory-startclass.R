@@ -20,14 +20,15 @@
 ## libraries
 ## -----------------------------------------------------------------------------
 
+#install.packages("readstata13")
+#install.packages("lubridate")
+#install.packages("weights")
+
+
 #library(foreign)     #note only imports .dta files up thru Stata 12
 library(readstata13)  #imports .dta files from Stata 13 thru 15
 library(tidyverse)
 library(lubridate)
-library(splitstackshape)
-library(fastDummies)
-library(spatstat)
-library(plm)
 library(weights)
 
 
@@ -36,7 +37,6 @@ library(weights)
 ## -----------------------------------------------------------------------------
 
 getwd()
-
 
 
 
