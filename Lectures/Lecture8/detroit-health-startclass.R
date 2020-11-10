@@ -64,7 +64,6 @@ getwd()
     dim(acs_zip.clean)
     head(acs_zip.clean)
   
-    
 
 #B. Read in and join public health data to demographic data (by zip code)
   
@@ -75,7 +74,9 @@ getwd()
     table(input_hcup_zip$year, input_hcup_zip$month)
   
   #join public health data (input_hcup_zip) to demographic data (input_acs_zip)
-  #Q: FILL IN THE CODE TO THE RIGHT OF THE ASSIGNMENT OPERATOR TO join
+  #Q: FILL IN THE CODE TO THE RIGHT OF THE ASSIGNMENT OPERATOR
+      #join to end up with zipcode-month observations
+      #also use mutate along with make_date to create a date variable(month_year)
     joined_temp1 <- 
       
   
@@ -92,12 +93,12 @@ getwd()
   input_si <- read.dta13("data/si_1017_cleaned.dta")
   
   #focus on key variables to identify period/location of every shutoff
-  #we'll want to join to demographic data based on zip5 and get zip code-level obs
+  #we'll eventually want to join to demographic data to get zip5-month_year obs
   si.clean <- input_si %>% 
     select(si_order_number, zip5, year, month) %>% 
     arrange(zip5, year, month)
   
-  #aggregate to zip-year/month totals
+  #aggregate to zip5-month_year totals
   si_zip_ym <- si.clean %>% 
     group_by(zip5, year, month) %>% 
     summarise(si_count = n_distinct(si_order_number)) %>% 
@@ -170,7 +171,7 @@ getwd()
   
   
 #G. Also collapse panel data to one observation for each zip code
-    #elimimates variation within zip codes over time
+    #eliminates variation within zip codes over time
     #left with between-zip code variation only
   
   zip_cross <- joined_temp4 %>% 
@@ -295,7 +296,7 @@ getwd()
       geom_point() +
       geom_smooth(method = 'lm', formula = y ~ x, se = FALSE)
     
-    #can also plot binned data"
+    #can also plot binned data
     ggplot(zip_panel, aes(x = si_1000, y = total_obs_1000, weight = pop2015)) +
       geom_point(alpha = 0.4) +
       stat_summary_bin(fun.y = 'mean', binwidth = 1,
@@ -311,11 +312,11 @@ getwd()
     panel_total_x_feonly <- lm(si_1000 ~ as.factor(zip5) + as.factor(ym), 
                                data = zip_panel, 
                                weight = pop2015)
-
+    
     ggplot(data = zip_panel, aes(x= panel_total_x_feonly$residuals, 
                                  y = panel_total_y_feonly$residuals, 
                                  weight = pop2015)) +
-     geom_point() +
+      geom_point(alpha = 0.2) +
       geom_smooth(method = 'lm', formula = y ~ x, se = FALSE)
 
   
