@@ -190,8 +190,11 @@ stargazer(mdls, align = TRUE, type = "html",
 
 
 ## Regression tables {.smaller}
+Full regression equation:
 
-Columns 1 and 2 show results from the fixed effects regressions we estimated in class without the vacancy rate control, columns 3 and 4 include vacancy rate as a control variable. Also note the different columns for robust standard errors and standard errors clustered by zip code.
+$$total\_obs\_1000_{zt} = \beta_0 + \beta_1 si\_1000_{zt} + \beta_2 vac\_res\_p100_{zt} + \phi_z + \theta_t + u_{zt}$$
+
+Columns 1 and 2 show results from the fixed effects regressions we estimated in class without the vacancy rate control, columns 3 and 4 include vacancy rate as a control variable.
 
 ```{r results = 'asis'}
 se_robust <- function(x) 
