@@ -64,7 +64,7 @@ library(multiwayvcov)
 
 Load cleaned Village Fund data:
 ```{r}
-load("vf_joined.rdata")
+load("datasets/vf_joined.RData")
 vf_joined <- vf_joined %>% 
   mutate(vfund_allocation = vfund_allocation / 1000, 
          vfund_per_poor = vfund_per_poor / 1000)
@@ -74,11 +74,11 @@ head(vf_joined)
 Load cleaned Detroit data (cross-sectional and panel; panel data shown here)
 ```{r}
 #cross-sectional data
-load("zip_cross.rda")
+load("datasets/zip_cross.rda")
 head(zip_cross)
 
 #panel data
-load("zip_panel.rda")
+load("datasets/zip_panel.rda")
 ```
 
 
@@ -151,7 +151,7 @@ vf_diff <- vf_province %>%
          mean_sulawesi = round(mean(unlist(Sulawesi)), 2),
          n_sulawesi = format(length(unlist(Sulawesi))),
          p_value = t.test(unlist(Java), unlist(Sulawesi), var.equal = FALSE)$p.value) %>%
-  mutate(p_value = format(p_value, scientific = TRUE, digits = 3)) %>%
+  mutate(p_value = sprintf("%.2f", round(p_value, 2))) %>%
   select(-Java, -Sulawesi)
 
 vf_diff$variable <- c("Population in poverty (1000s)", "VF allocation/poor residents")
@@ -249,7 +249,7 @@ stargazer(mdls, align = TRUE, type = "html",
 ## Add a plot
 
 ```{r}
-load("ym_race.rda")
+load("datasets/ym_race.rda")
 
 ggplot(data = ym_race, 
        aes(x = date, y = si_1000, group = black75)) + 
