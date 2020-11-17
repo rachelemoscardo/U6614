@@ -1,0 +1,261 @@
+---
+title: "Formatted Output & R Markdown Presentations"
+output:
+  ioslides_presentation: default
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+```
+
+```{css, echo = FALSE}
+
+table, td, th {
+  border: none;
+  padding-left: 1em;
+  padding-right: 1em;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+```
+
+# Creating presentations with R Markdown
+
+## Brief overview of ioslides | Creating slides from R Markdown
+
+1. To create an **ioslides** presentation from R Markdown, specify *ioslides_presentation* in the YAML header (**beamer** and **slidy** are other R Markdown presentation types)
+
+2. Use # for a new section; and ## for a new slide. Use | for adding a subtitle
+
+3. Can set slides to display smaller text {.smaller} or display the slide content incrementally {.build}, for example:
+
+```{r, echo = TRUE}
+## Slide title {.smaller .build}
+```
+
+[Here](https://garrettgman.github.io/rmarkdown/ioslides_presentation_format.html) is a short tutorial. See Chapter 4.1 in [R Markwdown: The Definitive Guide]( https://bookdown.org/yihui/rmarkdown/ioslides-presentation.html) for a more comprehensive treatment.
+
+
+# Using Stargazer for formatted output
+
+## Loading packages {.build}
+
+First load the packages *tidyverse*, *stargazer*, *knitr*, *plm*, *lmtest* and *multiwayvcov*.
+```{r}
+library(tidyverse)
+library(stargazer)
+library(knitr)
+library(plm)
+library(lmtest)
+library(multiwayvcov)
+```
+
+**stargazer** is an R package that creates LATEX code, HTML code and ASCII text for displaying:
+
+  - formatted regression tables, w/multiple models side-by-side
+  - tables for summary statistics
+  - data frames
+
+
+## Loading data for today's examples {.smaller}
+
+Load cleaned Village Fund data:
+```{r}
+load("vf_joined.rdata")
+vf_joined <- vf_joined %>% 
+  mutate(vfund_allocation = vfund_allocation / 1000, 
+         vfund_per_poor = vfund_per_poor / 1000)
+head(vf_joined)
+```
+
+Load cleaned Detroit data (cross-sectional and panel; panel data shown here)
+```{r}
+#cross-sectional data
+load("zip_cross.rda")
+head(zip_cross)
+
+#panel data
+load("zip_panel.rda")
+```
+
+
+## Descriptive statistics of numeric variables {.smaller}
+
+We can use stargazer to show summary stats for numeric variables in a data frame.
+
+The R Markdown code chunk options should include `results = 'asis'`, and the `stargazer()` function should include the argument `type = "html"`:
+
+```{r, results = 'asis', eval = FALSE, echo = TRUE}
+out <- capture.output(stargazer(as.data.frame(vf_joined), type = "html", 
+          summary.stat = c("n", "mean", "sd", "min", "max"), #specify columns
+          covariate.labels = c("VF allocation", 
+                               "Population in poverty (1000s)", 
+                               "VF allocation/poor residents"),
+          align = TRUE, digits = 2, column.sep.width = "15pt", #other formatting
+          notes = "Village Fund amounts in millions of rupiah."))
+
+out <- sub("text-align:center", "text-align:left", out) #a hack to align left
+
+cat(out)
+```
+
+```{r results = 'asis'}
+out <- capture.output(stargazer(as.data.frame(vf_joined), type = "html", 
+          summary.stat = c("n", "mean", "sd", "min", "max"), #specify columns
+          covariate.labels = c("VF allocation", 
+                               "Population in poverty (1000s)", 
+                               "VF allocation/poor residents"),
+          align = TRUE, digits = 2, column.sep.width = "15pt", #other formatting
+          notes = "Village Fund amounts in millions of rupiah."))
+
+out <- sub("text-align:center", "text-align:left", out) #a hack to align left
+
+cat(out)
+```
+
+## Descriptive statistics of numeric variables {.smaller}
+
+[Here](https://www.jakeruss.com/cheatsheets/stargazer) is a good tutorial with more stargazer examples and formatting options.
+
+
+## Difference-in-means table
+
+Suppose we're interested in comparing the *poverty rate* and *vfund_per_poor* of regencies between Java and Sulawesi islands.
+
+In the data, provinces on Java island are *Banten*, *Di Yogyakarta*, and those starting with *Jawa*; provinces on Sulawesi island are *Gorontalo* and those starting with *Sulawesi*.
+
+[Here](https://sebastiansauer.github.io/multiple-t-tests-with-dplyr/) is a tutorial for making this kind of table, shown below. 
+
+```{r}
+vf_province <- vf_joined %>%
+  mutate(island = if_else(str_starts(province, 'Jawa') | province == 'Banten' | province == 'Di Yogyakarta', 'Java', 
+                          if_else(str_starts(province, 'Sulawesi') | province == 'Gorontalo',
+                                  'Sulawesi', 'Other'))) %>%
+  filter(island != 'Other') %>%
+  select('poverty', 'vfund_per_poor', 'island')
+```
+
+
+```{r}
+vf_diff <- vf_province %>%
+  gather(key = variable, value = value, -island) %>%
+  group_by(island, variable) %>%
+  summarise(value = list(value)) %>%
+  spread(island, value) %>%
+  group_by(variable) %>%
+  mutate(mean_java = round(mean(unlist(Java)), 2),
+         n_java = length(unlist(Java)),
+         mean_sulawesi = round(mean(unlist(Sulawesi)), 2),
+         n_sulawesi = format(length(unlist(Sulawesi))),
+         p_value = t.test(unlist(Java), unlist(Sulawesi), var.equal = FALSE)$p.value) %>%
+  mutate(p_value = format(p_value, scientific = TRUE, digits = 3)) %>%
+  select(-Java, -Sulawesi)
+
+vf_diff$variable <- c("Population in poverty (1000s)", "VF allocation/poor residents")
+
+kable(vf_diff, align = "l",
+      col.names = c("Variable", "Mean (Java)", "N (Java)", "Mean (Sulawesi)", "N (Sulawesi)", 
+                    "p-value"))
+```
+
+
+## Regression tables {.smaller}
+
+Columns 1 and 2 show results from the cross-sectional regression outputs without and with vacancy rate as a control variable, respectively.
+
+```{r results = 'asis'}
+se_robust <- function(x) 
+  coeftest(x, vcov = vcovHC(x, type = "HC1"))[,2]
+
+cross_total_1 <- lm(total_obs_1000 ~ si_1000, 
+                      data = zip_cross,
+                      weight = pop2015)
+
+cross_total_2 <- lm(total_obs_1000 ~ si_1000 + vac_res_p100, 
+                      data = zip_cross,
+                      weight = pop2015)
+
+mdls <- list(cross_total_1, cross_total_2)
+
+se <- list(se_robust(cross_total_1), se_robust(cross_total_2))
+
+stargazer(mdls, align = TRUE, type = "html", 
+          keep.stat = c("n", "adj.rsq"), #specify regression statistics to keep/omit
+          se = se, #specify SEs to display based on the list we created
+          notes = "Robust SEs shown in parentheses.", notes.align = "l")
+```
+
+
+## Regression tables {.smaller}
+
+Columns 1 and 2 show results from the fixed effects regressions we estimated in class without the vacancy rate control, columns 3 and 4 include vacancy rate as a control variable. Also note the different columns for robust standard errors and standard errors clustered by zip code.
+
+```{r results = 'asis'}
+se_robust <- function(x) 
+  coeftest(x, vcov = vcovHC(x, type = "HC1"))[,2]
+
+se_cluster <- function(x)
+  coeftest(x, cluster.vcov(x, cbind(zip_panel$zip5),
+                                 df_correction = T))[,2]
+
+panel_total_1a <- lm(total_obs_1000 ~ si_1000 + as.factor(zip5) + as.factor(ym), 
+                        data = zip_panel, 
+                        weight = pop2015)
+
+panel_total_1b <- panel_total_1a
+
+panel_total_2a <- lm(total_obs_1000 ~ si_1000 + vac_res_p100 + as.factor(zip5) + as.factor(ym),
+                      data = zip_panel, 
+                      weight = pop2015)
+
+panel_total_2b <- panel_total_2a
+
+mdls <- list(panel_total_1a, panel_total_1b, panel_total_2a, panel_total_2b)
+
+se <- list(se_robust(panel_total_1a), se_cluster(panel_total_1b),
+           se_robust(panel_total_2a), se_cluster(panel_total_2b))
+
+mean_y <- round(mean(zip_panel$total_obs_1000), 2)
+
+stargazer(mdls, align = TRUE, type = "html",
+          omit=c("zip5", "ym"), #omit coefficients for FE terms
+          se = se, #specify SEs to display based on the list we created
+          keep.stat = c("n", "adj.rsq"),
+          add.lines = list(c("Zip code FE", rep("Yes", 4)),
+                           c("Month FE", rep("Yes", 4)),
+                           c("Clustered SEs", "No", "Zipcode", "No", "Zipcode"),
+                           c("Mean dep var", rep(mean_y, 4))),
+          notes = "Robust standard errors are shown in parentheses unless otherwise indicated.",
+          notes.align = "l")
+```
+
+
+## Creating bullet points {.build}
+
+<div>
+- This is a bullet point
+</div>
+<div>
+- This is another bullet point
+</div>
+<div>
+- This is another bullet point
+</div>
+
+
+## Add a plot
+
+```{r}
+load("ym_race.rda")
+
+ggplot(data = ym_race, 
+       aes(x = date, y = si_1000, group = black75)) + 
+  geom_line(aes(color = black75)) +
+  labs(x = "Date", y = "Shutoff rate per 1,000 residents",
+       color = 'Census tract racial composition')
+```
+
+Put your explanation here.
