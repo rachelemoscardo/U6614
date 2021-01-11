@@ -1,14 +1,14 @@
 ################################################################################
 ##
-## [ PROJ ] Lecture1-inclass: Getting familiar with RStudio
-## [ FILE ] Lecture1-inclass.r
+## [ PROJ ] Lecture1-startclass: Getting familiar with RStudio
+## [ FILE ] Lecture1-startclass.r
 ## [ AUTH ] INSTRUCTOR FILE 
-## [ INIT ] Jan 19, 2021
+## [ INIT ] Jan 12, 2021
 ##
 ################################################################################
 
 ## -----------------------------------------------------------------------------
-## 0. create an R project that is includes this R script (Lecture1-inclass.r)
+## 0. create an R project that includes this R script (Lecture1-startclass.r)
 ## -----------------------------------------------------------------------------
 
 
