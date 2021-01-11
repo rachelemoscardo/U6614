@@ -12,11 +12,11 @@ output:
     keep_tex: true
     toc: true
     slide_level: 3
-    theme: default # AnnArbor # push to header?
-    #colortheme: "dolphin" # push to header?
+    theme: default # AnnArbor
+    #colortheme: "dolphin" 
     #fonttheme: "structurebold"
-    highlight: default # Supported styles include "default", "tango", "pygments", "kate", "monochrome", "Aespresso", "zenburn", and "haddock" (specify null to prevent syntax highlighting); push to header
-    df_print: tibble # push to header?    
+    highlight: default # Supported styles include "default", "tango", "pygments", "kate", "monochrome", "Aespresso", "zenburn", and "haddock" (specify null to prevent syntax highlighting)
+    df_print: tibble    
     latex_engine: xelatex #  Available engines are pdflatex [default], xelatex, and lualatex; The main reasons you may want to use xelatex or lualatex are: (1) They support Unicode better; (2) It is easier to make use of system fonts.
     includes:
       in_header: ../beamer_header.tex
@@ -32,38 +32,16 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>", highlight = TRUE)
 # Introductions 
 
 
-### Student introductions
 
-1. Preferred name
-2. Pronouns (if you'd like to)
-3. Previous R exposure/experience (if any)
-4. Answer one of these two questions:
-    * What's something you would eventually like to learn how to do in R?
-    * What's something that you have observed or think is important that people in your field aren't paying attention to?
-5. One piece of culture you are excited about right now
-   - e.g. music, writing, fashion, a meme, sports, etc.
-
-
-### Kevin Wibisono, Teaching Assistant
-
-MS in Data Science, graduating December 2020.
-
-\medskip
-
-* Pronouns: he/him/his.
-* Originated from Jakarta, Indonesia.
-* Studied Applied Mathematics and Statistics at National University of Singapore (2015-2019).
-* Research Assistant for the Urban Design Lab at Columbia University.
-
-### Harold Stolper, instructor
+### Harold Stolper, instructor (he/they)
 
 Graduated from SIPA many moons ago, returned to Columbia for my PhD in economics.
 
 \medskip
 
-Past 5 years: 
+Past 6 years: 
 
-* Taught quant courses at SIPA as an adjunct.
+* Taught quant courses at SIPA.
 * Worked as the economist for a non-profit doing research and advocacy to promote upward mobility for low-income NYers.
 * Recent focus on documenting racist police enforcement of fare evasion, and other topics related to policing, neighborhood change, and transit accessibility.
 
@@ -72,6 +50,16 @@ Past 5 years:
 
 Transitioning from Stata to R after years of using and teaching Stata.
 
+
+
+### Niyati Malhotra, Teaching Assistant (she/hers)
+
+Took this class last semester, graduating this May.
+
+\medskip
+
+* Previously worked on impact evaluations of public health and education programs.
+* Interested in social policy applications that address early childhood development and child poverty.
 
 
 # What is R and How Will We Use It?
@@ -96,7 +84,7 @@ Transitioning from Stata to R after years of using and teaching Stata.
 - [R Markdown](https://rmarkdown.rstudio.com/lesson-1.html) files are used in RStudio to "both save and execute code, and generate high quality reports that can be shared with an audience."
   - These pdf lecture slides were created with R Markdown.
   - Subsequent weeks we'll rely on html-based lessons created with R Markdown.
-  - Beginning next week, everything **you** submit for this class will be a document generated with R Markdown.
+  - After Assignment 1, everything **you** submit for this class will be a document generated with R Markdown.
 
 
 ### Base R vs. user-defined R packages
@@ -116,8 +104,8 @@ More about these in later weeks...
 ### Installing and loading R packages
 
 You only need to install a package once. To install an R package use `install.package()` function.
-```{r warning=FALSE, message=FALSE}
-#install.packages("tidyverse")
+```{r eval = FALSE, warning = FALSE, message = FALSE}
+install.packages("tidyverse")
 ```
 
 But before you can use it you need to load a package every time you open R using the `library()` function. 
@@ -164,21 +152,32 @@ policy
 - **Policy writing and interpretation:** translating statistical analysis in accessible terms
 
 
+### Sample visualizations from student projects (Niyati & Crystal Avila)
+
+![](nm-ca_chart1.PNG){width=90%}
+
+
+### Sample visualizations from student projects (Liz Olson & Jenny Ostrowski)
+
+![](lo_jo_map1.PNG){width=90%}
+
+
+
 # Course Logistics
 
 
 ### Syllabus and file management
 
-Course links:
+Course materials:
 
 * All course files will be posted on the course website: https://hreplots.github.io/U6614/ 
 
 \medskip
 
-We'll still be using Courseworks for several purposes:
+We'll be using Courseworks + Piazza for several purposes:
 
-* organizing Zoom links for classes and recitation
-* sign-up for TA office hours
+* hosting Zoom links for classes and recitation
+* weekly quizzes on asynchronous lessons
 * submitting assignments and project deliverables
 * course communications and discussion using Piazza (register [here](https://piazza.com/demo_login?nid=keiqq7y84rt5y2&auth=6c81e06))
 
@@ -305,14 +304,14 @@ Three ways to execute commands in R
     - Just a text file full of R commands
     - Can execute one command at a time, several commands at a time, or the entire script
 3. **Code chunks** in R Markdown (.rmd files)
-    - Can execute one command at a time, one chunk at a time, or "knit" the entire file into a document (e.g. html or pdf)
+    - Can execute one command at a time, one chunk at a time, or "knit" the entire file into a document (html or pdf) that includes output from R code chunks
 
 
 ### Shortcuts for executing commands
 
 1. Code chunks in R Markdown files
-    - *Cmd/Ctrl + Enter*: execute highlighted line(s) within chunk
-    - *Cmd/Ctrl + Shift + k*: "knit" entire document
+    - **Cmd/Ctrl + Enter**: execute highlighted line(s) within chunk
+    - **Cmd/Ctrl + Shift + k**: "knit" entire document
 
     \medskip
 
@@ -359,12 +358,12 @@ Some objects:
 - plots
 - data frames (the datasets of R!)
 
-Throughout this course, we'll be loading data objects to work with as well as assigning values to new objects.
+Throughout this course, we'll be loading data objects to work with and assigning values to new objects.
 
 
 ### Functions
 
-Functions do things to different objects. They often accept arguments -- we say "pass" arguments to functions.
+Functions do things to different objects. They often accept arguments -- we say we "pass" arguments to functions.
 
 Functions are also objects themselves that can be "called" to do things like:
 
@@ -431,9 +430,9 @@ Submit only your R script through CW using the following file name syntax: **"As
 
 2. Live attendance of class sessions is **required**
 
-    + Zoom quizzes, in-class discussion and R workshop participation
+    + CW quizzes, in-class discussion and R workshop participation
 
-3. 4 weekly assignments ("data memos")
+3. 5 weekly assignments ("data memos")
 
 4. Data projects (starting week 5)
 
