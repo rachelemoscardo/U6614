@@ -1,7 +1,7 @@
 ################################################################################
 ##
 ## [ PROJ ] < Lecture2 >
-## [ FILE ] < lecture2-startclass.r >
+## [ FILE ] < Lecture2-startclass.r >
 ## [ AUTH ] < YOUR NAME>
 ## [ INIT ] < Date you started the file >
 ##
