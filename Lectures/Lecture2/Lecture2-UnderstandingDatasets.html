@@ -1277,6 +1277,15 @@ window.buildTabsets = function(tocID) {
 
 </script>
 
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
 
 
 
@@ -1306,6 +1315,7 @@ h6 {
   text-align: left;
 }
 </style>
+
 
 
 
@@ -1515,7 +1525,7 @@ div.tocify {
 <p>Many large government surveys are based on a sample drawn at random from some broader population (e.g. a sample of working adults). Survey data requires you to apply <strong>sampling weights</strong> in order to obtain a representative population. This is because the likelihood of a subject responding to a survey is not random, but in fact depends on other variables such as age, gender, education, etc.</p>
 <p>Sampling weights serve to re-weight the data so people who were more likely to respond count less (and people who were less likely to respond count more). For survey data, you typically must use weights or else the sample won’t be representative of the true population of interest in terms of age, race, gender, etc.</p>
 <p><strong><em>Discussion question:</em></strong> <em>Which respondents are more likely to respond to a telephone survey?</em> <br /><br /></p>
-<p>For administrative data, on the other hand, each observations typically represent 1 record (e.g. a single case or program participant) and the data typically includes the entire “population” of cases. Administrative data is rarely collected and managed with outside analysis in mind, so the documentation may be quite limited. All the more important to conduct exploratory data analysis to make sense of the data and identify inconsistencies or other issues.</p>
+<p>For administrative data, each observation typically represents 1 record (e.g. a single case or program participant) and the data often includes the entire “population” of cases. Administrative data is rarely collected and managed with outside analysis in mind, so the documentation may be quite limited. All the more important to conduct exploratory data analysis to make sense of the data and identify inconsistencies or other issues.</p>
 </div>
 </div>
 <div id="application-comparing-two-datasets-on-unpredictable-scheduling" class="section level1" number="2">
@@ -1555,7 +1565,7 @@ div.tocify {
 
 // add bootstrap table styles to pandoc tables
 function bootstrapStylePandocTables() {
-  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
 }
 $(document).ready(function () {
   bootstrapStylePandocTables();

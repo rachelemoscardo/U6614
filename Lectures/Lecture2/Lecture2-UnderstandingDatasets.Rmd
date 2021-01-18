@@ -51,7 +51,7 @@ Sampling weights serve to re-weight the data so people who were more likely to r
 ***Discussion question:*** *Which respondents are more likely to respond to a telephone survey?*
 <br/><br/>
  
-For administrative data, on the other hand, each observations typically represent 1 record (e.g. a single case or program participant) and the data typically includes the entire "population" of cases. Administrative data is rarely collected and managed with outside analysis in mind, so the documentation may be quite limited. All the more important to conduct exploratory data analysis to make sense of the data and identify inconsistencies or other issues.
+For administrative data, each observation typically represents 1 record (e.g. a single case or program participant) and the data often includes the entire "population" of cases. Administrative data is rarely collected and managed with outside analysis in mind, so the documentation may be quite limited. All the more important to conduct exploratory data analysis to make sense of the data and identify inconsistencies or other issues.
 
 
 # Application: comparing two datasets on unpredictable scheduling

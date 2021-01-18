@@ -22,172 +22,205 @@ getwd()
 
 ## -----------------------------------------------------------------------------
 ## 1. load and inspect Coronavirus data
-##    data source: https://github.com/RamiKrispin/coronavirus/tree/master/data
+##    data source: 
+##    https://www.ecdc.europa.eu/en/publications-data/data-national-14-day-notification-rate-covid-19
 ##
 ##    a. inspect the data frame and data types for each column
-##        make sure to explore the type column
+##        make sure to explore the indicator column
 ##
 ##    b. use the mutate function to create a new column:
-##        type.fac = as.factor(type),
+##        ind.fac = as.factor(indicator),
 ##        check if it worked by calling the str() function
 ##
-##    c. include this column in a new data frame called covid.df1, 
-##        use a pipe to exclude the original type column,
+##    c. include this column in a new data frame called covid.temp1, 
+##        use a pipe to exclude the columns for indicator, continent, country_code, source
 ##        print the first 5 observations
 ##
-##    d. inspect type.fac using the levels() function,
+##    d. inspect ind.fac using the levels() function,
 ##        what package is the levels() function located in?
 ##
-##    e. use filter() to only include rows representing "confirmed" cases,
-##        store as a new object covid_confirmed.df,
+##    e. use filter() to only include rows representing "cases" and not "deaths",
+##        store as a new object covid_cases,
 ##        print the first 5 observations,
+##        note the column rate_14_day as the variable of interest (cases/100,000 pop)
 ##        confirm you did indeed drop rows representing deaths and recoveries
 ##
-##    f. take a look at the province column:
-##        are there any data cleaning actions we should take?
-##
-##    g. remove the covid.df1 object from memory using the rm() function
+##    f. remove the covid.temp1 object from memory using the rm() function
 ## -----------------------------------------------------------------------------
 
-#somewhat unusually, we have a dataset saved in the old .rda file format
-  load("coronavirus.rda")
+#load the csv file and store as data frame called covid
+covid <- read.csv("ecdc_national_2021-01-14.csv")
+covid <- na.omit(covid) #remove all observations with NA values
 
 
 #1a.
+  str(covid) 
+  View(covid) #can also inspect object by double-clicking in the Environment tab
+  summary(covid$indicator) #not very useful for character variables
+  
+  #looks like we want to treat indicator as a categorical var (a factor, in R-speak!)
+  #how do we inspect? #we can use the table function or we can coerce to a factor
+  table(covid$indicator) 
+  levels(covid$indicator) #returns NULL bc indicator is not a factor!
+  levels(as.factor(covid$indicator)) #levels only works with factors
+  summary(as.factor(covid$indicator))
 
 
 #1b. 
+  FILL IN CODE
 
-
-
+  
 #1c. 
-
+  covid.temp1 <- FILL IN CODE
+  
 
   #some helpful syntax for later: 
-    #subsetting the first row of covid.df1
+    #subset the first row of covid.temp1
+    covid.temp1[1,]
+    #subset the cell in the first row, 4th column (i.e. first obs for year_week)
+    covid.temp1[1,4]
 
-
-    #subsetting the first cell of covid.df1 (i.e. first row for date column)
- 
 
 #1d.
-
+  levels(covid.temp1$ind.fac) 
+  ?levels
+  #note that levels is a base R function
+  #so we can't refer to columns directly like a tidyverse function
+  #make sure you understand why this won't work: covid.df1 %>% levels(ind.fac)
 
 
 #1e.
+  covid_cases <- FILL IN CODE
+    
+  
+  head(covid_cases, n = 5)
+  
+  summary(covid_cases$ind.fac)
+  # this worked, but it still thinks there are 2 other empty categories (levels)
+  # here is a long way to fix that
+  covid_cases <- covid_cases %>%
+    mutate(ind.char = as.character(ind.fac),
+           ind.fac = as.factor(ind.char)) %>%
+    select(-ind.char)
+  #idea: convert the factor into a character first, then convert to factor again
+  #when we convert the factor to a character, the original levels are lost
+  #then R gets new levels based on the 1 remaining value ("confirmed")
+  
+  summary(covid_cases$ind.fac) # the # of obs for each level of ind.fac
 
 
 #1f.
-
-
+  rm(covid.temp1)
   
-  #for now, let's just assign unique values to country (country-province)
-  covid_confirmed.df <- covid_confirmed.df %>% 
-    mutate(country = if_else(province == "", 
-                             country, 
-                             paste(country, "-", province)))
-    #henceforth: country = country or administrative entity reporting case data
-
-  
-#1g.
-
+    #for reference, here is the code to remove all objects from the workspace:
+    #rm(list = ls())
 
 
 ## -----------------------------------------------------------------------------
-## 2. Describe the corona.confirmed.df data frame
+## 2. Describe the covid.confirmed data frame
 ##
-##    a. what is the unit of observation? (note any inconsistencies/questions)
+##    a. what is the unit of observation? 
+##       do you notice any observations that you think should be excluded?
 ##
-##    b. how many countries (or administrative entities reporting data) are observed?
+##    b. how many entities are observed?
 ##
-##    c. how many days are observed? earliest and latest date?
+##    c. how many weeks are observed? earliest and latest year-week?
 ## -----------------------------------------------------------------------------
 
-# 2a.
+#2a.
+  str(covid_cases)
+  view(covid_cases)
 
 
-
-# 2b. hint: we need to calculate a statistic for a given column of data
-
+#2b. hint: we need to calculate a statistic for a given column of data
+  ?summarise
+  FILL IN CODE
   
-  #short way: you can use in your .rmd file as inline code to answer questions
+  #summarise is in the dplyr package which is part of the tidyverse
+  FILL IN CODE
+
+  #short way: use in your .rmd file to reference code to answer questions
+  FILL IN CODE
   
-
-# 2c. 
-
-
+  
+#2c.
+  #use summarise with multiple arguments, one for each statistic
+  #try ?summarise to find the syntax for different summary statistics
+  covid_cases %>% FILL IN CODE
+  
 
 ## -----------------------------------------------------------------------------
-## 3. Let's look at confirmed case counts for the most recent day: 
+## 3. Let's look at COVID case rate for the most recent year-week: 
 ##
-##    - find most recent date using the summarise() function, 
-##        assign this date to a new object called lastday
+##    a. find most recent year-week using the summarise() function, 
+##        assign this date to a new object called lastweek
 ##
-##    - find most recent day using the arrange function instead of summarise
+##    b. find most recent week using the arrange function instead of summarise
 ##
-##    a. use the filter function to subset observations for the most recent day
-##        (don't hardcode a date to filter on, refer to lastday object from a),
-##        store in new data frame covid_confirmed_last.df,
+##    c. use the filter function to subset observations only for the most recent week
+##        (don't hardcode a year-week to filter on, refer to lastweek object from a),
+##        store in new data frame covid_cases_last,
 ##        confirm it worked
 ##
-##    b. what was max case count in any country for the most recent day? 
+##    d. what was max 14 day case rate in any country for the most recent week? 
+##       which country had the max rate?
 ##
-##    c. list the top 5 countries by case count for the most recent day
+##    e. list the top 10 countries by rate for the most recent week
 ##
-##    d. how many countries had 0 cases for the most recent day?
+##    f. how many entities had 0 reported cases for the most recent week?
 ## -----------------------------------------------------------------------------
 
-#-
-
-  
-#-
-
-  
 #3a. 
-#HINT: your condition needs to refer to the last day.
-# if you created lastday as a data frame in part a,
-#   then in your filter() call you need to subset the element of data 
-#   that includes the date information (in this case just the first row).
-# See Lecture2.1/Section 4.2 for examples of how to subset matrix/df elements
+  lastweek <- FILL IN CODE
+  lastweek
 
-
-#confirm this worked
-
-
-#3b.
-
+#3b. 
+  covid_cases %>% FILL IN CODE
 
 #3c. 
+  #HINT: your condition needs to refer to the last week.
+  # you created lastweek as a data frame in part a,
+  # so in your filter() call refer to the value from lastweek that you want to filter on
+  # this requires subsetting the appropriate element from that data frame
+  # (in this case just the 1st row of a 1-row data frame).
+  # See Lecture2.1/Section 4.2 for examples of how to subset matrix/df elements
+  covid_cases_last <- FILL IN CODE
 
+  #confirm this worked
 
+  
 
 #3d.
+  
+
+#3e. 
+
+
+#3f.
 
 
 
 ## -----------------------------------------------------------------------------
-## 4. Let's look at the case counts for Oman: 
+## 4. Let's look at the 14-day case rate for Panama: 
 ##
-##    a. use the filter function to subset observations for Oman, 
-##        assign to new data frame, covid_confirmed_oman.df,
+##    a. use the filter function to subset observations for Panama, 
+##        assign to new data frame, covid_cases_panama,
 ##        sort in descending date order
 ##        check it worked
 ##
-##    b. use summarise() to find the daily mean, min and max for Oman
-##        over the duration of the pandemic,
-##        name each statistic appropriately 
-##        (i.e. name each column in the 1-row table of stats)
+##    b. use summarise to find mean, min & max for rate_14_day for Panama over all observations,
+##        name each statistic appropriately (i.e. name each column in the 1-row table of stats)
 ##
-##    c. what was the average daily case count over past 30 days?
-##        hint: see Lecture2.1/Section 4.2 for syntax to refer to first 30 rows
+##    c. what was the average weekly rate over past 10 weeks?
+##        hint: see Lecture2.1/Section 4.2 for syntax to refer to first 10 rows
 ##          if you're having trouble, you can try using the row_number function
 ##
-##    d. what was the average daily case count over the first 30 days of data?
+##    d. what was the average weekly rate over the first 10 weeks of data?
 ## -----------------------------------------------------------------------------
   
 #4a. 
 
-
+  
 #4b.
 
 
@@ -195,7 +228,6 @@ getwd()
 
 
 #4d.
-
 
 
 ## -----------------------------------------------------------------------------
