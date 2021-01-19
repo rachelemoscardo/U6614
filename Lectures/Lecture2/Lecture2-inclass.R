@@ -126,7 +126,7 @@ getwd()
 
 
 ## -----------------------------------------------------------------------------
-## 2. Describe the covid.confirmed data frame
+## 2. Describe the covid_cases data frame
 ##
 ##    a. what is the unit of observation? 
 ##       do you notice any observations that you think should be excluded?
