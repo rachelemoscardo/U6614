@@ -1,22 +1,21 @@
 ---
 title: 'Lecture 3.1: Data Analysis Tools'
-#subtitle: "Importing, Exporting, Appending, Cleaning, and Summarizing Data"
-author: "SIPA U6614 | Instructor: Harold Stolper"
-date: 
-urlcolor: blue
-output: 
+author: 'SIPA U6614 | Instructor: Harold Stolper'
+date: "null"
+output:
   html_document:
-    toc: TRUE
+    toc: yes
     toc_depth: 3
-    toc_float: TRUE
-    number_sections: TRUE
+    toc_float: yes
+    number_sections: yes
     highlight: tango
     theme: default
-    fig_caption: TRUE
-    #fig_width = 7 #Default width (in inches) for figures
-    #fig_height = 5 #Default height (in inches) for figures
-    #html_preview: TRUE #TRUE to also generate an HTML file for the purpose of locally previewing what the document will look like on GitHub.    
-    df_print: tibble # Method to be used for printing data frames. Valid values include "default", "kable", "tibble", and "paged". The "default" method uses print.data.frame. 
+    fig_caption: yes
+    df_print: tibble
+  pdf_document:
+    toc: yes
+    toc_depth: '3'
+urlcolor: blue
 ---
 
 ```{r setup, include=FALSE}
@@ -67,7 +66,7 @@ In this case it's `read_delim()` that does the real work when you call `read_csv
 
 ## Excel files
 
-An Excel file is effectively a set of data tables, with each worksheet as its own data table. The `readxl` package provides a function for recognizing sheet names (`excel_sheets()`) and another function for importing specific sheets in a workbook of data (`read_excel()`). You can use `excel_sheets()` to obtain worksheet names and then tell R to read those worksheets by specifying them as arguments when calling read_excel()`. You can also simply refer to a worksheet by its index number in the workbook, as in the below code chunk. Just make sure you remember to install and load the `readxl` package first.
+An Excel file is effectively a set of data tables, with each worksheet as its own data table. The `readxl` package provides a function for recognizing sheet names (`excel_sheets()`) and another function for importing specific sheets in a workbook of data (`read_excel()`). You can use `excel_sheets()` to obtain worksheet names and then tell R to read those worksheets by specifying them as arguments when calling `read_excel()`. You can also simply refer to a worksheet by its index number in the workbook, as in the below code chunk. Just make sure you remember to install and load the `readxl` package first.
 ```{r eval = FALSE}
 library(readxl)
 excel_sheets("yourworkbook.xls") #check worksheet names
@@ -76,9 +75,13 @@ df2 <- read_excel("yourworkbook.xlsx", sheet = 2) #import 2nd worksheet
 
 ## R data files
 
-R also has its own data file format, .rds, that you can use to save objects (data frames as well as other R objects) and easily read in using the base R `readRDS()` function.
+R also has its own data file format, .rds, that you can use to save objects (data frames as well as other R objects) and easily load them later using the base R `readRDS()` function.
 ```{r eval = FALSE}
-df3 <- readRDS("yourrdatafile.rds")
+#save an object to a file
+  saveRDS(df2, file = "mydataobject.rds") #here df2 is a data frame in memory
+
+#load the rds file with the data object df2 back into RStudio and store as df3
+  df3 <- readRDS("mydataobject.rds")
 ```
 
 
@@ -122,6 +125,7 @@ str(gapminder)
 
 `head()` and `tail()` show the first or last parts of an object (an optional argument allows you to specify how many observations to show). This is useful for observing high/low values of a variable after calling `arrange()`.
 ```{r}
+#display the 5 gapminder countries with the highest life expectancy in 2007
 gapminder %>% 
   filter(year == 2007) %>% 
   arrange(desc(lifeExp)) %>% 
@@ -130,17 +134,29 @@ gapminder %>%
 
 Remember that if you pass a data frame to a tidyverse function through a pipe, you don't need to refer to the data frame as an argument in the next function after the pipe operator. 
 ```{r}
-gapminder %>% head(n = 3)
-head(gapminder, n = 3)
+#piping is super useful for processing data
+  gapminder %>% head(n = 3)
+
+#you can also call tidyverse functions without pipes, this is ok for a single function call
+  head(gapminder, n = 3)
 ```
 
-Within a pipeline, you can also just refer to columns by name when specifying function arguments (when applicable). But if you call a base R function that isn't part of the tidyverse package, you'll need to use the `$` syntax to access specific columns within a data frame. Here are some more base R functions that help us inspect specific columns of data (i.e. variables).
+Within a pipeline, you can also just refer to columns by name when specifying function arguments (when applicable). But if you call a base R function that isn't part of the tidyverse package, you'll need to use the `$` syntax to access specific columns within a data frame. Here are a few base R functions that help us inspect specific columns of data (i.e. variables).
 ```{r}
 typeof(gapminder$continent)
 attributes(gapminder$continent)
 class(gapminder$continent)
 levels(gapminder$continent)
 nlevels(gapminder$continent)
+
+```
+
+
+```{r eval = FALSE}
+#if you try to run the next line, it won't work
+  gapminder %>% nlevels(continent) #this will generate an error!
+
+#why not? nlevels() isn't a tidyverse function so it won't accept arguments through a pipe in the same way
 ```
 
 # Basic data cleaning tools
@@ -151,7 +167,7 @@ Here are some basic tools for recoding information stored in columns of data.
 
 ## Recoding values
 
-`recode()` is another dplyr function for replacing numeric, character or factor values. Say we want to recode gapminder observations listed with the country name "West Bank and Gaza" to instead refer to the country name "Occupied Palestinian Territories" (the name recognized by the UN, EU and more). We can use the `recode()` function as part of the argument for the `mutate()` function in order to create a new variable called `country_clean`.
+`recode()` is another dplyr function for replacing numeric, character or factor values. Say we want to recode gapminder observations listed with the country name "West Bank and Gaza" to instead match up with the name used by the UN and EU, the "Occupied Palestinian Territories". We can use the `recode()` function as part of the argument for the `mutate()` function in order to create a new variable called `country_clean`.
 ```{r}
 #recode West Bank and Gaza observations to Occupied Palestinian Territories
 g2 <- gapminder %>% 
@@ -160,23 +176,23 @@ g2 <- gapminder %>%
 #let's check if it worked by printing observations where country == "West Bank and Gaza"
 g2 %>% filter(country == "West Bank and Gaza") 
 ```
-Note that `country` column is a factor, so categorical values (levels) are stored as integers but displayed as characters. We can refer to the levels themselves when using `recode()`.
+Note that `country` column is a factor, so categorical values (levels) are stored as integers but displayed as characters. We can refer to the levels (category labels) themselves when using `recode()`.
 
 `recode()` can also be used to recode values in numeric, character, and logical columns of data.
 
-`replace()` is a base R function that is can also be used for recoding values.
+`replace()` is a base R function that can also be used for recoding values.
 
 
 ## Setting factor levels
 
-Suppose that we have a factor variable `var1` with 4 categories, but we want to exclude observations in the fourth category as `NA` because we're unclear what this category means. One way to do that is to use `factor()` to explicitly set the levels to use, in turn treating all excluded factor levels as `NA`.
+Suppose that we have a factor variable `var1` with 4 categories, but we want to exclude observations in the fourth category as `NA` because we're unclear what this category means. One way to do that is to use `factor()` to explicitly set the levels to use, which in turn treats all excluded factor levels as `NA`.
 
 ```{r eval = FALSE}
 #create a vector including the desired factor levels to use for var1
 levels_to_keep <- c("cat1", "cat2", "cat3")
 
-#assign the contents of this vector to the levels attribute of factor var1
-df %>% mutate(var1.fac = factor(var1, levels = levels_to_keep))
+#use the contents of this vector to set the levels attribute of column var1 in data frame df1
+df1 %>% mutate(var1.fac = factor(var1, levels = levels_to_keep))
 ```
 
 ## Re-ordering factor levels
@@ -232,6 +248,8 @@ Also note that base R includes its own `ifelse` function that works a bit differ
 - mean, median, min, max, and standard deviation are statistics that characterize the distribution of a *continuous variable*
 - frequency tables characterize the distribution of *categorical variables* 
 
+Visualizing descriptive statistics can often be more digestible and informative, we'll get there in shortly!
+
 
 ## summary()
 
@@ -247,19 +265,20 @@ summary(g3$cont_asia) #summary of logical data
 ```
 
 
-## summarize()
+## ()
 
-A more flexible function for computing summary statistics is the dplyr `summarize()` function. `summarize()` stores results as data frames (as tibbles, as is the norm in the Tidyverse) and can be used to perform more complicated calculations in combination with `group_by()`. 
+A more flexible function for computing summary statistics is the dplyr `()` function. `summarise()` stores results as data frames (as tibbles, as is the norm in the Tidyverse) and can be used to perform more complicated calculations in combination with `group_by()`. 
 
-This can be helpful for characterizing *conditional distributions*, such as computing statistics for one variable conditional on the value of another variable. (Crosstabs, discussed in the next section, are another tool for showing *conditional* or *joint* distributions.)
+This can be helpful for characterizing *conditional distributions*, for example computing statistics for one variable conditional on the value of another variable. (Crosstabs, discussed in the next section, are another tool for showing *conditional* or *joint* distributions.)
 
 ```{r message = FALSE, warning = FALSE}
+#display the mean life expectancy for 2007 (and the number of observations)
 gapminder %>%
   filter(year == 2007) %>%  
-  summarize(n_countries = n(), avg_lifeExp_2007 = mean(lifeExp))
+  summarise(n_countries = n(), avg_lifeExp_2007 = mean(lifeExp))
 ```
 
-Here is a list of "helper" functions we can use within `summarize()`:
+Here is a list of "helper" functions we can use within `summarise()` (also accessible via `?summarise`):
 
 | Function | Description |
 |----------|-------------|
@@ -301,28 +320,28 @@ fct_count(g3$continent)
 
 # Grouping
 
-The `group_by()` function allows us to add extra structure to your data by telling R to recognize groups. This allows for calculating statistics at the group-level using `summarize()` and `mutate()`, both of which respect groups.
+The `group_by()` function allows us to add extra structure to your data by telling R to recognize groups. This allows for calculating statistics at the group-level using `summarise()` and `mutate()`, both of which respect groups.
 
-`summarize()` will generally take a dataset and return a single observation (per group) with specified summary statistics, such as counting observations or computing means (in each group, if groups are specified).  
+`summarise()` will generally take a dataset and return a single observation (per group) with specified summary statistics, such as counting observations or computing means (in each group, if groups are specified).  
 
-Combined with `mutate()`, `summarize()` and other dplyr functions, `group_by()` enables exploratory data analysis tools that we will use throughout this course. Let's start by using these functions with the gapminder data frame to count observations for certain groups of country-year observations and make some calculations at the continent level. Take a look at the following examples.
+Combined with `mutate()`, `summarise()` and other dplyr functions, `group_by()` enables exploratory data analysis tools that we will use throughout this course. Let's start by using these functions with the gapminder data frame to count observations for certain groups of country-year observations and make some calculations at the continent level. Take a look at the following examples.
 ```{r message = FALSE, warning = FALSE}
-#use summarize to count observations in each continent
+#use summarise to count observations in each continent
 gapminder %>%
   filter(year %in% c(1952, 2007)) %>% #%in% identifies if an element belongs to a vector 
   group_by(continent) %>%
-  summarize(n = n())
+  summarise(n = n())
 
-#count does both grouping and counting in a single function!
+#the count function does both grouping and counting in a single function!
 gapminder %>%
   filter(year %in% c(1952, 2007)) %>% 
   count(continent) 
 
-#use summarize to count observations for each country-year and compute mean lifeExp
+#use summarise to count observations for each country-year and compute mean lifeExp
 gapminder %>%
   filter(year %in% c(1952, 2007)) %>% 
   group_by(continent, year) %>%
-  summarize(n = n(), avg_lifeExp = mean(lifeExp))
+  summarise(n = n(), avg_lifeExp = mean(lifeExp))
 
 #let's use mutate to compute the change between 1952 and 2007 in country life expectancy
 gapminder %>%
@@ -380,21 +399,21 @@ ggplot(gap_2007) + aes(x = continent, y = ..prop.., group = 1) + geom_bar()
 ```
 
 
-`geom_bar()` works by simply counting observations in each category of the argument x (in this case `x = continent`). Alternatively, we can collapse the country-level data to continent level observations using `group_by()` and `summarize()`, and the plot the data directly using `geom_col()`. Don't worry too much about this, for now just note that the geometries we use in our plots depend on the structure of the data.
+`geom_bar()` works by simply counting observations in each category of the argument x (in this case `x = continent`). Alternatively, we can collapse the country-level data to continent level observations using `group_by()` and `summarise()`, and the plot the data directly using `geom_col()`. Don't worry too much about this for now, just note that the geometries we use in our plots depend on the structure of the data.
 ```{r message = FALSE, warning = FALSE}
 gap_continents <- gapminder %>% 
   filter(year == 2007) %>% 
   group_by(continent) %>% 
-  summarize(country_ct = n())
+  summarise(country_ct = n())
 ggplot(data = gap_continents) + aes(x = continent, y = country_ct) + geom_col()
 ```
 
 
 ## histograms
 
-Here is the code to visualize the distribution of life expectancy across countries in 2007 using a very basic histogram with no additional options specified.
+Here is the code to visualize the distribution of life expectancy across countries in 2007 using a very basic histogram with minimal additional options specified (just specified a bin width of 2 years as an optional argument).
 ```{r message = FALSE, warning = FALSE}
-ggplot(gap_2007) + aes(x = lifeExp) + geom_histogram()
+ggplot(gap_2007) + aes(x = lifeExp) + geom_histogram(binwidth = 2)
 ```
 
 
