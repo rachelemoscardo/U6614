@@ -1277,6 +1277,15 @@ window.buildTabsets = function(tocID) {
 
 </script>
 
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css" data-origin="pandoc">
@@ -1397,6 +1406,7 @@ h6 {
   text-align: left;
 }
 </style>
+
 
 
 
@@ -1629,7 +1639,7 @@ div.tocify {
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true"></a><span class="co">#check how many countries are in the gap data frame</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true"></a><span class="kw">str</span>(<span class="kw">as.factor</span>(gap<span class="op">$</span>country))</span></code></pre></div>
 <pre><code>##  Factor w/ 142 levels &quot;Afghanistan&quot;,..: 1 1 2 2 3 3 4 4 5 5 ...</code></pre>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true"></a><span class="co">#alternatively</span></span>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true"></a><span class="co">#better for in-line code references</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true"></a><span class="kw">n_distinct</span>(gap<span class="op">$</span>country)</span></code></pre></div>
 <pre><code>## [1] 142</code></pre>
 <p>To learn different <code>dplyr</code> join functions, we’ll be working with a data frame including annual country-level observations from the <a href="https://data.worldbank.org/indicator/SH.XPD.CHEX.PC.CD">World Bank</a> on health expenditures per capita (from 2002-2017). Let’s load the health expenditure data and take a look.</p>
@@ -1656,7 +1666,7 @@ div.tocify {
 <p>In the parlance of <code>dplyr</code>, a <em>mutating join</em> refers to merging in new columns of data to existing columns of data. Let’s review the different types of mutating joins.</p>
 <div id="inner_join" class="section level3" number="2.1.1">
 <h3 number="2.1.1"><span class="header-section-number">2.1.1</span> <code>inner_join</code></h3>
-<p><code>inner_join(df1, df2, by = col_to_join_by)</code> returns all rows in <code>df1</code> with values for <code>col_to_join_by</code> that match values in <code>df2</code>, and including all columns from both <code>df1</code> and <code>df2</code>. In this case we want to match on two columns that appear in both data frames, <code>country</code> and <code>year</code>. This means that the col_to_join_by argument should be specified as a vector of two columns, as you can see in the code chunk below.</p>
+<p><code>inner_join(df1, df2, by = col_to_join_by)</code> returns all rows in <code>df1</code> with values for <code>col_to_join_by</code> that match values in <code>df2</code>, and including all columns from both <code>df1</code> and <code>df2</code>. In this case we want to match on two columns that appear in both data frames, <code>country</code> and <code>year</code>. This means that the <code>col_to_join_by</code> argument should be specified as a vector of two columns, as you can see in the code chunk below.</p>
 <p>Keep in mind that if there are multiple matches between <code>df1</code> and <code>df2</code>, all combinations of the matches are returned, which may not be what you want. This is considered a mutating join because we’re adding columns to an existing data frame, in a similar fashion as the <code>mutate</code> function.</p>
 <div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true"></a><span class="co">#inner join by country-year with gap on the left, healthexp on the right</span></span>
 <span id="cb14-2"><a href="#cb14-2" aria-hidden="true"></a>gap_joined_inner &lt;-<span class="st">  </span></span>
@@ -1719,7 +1729,7 @@ div.tocify {
 ##  $ gdpPercap     : num [1:4244] 727 975 4604 5937 5288 ...
 ##  $ Indicator.Name: chr [1:4244] &quot;Current health expenditure per capita (current US$)&quot; &quot;Current health expenditure per capita (current US$)&quot; &quot;Current health expenditure per capita (current US$)&quot; &quot;Current health expenditure per capita (current US$)&quot; ...
 ##  $ healthexp     : num [1:4244] 16.2 31.8 NA NA 66.2 ...</code></pre>
-<p>Notice from the dimensions of the resulting data frame (4244 x 8) that this approach retains all year-country gapminder observations, including those with no health expenditure data. It also retains observations for countries with health expenditure data that aren’t included in the gapminder data (e.g. Azerbaijan). We can confirm that there are now 274 factor levels for <code>country</code>, i.e. 274 countries that appear in one data frame or the other. This may be useful to know, but if we’re interested in exploring the relationship between life expectancy and health expenditures, we probably a data frame with only countries that have non-missing health expenditure data.</p>
+<p>Notice from the dimensions of the resulting data frame (4244 x 8) that this approach retains all year-country gapminder observations, including those with no health expenditure data. It also retains observations for countries with health expenditure data that aren’t included in the gapminder data (e.g. Azerbaijan). We can confirm that there are now 274 factor levels for <code>country</code>, i.e. 274 countries that appear in one data frame or the other. This may be useful to know, but if we’re interested in exploring the relationship between life expectancy and health expenditures, we probably want a data frame with only countries that have non-missing health expenditure data.</p>
 </div>
 <div id="left_join-and-right_join" class="section level3" number="2.1.3">
 <h3 number="2.1.3"><span class="header-section-number">2.1.3</span> <code>left_join</code> (and <code>right_join</code>)</h3>
@@ -1748,7 +1758,7 @@ div.tocify {
 ##  $ gdpPercap     : num [1:284] 727 975 4604 5937 5288 ...
 ##  $ Indicator.Name: chr [1:284] &quot;Current health expenditure per capita (current US$)&quot; &quot;Current health expenditure per capita (current US$)&quot; &quot;Current health expenditure per capita (current US$)&quot; &quot;Current health expenditure per capita (current US$)&quot; ...
 ##  $ healthexp     : num [1:284] 16.2 31.8 NA NA 66.2 ...</code></pre>
-<p>Here we can see all 142 countries are retained from the gapminder data, even though we know that 10 countries from the gapminder data were not matched to countries in the health expenditure data.</p>
+<p>Here we can see all 142 countries are retained from the gapminder data, even though we know that 10 countries from the gapminder data were not matched to countries in the health expenditure data (we know this from the results of the inner_join.</p>
 </div>
 </div>
 <div id="filtering-joins" class="section level2" number="2.2">
@@ -1835,15 +1845,16 @@ div.tocify {
 <h1 number="3"><span class="header-section-number">3</span> Grouping: aggregation</h1>
 <p>Last week we worked with the <code>dplyr</code> functions <code>group_by()</code> and <code>summarise()</code> to compute statistics based on column values for groups of observations (e.g. average life expectancy by continent-year).</p>
 <p><code>group_by()</code> in combination with <code>summarise()</code> is also how we aggregate observations and change the unit of analysis. For example, we might start with survey microdata (individual observations) and want to collapse individuals into meaningful groups such as families or states/provinces. This is the same functionality we introduced last week, but now we want to emphasize that we can use it to generate a new data frame for ongoing analysis (not just to obtain quick summary statistics by group).</p>
-<p>As a reminder of how this works, let’s collapse all country observations in the original gapminder data frame to yearly observations with columns for the total population and GDP… with a bit of data manipulation to get there.</p>
+<p>As a reminder of how this works, let’s collapse all country observations in the original gapminder data frame to yearly observations with columns for global population and GDP… and with a bit of data manipulation to get there.</p>
 <div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true"></a><span class="co">#collapse to yearly (global) observations</span></span>
 <span id="cb40-2"><a href="#cb40-2" aria-hidden="true"></a>gap_global &lt;-<span class="st"> </span>gapminder <span class="op">%&gt;%</span><span class="st"> </span></span>
 <span id="cb40-3"><a href="#cb40-3" aria-hidden="true"></a><span class="st">  </span><span class="kw">group_by</span>(year) <span class="op">%&gt;%</span><span class="st"> </span></span>
 <span id="cb40-4"><a href="#cb40-4" aria-hidden="true"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">gdp_tot =</span> gdpPercap <span class="op">*</span><span class="st"> </span>pop) <span class="op">%&gt;%</span><span class="st">  </span><span class="co">#get total GDP by country </span></span>
 <span id="cb40-5"><a href="#cb40-5" aria-hidden="true"></a><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">population =</span> <span class="kw">sum</span>(pop), <span class="dt">gdp =</span> <span class="kw">sum</span>(gdp_tot)) <span class="op">%&gt;%</span><span class="st">  </span><span class="co">#compute global pop and GDP</span></span>
-<span id="cb40-6"><a href="#cb40-6" aria-hidden="true"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">gdppercap =</span> gdp <span class="op">/</span><span class="st"> </span>population )  <span class="co">#compute global GDP per capita</span></span></code></pre></div>
-<pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
-<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true"></a>gap_global</span></code></pre></div>
+<span id="cb40-6"><a href="#cb40-6" aria-hidden="true"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">gdppercap =</span> gdp <span class="op">/</span><span class="st"> </span>population )  <span class="co">#compute global GDP per capita</span></span>
+<span id="cb40-7"><a href="#cb40-7" aria-hidden="true"></a></span>
+<span id="cb40-8"><a href="#cb40-8" aria-hidden="true"></a><span class="co">#show resulting data frame</span></span>
+<span id="cb40-9"><a href="#cb40-9" aria-hidden="true"></a>gap_global</span></code></pre></div>
 <pre><code>## # A tibble: 12 x 4
 ##     year population     gdp gdppercap
 ##    &lt;int&gt;      &lt;dbl&gt;   &lt;dbl&gt;     &lt;dbl&gt;
@@ -1862,18 +1873,19 @@ div.tocify {
 </div>
 <div id="grouping-normalizing-observations" class="section level1" number="4">
 <h1 number="4"><span class="header-section-number">4</span> Grouping: normalizing observations</h1>
-<p>Another application of <code>group_by()</code> is that it allows us to normalize variables based on group-wise statistics. Normalization can help us standardize the units of a variable for more meaningful measurement and comparisons over time/between groups. For example, comparing raw test scores between students in different years is misleading if the difficulty of the test varied over times. Instead we probably want to use <em>standardized</em> test scores, measured as z-scores instead of raw test scores.</p>
-<p>In the following code chunk, we use the gapminder data and standardize the distribution of life expectancy across countries (separately within each year) so that life expectancy is measured in z-scores (life_z)</p>
-<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true"></a><span class="co">#collapse to yearly (global) observations w/standardized lifeExp</span></span>
-<span id="cb44-2"><a href="#cb44-2" aria-hidden="true"></a>gap_z &lt;-<span class="st"> </span>gapminder <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb44-3"><a href="#cb44-3" aria-hidden="true"></a><span class="st">  </span><span class="kw">group_by</span>(year) <span class="op">%&gt;%</span><span class="st"> </span></span>
-<span id="cb44-4"><a href="#cb44-4" aria-hidden="true"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">mean_life =</span> <span class="kw">mean</span>(lifeExp), <span class="co">#compute mean lifeExp in each year across countries (store as col)</span></span>
-<span id="cb44-5"><a href="#cb44-5" aria-hidden="true"></a>         <span class="dt">sd_life =</span> <span class="kw">sd</span>(lifeExp),      <span class="co">#compute s.d. lifeExp in each year across countries (store as col)</span></span>
-<span id="cb44-6"><a href="#cb44-6" aria-hidden="true"></a>         <span class="dt">life_z =</span> (lifeExp <span class="op">-</span><span class="st"> </span>mean_life) <span class="op">/</span><span class="st"> </span>sd_life) <span class="op">%&gt;%</span><span class="st"> </span><span class="co">#normalize every lifeExp obs to a z-score (within-year) </span></span>
-<span id="cb44-7"><a href="#cb44-7" aria-hidden="true"></a><span class="st">  </span><span class="kw">arrange</span>(<span class="kw">desc</span>(life_z))</span>
-<span id="cb44-8"><a href="#cb44-8" aria-hidden="true"></a></span>
-<span id="cb44-9"><a href="#cb44-9" aria-hidden="true"></a><span class="co">#look at most extreme country-year life expectancy observations after standardization</span></span>
-<span id="cb44-10"><a href="#cb44-10" aria-hidden="true"></a>gap_z <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">head</span>(<span class="dt">n =</span> <span class="dv">5</span>)</span></code></pre></div>
+<p>Another application of <code>group_by()</code> is that it allows us to normalize variables based on group-wise statistics. Normalization can help us standardize the units of a variable for more meaningful measurement and comparisons over time/between groups. For example, comparing raw test scores between students in different years is misleading if the difficulty of the test varies over time. Instead we probably want to use <em>standardized</em> test scores, measured as z-scores instead of raw test scores.</p>
+<p>In the following code chunk, we use the gapminder data and standardize the distribution of life expectancy across countries (separately within each year) so that life expectancy is measured in z-scores (life_z) relative to a country-specific mean</p>
+<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true"></a><span class="co">#collapse to yearly (global) observations w/standardized lifeExp</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true"></a>gap_z &lt;-<span class="st"> </span>gapminder <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true"></a><span class="st">  </span><span class="kw">group_by</span>(year) <span class="op">%&gt;%</span><span class="st"> </span></span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true"></a><span class="st">  </span><span class="kw">mutate</span>(<span class="dt">mean_life =</span> <span class="kw">mean</span>(lifeExp), <span class="co">#compute mean lifeExp in each year across countries (store as col)</span></span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true"></a>         <span class="dt">sd_life =</span> <span class="kw">sd</span>(lifeExp),      <span class="co">#compute s.d. lifeExp in each year across countries (store as col)</span></span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true"></a>         <span class="dt">life_z =</span> (lifeExp <span class="op">-</span><span class="st"> </span>mean_life) <span class="op">/</span><span class="st"> </span>sd_life) <span class="op">%&gt;%</span><span class="st"> </span><span class="co">#normalize every lifeExp obs to a z-score (within-year) </span></span>
+<span id="cb42-7"><a href="#cb42-7" aria-hidden="true"></a><span class="st">  </span><span class="kw">arrange</span>(<span class="kw">desc</span>(life_z))</span>
+<span id="cb42-8"><a href="#cb42-8" aria-hidden="true"></a></span>
+<span id="cb42-9"><a href="#cb42-9" aria-hidden="true"></a><span class="co">#look at most extreme country-year life expectancy observations after standardization </span></span>
+<span id="cb42-10"><a href="#cb42-10" aria-hidden="true"></a><span class="co">#(i.e. relative to mean among all countries in a given year)</span></span>
+<span id="cb42-11"><a href="#cb42-11" aria-hidden="true"></a>gap_z <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">head</span>(<span class="dt">n =</span> <span class="dv">5</span>)</span></code></pre></div>
 <pre><code>## # A tibble: 5 x 9
 ##   country     continent  year lifeExp     pop gdpPercap mean_life sd_life life_z
 ##   &lt;fct&gt;       &lt;fct&gt;     &lt;int&gt;   &lt;dbl&gt;   &lt;int&gt;     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;
@@ -1882,7 +1894,7 @@ div.tocify {
 ## 3 Netherlands Europe     1952    72.1  1.04e7     8942.      49.1    12.2   1.89
 ## 4 Sweden      Europe     1952    71.9  7.12e6     8528.      49.1    12.2   1.87
 ## 5 Iceland     Europe     1957    73.5  1.65e5     9244.      51.5    12.2   1.80</code></pre>
-<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true"></a>gap_z <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">tail</span>(<span class="dt">n =</span> <span class="dv">5</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true"></a>gap_z <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">tail</span>(<span class="dt">n =</span> <span class="dv">5</span>)</span></code></pre></div>
 <pre><code>## # A tibble: 5 x 9
 ##   country      continent  year lifeExp    pop gdpPercap mean_life sd_life life_z
 ##   &lt;fct&gt;        &lt;fct&gt;     &lt;int&gt;   &lt;dbl&gt;  &lt;int&gt;     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;  &lt;dbl&gt;
@@ -1895,42 +1907,42 @@ div.tocify {
 </div>
 <div id="the-apply-family-of-functions" class="section level1" number="5">
 <h1 number="5"><span class="header-section-number">5</span> The apply family of functions</h1>
-<p>Recall that the base R <code>summary()</code> function is a quick and easy way to get a snapshot of the distribution of numeric variables. We’ve also used <code>dplyr</code>’s <code>summarise()</code> function to compute statistics. Another approach is to use an <strong>apply</strong> function to efficiently call another function multiple times for multiple objects or elements of objects (e.g. get the mean for different columns of data). Apply functions include <code>lapply()</code>, <code>sapply()</code>, <code>vapply()</code>, and <code>tapply()</code>. Let’s briefly introduce <code>sapply()</code> and <code>tapply()</code> in case they come in handy down the road.</p>
+<p>Recall that the base R <code>summary()</code> function is a quick and easy way to get a snapshot of the distribution of numeric variables. We’ve also used the <code>summarise()</code> function in the <code>dplyr</code> package to compute summary statistics. Another approach is to use an <strong>apply</strong> function to efficiently call another function multiple times for multiple objects or elements of objects (e.g. get the mean for different columns of data). Apply functions include <code>lapply()</code>, <code>sapply()</code>, <code>vapply()</code>, and <code>tapply()</code>. Let’s briefly introduce <code>sapply()</code> and <code>tapply()</code> in case they come in handy down the road.</p>
 <p><code>sapply()</code> will apply a specified function to each element of a list or vector and returns a corresponding list or vector of results.</p>
-<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true"></a><span class="kw">sapply</span>(X, FUN)</span>
-<span id="cb48-2"><a href="#cb48-2" aria-hidden="true"></a>Arguments<span class="op">:</span></span>
-<span id="cb48-3"><a href="#cb48-3" aria-hidden="true"></a><span class="op">-</span>X<span class="op">:</span><span class="st"> </span>A vector or an object</span>
-<span id="cb48-4"><a href="#cb48-4" aria-hidden="true"></a><span class="op">-</span>FUN<span class="op">:</span><span class="st"> </span>Function applied to each element of x</span></code></pre></div>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true"></a><span class="kw">sapply</span>(X, FUN)</span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true"></a>Arguments<span class="op">:</span></span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true"></a><span class="op">-</span>X<span class="op">:</span><span class="st"> </span>A vector or an object</span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true"></a><span class="op">-</span>FUN<span class="op">:</span><span class="st"> </span>Function applied to each element of x</span></code></pre></div>
 <p>For example:</p>
-<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true"></a><span class="co">#isolate all numeric gapminder columns for 2007 in new data frame</span></span>
-<span id="cb49-2"><a href="#cb49-2" aria-hidden="true"></a>gap_cols &lt;-<span class="st"> </span>gapminder <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(year <span class="op">==</span><span class="st"> </span><span class="dv">2007</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(pop, lifeExp, gdpPercap)</span>
-<span id="cb49-3"><a href="#cb49-3" aria-hidden="true"></a></span>
-<span id="cb49-4"><a href="#cb49-4" aria-hidden="true"></a><span class="co">#use sapply to apply mean function to all columns in gap_cols</span></span>
-<span id="cb49-5"><a href="#cb49-5" aria-hidden="true"></a><span class="kw">sapply</span>(gap_cols, mean)</span></code></pre></div>
+<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true"></a><span class="co">#isolate all numeric gapminder columns for 2007 in new data frame</span></span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true"></a>gap_cols &lt;-<span class="st"> </span>gapminder <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(year <span class="op">==</span><span class="st"> </span><span class="dv">2007</span>) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">select</span>(pop, lifeExp, gdpPercap)</span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true"></a></span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true"></a><span class="co">#use sapply to apply mean function to all columns in gap_cols</span></span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true"></a><span class="kw">sapply</span>(gap_cols, mean)</span></code></pre></div>
 <pre><code>##          pop      lifeExp    gdpPercap 
 ## 4.402122e+07 6.700742e+01 1.168007e+04</code></pre>
 <p><code>tapply()</code> is useful for factors, applying a specified function <strong><em>to each level</em></strong> of a given factor (e.g., to get group-specific means).</p>
-<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true"></a><span class="kw">tapply</span>(X, INDEX, <span class="dt">FUN =</span> <span class="ot">NULL</span>)</span>
-<span id="cb51-2"><a href="#cb51-2" aria-hidden="true"></a>Arguments<span class="op">:</span></span>
-<span id="cb51-3"><a href="#cb51-3" aria-hidden="true"></a><span class="op">-</span>X<span class="op">:</span><span class="st"> </span>An object, usually a <span class="kw">vector</span> (stats will be computed based on X values)</span>
-<span id="cb51-4"><a href="#cb51-4" aria-hidden="true"></a><span class="op">-</span>INDEX<span class="op">:</span><span class="st"> </span>A list containing <span class="kw">factor</span> (stats will be computed <span class="cf">for</span> each INDEX group)</span>
-<span id="cb51-5"><a href="#cb51-5" aria-hidden="true"></a><span class="op">-</span>FUN<span class="op">:</span><span class="st"> </span>Function applied to each element of <span class="kw">x</span> (FUN specifies the type of statistic)</span></code></pre></div>
+<div class="sourceCode" id="cb49"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1" aria-hidden="true"></a><span class="kw">tapply</span>(X, INDEX, <span class="dt">FUN =</span> <span class="ot">NULL</span>)</span>
+<span id="cb49-2"><a href="#cb49-2" aria-hidden="true"></a>Arguments<span class="op">:</span></span>
+<span id="cb49-3"><a href="#cb49-3" aria-hidden="true"></a><span class="op">-</span>X<span class="op">:</span><span class="st"> </span>An object, usually a <span class="kw">vector</span> (stats will be computed based on X values)</span>
+<span id="cb49-4"><a href="#cb49-4" aria-hidden="true"></a><span class="op">-</span>INDEX<span class="op">:</span><span class="st"> </span>A list containing <span class="kw">factor</span> (stats will be computed <span class="cf">for</span> each INDEX group)</span>
+<span id="cb49-5"><a href="#cb49-5" aria-hidden="true"></a><span class="op">-</span>FUN<span class="op">:</span><span class="st"> </span>Function applied to each element of <span class="kw">x</span> (FUN specifies the type of statistic)</span></code></pre></div>
 <p>For example:</p>
-<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true"></a><span class="co">#use tapply to get min lifeExp by country (i.e. for every level of country factor)</span></span>
-<span id="cb52-2"><a href="#cb52-2" aria-hidden="true"></a><span class="kw">tapply</span>(gapminder<span class="op">$</span>lifeExp, gapminder<span class="op">$</span>country, min) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">head</span>()</span></code></pre></div>
+<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true"></a><span class="co">#use tapply to get min lifeExp by country (i.e. for every level of country factor)</span></span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true"></a><span class="kw">tapply</span>(gapminder<span class="op">$</span>lifeExp, gapminder<span class="op">$</span>country, min) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">head</span>()</span></code></pre></div>
 <pre><code>## Afghanistan     Albania     Algeria      Angola   Argentina   Australia 
 ##      28.801      55.230      43.077      30.015      62.485      69.120</code></pre>
 </div>
 <div id="dealing-with-missing-values" class="section level1" number="6">
 <h1 number="6"><span class="header-section-number">6</span> Dealing with missing values</h1>
-<p>It’s usually a good idea to assign all missing values–and values that we want R to treat as missing–as soon as you load your data. Recall one tool for doing this is to specify which characters should be treated as <code>NA</code> when reading in your data. Different data input functions have different options to specify which values should be treated as <code>NA</code>, but here is an example we used last week:</p>
-<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true"></a><span class="co">#set na = option to specify strings to treat as NA</span></span>
-<span id="cb54-2"><a href="#cb54-2" aria-hidden="true"></a>arrests_bds &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;microdata_BDS_inclass.csv&quot;</span>, <span class="dt">na =</span> <span class="st">&quot;&quot;</span>)</span></code></pre></div>
+<p>It’s usually a good idea to assign all missing values–and values that we want R to treat as missing–as soon as you load your data. Recall one tool for doing this is to specify which characters should be treated as <code>NA</code> when reading in your data. Different functions for loading data have different options to specify which values to treat as <code>NA</code>; here is one example we used last week:</p>
+<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true"></a><span class="co">#set na = option to specify strings to treat as NA</span></span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true"></a>arrests_bds &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;microdata_BDS_inclass.csv&quot;</span>, <span class="dt">na =</span> <span class="st">&quot;&quot;</span>)</span></code></pre></div>
 <p>Sometimes missing values will be assigned with specific codes in survey data (e.g. 999999). You can specify which values should be treated as <code>NA</code> when loading your data, or replace them after the fact.</p>
-<p>In any event, getting a handle on which values should be treated as missing and why that is should be on the top of your to do list. In some instances you may want to keep all observations and exclude <code>NA</code>’s as needed when making certain calculations. In other instances, you may want to drop incomplete rows from your analysis.</p>
+<p>In any event, getting a handle on which values should be treated as missing and why that is should be on the top of your to do list. In some instances you may want to keep all observations and exclude <code>NA</code>’s as needed when making certain calculations. In other instances, you may want to drop incomplete rows from your analysis so you have one complete <strong>analysis sample</strong> for all of your analysis.</p>
 <p>Let’s introduce some tools for making decisions about <code>NA</code> values using the <code>healthexp</code> data from the World Bank. First let’s look at all observations with <code>NA</code> health expenditure data for 2002:</p>
-<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true"></a><span class="co">#use is.na function filter to identify observations with NA health exp</span></span>
-<span id="cb55-2"><a href="#cb55-2" aria-hidden="true"></a>healthexp <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(year <span class="op">==</span><span class="st"> </span><span class="dv">2002</span>, <span class="kw">is.na</span>(healthexp) <span class="op">==</span><span class="st"> </span><span class="ot">TRUE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true"></a><span class="co">#use is.na function filter to identify observations with NA health exp</span></span>
+<span id="cb53-2"><a href="#cb53-2" aria-hidden="true"></a>healthexp <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(year <span class="op">==</span><span class="st"> </span><span class="dv">2002</span>, <span class="kw">is.na</span>(healthexp) <span class="op">==</span><span class="st"> </span><span class="ot">TRUE</span>)</span></code></pre></div>
 <pre><code>## # A tibble: 35 x 4
 ##    country        Indicator.Name                                  year healthexp
 ##    &lt;chr&gt;          &lt;chr&gt;                                          &lt;dbl&gt;     &lt;dbl&gt;
@@ -1947,9 +1959,9 @@ div.tocify {
 ## # ... with 25 more rows</code></pre>
 <p>Right away we can recognize that many missing observations–though not all–are for sub-national territories that may not report this information (e.g. Aruba is considered a “constituent country of the Kingdom of the Netherlands”).</p>
 <p>Here is an easy way to remove all observations with <code>healthexp</code> equal to <code>NA</code>, if that is what we decide to do:</p>
-<div class="sourceCode" id="cb57"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true"></a><span class="co">#use na.omit function to drop all observations with NA health exp</span></span>
-<span id="cb57-2"><a href="#cb57-2" aria-hidden="true"></a>healthexp_<span class="dv">2002</span> &lt;-<span class="st"> </span>healthexp <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(year <span class="op">==</span><span class="st"> </span><span class="dv">2002</span>)</span>
-<span id="cb57-3"><a href="#cb57-3" aria-hidden="true"></a><span class="kw">na.omit</span>(healthexp_<span class="dv">2002</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true"></a><span class="co">#use na.omit function to drop all observations with NA health exp</span></span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true"></a>healthexp_<span class="dv">2002</span> &lt;-<span class="st"> </span>healthexp <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">filter</span>(year <span class="op">==</span><span class="st"> </span><span class="dv">2002</span>)</span>
+<span id="cb55-3"><a href="#cb55-3" aria-hidden="true"></a><span class="kw">na.omit</span>(healthexp_<span class="dv">2002</span>)</span></code></pre></div>
 <pre><code>## # A tibble: 229 x 4
 ##    country            Indicator.Name                              year healthexp
 ##    &lt;chr&gt;              &lt;chr&gt;                                      &lt;dbl&gt;     &lt;dbl&gt;
@@ -1978,7 +1990,7 @@ div.tocify {
 
 // add bootstrap table styles to pandoc tables
 function bootstrapStylePandocTables() {
-  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
 }
 $(document).ready(function () {
   bootstrapStylePandocTables();
