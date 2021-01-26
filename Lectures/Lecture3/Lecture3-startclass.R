@@ -47,7 +47,9 @@ getwd()
 ##
 ##    note these files were provided by the respective orgs with no documentation
 ##
-##  a. give a brief overview of the data
+##  a. give a brief overview of the data 
+##     (start to think about this now, but write up answer later after you know what
+##      information proved most relevant for your analysis)
 ##
 ##  b. what is the unit of observation and population represented by this "sample"?
 ##     do you think this sample does a good job representing the population of interest?
@@ -119,7 +121,7 @@ getwd()
 #3a. BDS race
 
   #inspect
-  #NOTE: don't show all of this in your R Markdown submission, only the highlights
+  #NOTE: don't show all of this in your R Markdown submission, only what is needed
     levels(arrests_bds$race)
     typeof(arrests_bds$race) #remember factors are stored as integers corresponding to levels
     summary(arrests_bds$race)
@@ -155,7 +157,9 @@ getwd()
     levels(arrests_bds.clean$ethnicity)
     table(arrests_bds.clean$race_clean, arrests_bds.clean$ethnicity, useNA = "always")
   
-  #ok now let's recode to Hispanic, Non-Hispanic, and NA and then use factor to set levels
+  #now let's recode by creating a hispanic column where:
+  #1. hispanic takes the values Hispanic, Non-Hispanic, or NA
+  #2. then use factor() to set levels based on the above values    
     arrests_bds.clean <- arrests_bds.clean %>% 
       FILL IN CODE
   
@@ -176,13 +180,8 @@ getwd()
   #recoding with different data types and/or NA values can be tricky 
   #let's start by converting factors to characters using the as.character()
     arrests_bds.clean <- arrests_bds.clean %>% 
-        mutate(race_clean_char = as.character(race_clean)) %>% #work with characters
-        mutate(hispanic_char = as.character(hispanic))     %>% #work with characters
-        mutate(race_eth = ifelse(hispanic_char == "Hispanic", 
-                                 hispanic_char, 
-                                 race_clean_char) ) %>%  
-        mutate(race_eth = as.factor(recode(race_eth, "White" = "Non-Hispanic White"))) %>%
-        select(-race_clean_char, -hispanic_char)      
+       FILL IN CODE     
+    
     
   #validate results
     
@@ -195,10 +194,7 @@ getwd()
       
   #here's a shorter way... but you'd need to label the factor levels separately
     arrests_bds.clean %>% 
-      mutate(race_eth = factor(ifelse(hispanic == "Hispanic", 
-                                      hispanic, 
-                                      race_clean) ) ) %>%  
-      mutate(race_eth = recode(race_eth, "White" = "Non-Hispanic White"))  
+      FILL IN CODE
     
   
 ## -----------------------------------------------------------------------------
@@ -235,8 +231,8 @@ getwd()
 ##
 ##    c. use the nrow function to display the total number of arrests
 ##
-##    d. export new df as "arrests_all.csv" (HINT: use write_csv() introduced in Lecture 3.1)
-##       also save as rds file in Lecture4 folder for next week
+##    d. store new df as arrests_all and save as rds file in a new Assignment4 folder
+##       (we'll use in the coming weeks)
 ##
 ## -----------------------------------------------------------------------------
 
@@ -261,8 +257,7 @@ getwd()
 
 
 #5d.
-  write_csv(arrests.clean, "arrests_all.csv") 
-  saveRDS(arrests.clean, "../Lecture4/arrests.clean.rds")
+  saveRDS(FILL IN ARGUMENTS)
 
   
 ## -----------------------------------------------------------------------------
@@ -370,7 +365,7 @@ getwd()
   str(arrests.clean)
   summary(arrests.clean[,8:13]) #too clunky, don't show this!
   
-  #what's a better way to show just the means?
+  #what's a better way to show just the means using summarise()?
   arrests.clean %>% 
     FILL IN CODE
 
