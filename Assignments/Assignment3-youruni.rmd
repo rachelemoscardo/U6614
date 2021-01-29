@@ -119,7 +119,6 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
   - *total number of arrests with race/ethnicity coded as NA*
   - *share of arrests that are Black and Hispanic (excluding race_eth = NA from denominator)*
   - *sorted in ascending order above Black and Hispanic arrest share*
-  - *remember to only show stations with at least 50 total arrests*
   - *use kable() in the knitr package for better formatting*
 
 
