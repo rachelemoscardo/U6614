@@ -34,7 +34,6 @@ library(SciViews)
 library(weights)
 library(lmtest)
 library(sandwich)
-library(ggplot2)
 library(Weighted.Desc.Stat)
 library(kableExtra)
 ```
@@ -49,15 +48,15 @@ Resources used to create this lesson:
 
 # What is explanatory data analysis?
 
-Exploratory data analysis, or EDA, is a pretty self-explanatory term... to a degree. Some disciplines emphasize this term more than others, and focus on different goals and methods. We're going to use this term in a very general sense: before we can determine if more rigorous econometric methods make sense, we need to make sense of the datasets we're working with, explore individual variables in the raw data ("input variables"), prepare analysis variables from these input variables, and then explore associations between variables. 
+Exploratory data analysis, or EDA, is a pretty self-explanatory term... to a degree. Some disciplines emphasize this term more than others, and focus on different goals and methods. We're going to use this term in a very general sense: before we can determine which more rigorous econometric methods make sense and how to implement them, we need to make sense of the datasets we're working with, explore individual variables in the raw data ("input variables"), prepare analysis variables from these input variables, and then explore associations between variables. 
 
 We've already touched on many of the statistical methods and R functionality to carry out EDA, but let's provide some structure and guiding principles you can turn to in different situations.
 
 EDA doesn't follow a linear process, but here are broad steps to follow for each dataset you're working with.
 
 1. Understand how the data was produced.
-2. Identify the unit of observation.
-3. Obtain the sample size and dimensions of the dataset.
+2. Identify the unit of observation and representative population, and any related obstacles/limitations.
+3. Obtain the sample size and dimensions of the overall dataset and any subgroups of interest.
 4. Explore individual variables and clean/recode/transform as needed.
 5. Explore relationships between key variables.
 
@@ -96,9 +95,9 @@ In many instances we'll have to make a distinction between the **unit of observa
 
 * Public defender datasets included microdata (*individual observations*)
 * Ridership, poverty and crime data was provided for subway station areas (*station-level observations*)
-* Our ultimate analysis sample collapsed the microdata to the subway station level, i.e. the *unit of analysis* was the subway station area.
+* Ultimately we'll rely on an analysis sample that collapses the microdata to the subway station level, i.e. the *unit of analysis* will be the subway station area.
 
-Note that we chose to collapse the data to aggregate units because it allowed us to **exploit variation that was more useful** for exploring racial disparities in enforcement. Instead of exploiting variation in race across arrested individuals, we exploited variation in racial composition across neighborhoods.
+The decision to collapse the data to aggregate units (subway station areas) allows us to **exploit variation that is more useful** for exploring racial disparities in enforcement. Instead of exploiting variation in race across arrested individuals, we'll exploit variation in racial composition across neighborhoods.
 
 
 ## Obtain the sample size and dimensions of the dataset
@@ -116,8 +115,8 @@ The idea is to understand variables in the raw data, think about how we should c
 
 First, some **rules to follow**:
 
-1. Never modify an original variable. 
-    + Instead, create new variables based on original variables. You can deselect the old ones when you're ready, but you want to keep the original variables so you can validate your new variables against them.
+1. Don't modify an original variable. 
+    + Instead, create new variables based on original variables. You can deselect the old ones when you're ready, but you want to keep the original variables in order to validate your new variables against them.
 2. For every value you observe for an input variable, think about the value the corresponding analysis variable should take. 
     + This is what we did when recoding race and ethnicity in the public defender arrest data.
 3. Pay close attention to missing values and how they are coded. In many instance R will not automatically treat true missings as `NA`, so you'll have to do some investigating and recoding.
@@ -128,17 +127,17 @@ Next let's review some statistical approaches we can use depending on the type o
 
 ### Continuous variables
 
-We can visualize the distribution of a continuous variable with a histogram using `ggplot()` and the `geom_histogram()` geometry, see Lecture 3.1.9. We can also compute the mean, median, standard deviation, min, max, and percentiles. We reviewed the `summary()`, `summarize()` and `count()` functions for computing summary statistics in Lecture 3.1.7. If quantiles or percentiles are of interest, try the `quantiles()` function. 
+We can visualize the distribution of a continuous variable with a histogram using `ggplot()` and the `geom_histogram()` geometry (see [Lecture 3.1.9](https://hreplots.github.io/U6614/Lectures/Lecture3/Lecture3.1.html#9_Intro_to_ggplot_for_visualization)). We can also compute the mean, median, standard deviation, min, max, and percentiles. We reviewed the `summary()`, `summarize()` and `count()` functions for computing summary statistics in [Lecture 3.1.7](https://hreplots.github.io/U6614/Lectures/Lecture3/Lecture3.1.html#7_Summary_statistics). If quantiles or percentiles are of interest, try the `quantiles()` function. 
 
-Here are some examples of R code used to analyze arrests per 100k swipes (a continuous variable) in our grouped subway-station level data from last week.
+Here are some examples of R code used to analyze arrests per 100k swipes (a continuous variable) in our grouped subway-station level data from week 4.
 
 ```{r, message = FALSE, warning = FALSE}
 #load grouped station data from Lecture4-inclass
 stations <- readRDS("stations.rds")
 
 #get summary stats to describe distribution of arrests/swipe across stations
-#note NAs recognized by R will prevent calcs unless na.rm = TRUE
-summary(stations$arrperswipe) 
+#note that NAs recognized by R will prevent calcs unless na.rm = TRUE
+summary(stations$arrperswipe) #no NAs for this columns
 
 #visualize distribution with histogram
 ggplot(data = stations, aes(x = arrperswipe)) + geom_histogram()
@@ -167,6 +166,7 @@ x_cat <- cut(x_cont,
 
 #take a look to validate the results!
 table(x_cont, x_cat)
+summary(x_cat)
 ```
 
 Here are some examples of EDA tools for a categorical variable, the uncleaned race input variable from the BDS client microdata for arrested individuals. You can revisit week 3 for details on how we recoded the information in `race` into the more useful variable `race_clean`, and then incorporated `hispanic`to get a single categorical analysis variable `race_eth` with mutually exclusive categories and proper treatment of true missings as `NA`.
@@ -193,9 +193,9 @@ ggplot(data = arrests_bds.clean, aes(x = forcats::fct_infreq(race_eth))) +
 
 #### Creating dummy variables
 
-Whenever you want to account for a variable with categorical information in a regression, you need to include dummy variables for each category (omitting one base category). You *cannot* include a categorical variable as a control variable if it hasn't been coded as a (binary) dummy variable, because the units of the categories have no inherent meaning and would result in misleading comparisons (see [this](https://www.moresteam.com/whitepapers/download/dummy-variables.pdf) link for a very short refresher about using variables in regression analysis.)
+Whenever you want to account for a variable with categorical information in a regression, you need to include dummy variables for each category (omitting one base category). You *cannot* include a categorical variable as a control variable if it hasn't been coded as a (binary) dummy variable, because the units of the categories have no inherent meaning and would result in misleading comparisons (see [this](https://www.moresteam.com/whitepapers/download/dummy-variables.pdf) link for a very short refresher about using variables in regression analysis). Sometime R may know to treat factor variables as dummies... but don't assume it does!
 
-So as convenient as it is to use categorical information stored as factors in R, once you have a regression in your sights you need to take the next step of creating dummy variables for each category. As we've seen in recent weeks, the `dummy_cols()` function in the `fastDummies` package is a handy tool for doing this without too much hassle.
+So as convenient as it is to use categorical information stored as factors in R, once you have a regression in your sights you'll need to take the next step of creating dummy variables for each category. As we've seen in recent weeks, the `dummy_cols()` function in the `fastDummies` package is a handy tool for doing this without too much hassle.
 ```{r, message = FALSE, warning = FALSE}
 #create new data frame w/dummy vars for each category of race_clean and hispanic
 arrests_bds_clean_d <- 
@@ -213,16 +213,14 @@ In many cases the input variables from the raw data don't properly code true mis
 
 Regardless of whether a variable is continuous or categorical, we want to make sure all of the values that appear for that variable make sense--the coding should be correct, consistent, and useful. In many cases we'll be recoding values as `NA`, recoding to have a new set of categorical values (e.g. collapsing into fewer categories or creating dummy variables), and/or transforming continuous variables (e.g. taking the log of a variable), as covered in Lectures 3.1 and 2.3. 
 
-Recall from Lecture 3 that the `ifelse()` function is a handy function to use within `mutate()` to recoding values from an input variable and create a new clean variable.  `recode()` is another handy function that respects factor labeling.
-
-Recoding and transforming is often part of an iterative process, where we explore and describe data, manipulate the data, then describe again through summary statistics or charts. It's important to continuously **validate** the data along the way, lest we end up working with data that doesn't make sense.
+Recoding and transforming is often part of an iterative process, where we explore and describe data, manipulate the data, then describe again through summary statistics or charts. It's important to continuously **validate** the data along the way, lest we unknowingly end up working with data that doesn't make sense.
 
 
 #### Recoding missings as `NA`
 
 Remember from Lecture 3 that one tool for recoding missing values so R recognizes them as `NA` is by using `mutate()` along with the `recode()` function from the `dplyr` package.  In week 3 we recoded all unclear values in the race column with the text value "NA" and then told R to recognize "NA" as the system `NA`. 
 
-Below is alternative approach for recoding 0 values for the messy race input variable as `NA`. This approach relies on the base R `ifelse`, tells it to look for a vector of funky values to recode (using the `%in%` operator), recodes instances of these funky values as `NA`, otherwise uses the original levels for the race variable.
+Below is alternative approach for recoding 0 values for the messy race input variable as `NA`. This approach relies on the base R `ifelse`, tells it to look for a vector of funky values to recode (using the `%in%` operator), recodes instances of these funky values as `NA`, otherwise uses the original levels for the race variable. 
 
 ```{r, message = FALSE, warning = FALSE}
 #load clean BDS microdata from Lecture3-inclass
@@ -233,6 +231,8 @@ arrests_bds.clean  %>%
 count(race_temp)
 ```
 
+Note that in the above code chunk we already know and specify the values to recode as `NA`, whereas the approach from class required us to specify the values to keep as levels for a new factor variable.
+
 
 #### Undefined values 
 
@@ -240,7 +240,7 @@ In practice we may want to call functions to describe the distribution of a vari
 ```{r, message = FALSE, warning = FALSE}
 income <- c(19000, 76000, 42000, 132000, 0, 37000, -100)
 ln_income <- ln(income) 
-  #ln() is in the SciViews package and is equivalent to log() in base R
+#note: ln() is in the SciViews package and is equivalent to log() in base R
 ```
 
 If we take a look at the transformed data we can see that according to R, `log(0)` = `-Inf` and `log(-100)` = `NaN`. You might guess that the former refers to negative infinity, while the `NaN` means "it's "not a number". In this case there is a mathematical distinction, but in both cases the values are effectively undefined for the purposes of statistical analysis. A simple reminder that we may need to adjust our approach to transforming the data.
@@ -312,7 +312,7 @@ ggplot(data = arrests_bds.clean, aes(x = race_clean, y = hispanic)) +
 
 * **Difference-in-means** or other distributional differences between categories: 
   + **Tables**: use `summarize()` along with `group_by()`
-  + **Inference**: `t.test()`
+  + **Inference**: difference in means using `t.test()` or bivariate regression (if you're not clear on how to implement a difference in means test using bivariate regression with a dummy regressor, please review [Video Lecture 2.2.a](https://drive.google.com/file/d/1-kM9FlwZz7Kx1ynbe3_9ArhHtfHNGNz6/view?usp=sharing) from Quant II)
   + **Visualizations**: 
     + `ggplot()` with `geom_bar()` geometry
     + compare continuous distributions using `ggplot()` with `geom_freqpoly()` geometry
@@ -333,7 +333,6 @@ stations %>%
 #test significance of difference in mean arrests per swipe 
 t.test(arrperswipe ~ highpov, data = stations, var.equal = FALSE)
   
-
 #visualize distribution of arrperswipes by high/low pov categories
 ggplot(stations, aes(x = arrperswipe, colour = as.factor(highpov))) + 
   geom_freqpoly(binwidth = 1)
@@ -424,7 +423,7 @@ For now, here is a fairly crude way of getting the structure of a difference-in-
   ols1_d <- lm(povrt_all_2016 ~ nblack, data = stations)
   ols1_e <- lm(shareblack ~ nblack, data = stations)
 
-  #get p-values for coef of interest in each model
+  #get p-values for coefficient of interest in each model
   p_a <- coeftest(ols1_a, vcov = vcovHC(ols1_a, type="HC1"))[2,4]
   p_b <- coeftest(ols1_b, vcov = vcovHC(ols1_b, type="HC1"))[2,4]
   p_c <- coeftest(ols1_c, vcov = vcovHC(ols1_c, type="HC1"))[2,4]
@@ -470,7 +469,7 @@ As an example, think about which respondents are more likely to respond to a tel
 
 ## Weighting in R
 
-Last week in class we used the base R function `weighted.mean()`, and the `wtd.t.test()` function from the `weights` package. The weights package provides some additional functions that utilize weights, including `wtd.cor()` and `wpct()`. 
+In class we used the base R function `weighted.mean()`, and the `wtd.t.test()` function from the `weights` package. The weights package provides some additional functions that utilize weights, like `wtd.cor()` and `wpct()`. 
 
 Another useful package for working with survey data that requires you to use sampling weights is `Weighted.Desc.Stat`. Here are some basic examples of weighted summary statistics.
 
@@ -494,7 +493,8 @@ var(xyw.df$x)
 cor(xyw.df$x, xyw.df$y)
 ```
 
-The `ggplot` package accepts weights as an argument to the aesthetic mapping function `aes()`:
+The `ggplot` package accepts weights as an argument to the aesthetic mapping function `aes()`. Compare the histograms for the above sample data with and without weights.
+
 ```{r, message = FALSE, warning = FALSE}
 #unweighted histogram
 ggplot(xyw.df, aes(x)) + geom_histogram(bins = 4)
