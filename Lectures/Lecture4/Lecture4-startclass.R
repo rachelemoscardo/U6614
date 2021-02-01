@@ -1,9 +1,9 @@
 ################################################################################
 ##
 ## [ PROJ ] Lecture 4: Subway Fare Evasion Arrests and Racial Bias
-## [ FILE ] Lecture4-inclass.r
+## [ FILE ] Lecture4-startclass.r
 ## [ AUTH ] < YOUR NAME >
-## [ INIT ] < Sept 29, 2020 >
+## [ INIT ] < February 2, 2021 >
 ##
 ################################################################################
 
