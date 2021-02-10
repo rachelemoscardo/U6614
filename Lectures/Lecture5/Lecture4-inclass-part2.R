@@ -193,12 +193,12 @@ str(st_ridership)
   
 #4b. 
   ggplot(stations, #specify dataframe to use
-         aes(x = povrt_all_2016, y = arrperswipe, weights = swipes2016)) + #specify columns to use
+         aes(x = povrt_all_2016, y = arrperswipe, weight = swipes2016)) + #specify columns to use
     geom_point() + #specify plot geometry
-    ggtitle('Scatterplot of arrest rate vs. poverty rate') + #add title
-    labs(x = 'poverty rate', y = 'arrest rate') #change axis labels
+    ggtitle('Scatterplot of arrest intensity vs. poverty rate') + #add title
+    labs(x = 'poverty rate', y = 'arrests relative to ridership') #change axis labels
 
-  #fit linear model with station observations weighted by swipes
+  #fit linear model with station observations weightsed by swipes
     ols1l <- lm(arrperswipe ~ povrt_all_2016, data = stations, weights = swipes2016)
     summary(ols1l) #get summary of the model
     coeftest(ols1l, vcov = vcovHC(ols1l, type="HC1")) #get robust SEs
@@ -215,12 +215,12 @@ str(st_ridership)
     ggplot(stations, 
            aes(x = povrt_all_2016, y = arrperswipe, weight = swipes2016)) + 
       geom_point() + 
-      ggtitle('Scatterplot of arrest rate vs. poverty rate') + 
-      labs(x = 'poverty rate', y = 'arrest rate') + 
+      ggtitle('Scatterplot of arrest intensity vs. poverty rate') + 
+      labs(x = 'poverty rate', y = 'arrests relative to ridership') + 
       geom_smooth(method = 'lm', formula = y ~ x) #add regression line
   
 
-  #fit quadratic OLS model (arrest rate vs. poverty rate)
+  #fit quadratic OLS model (arrest intensity vs. poverty rate)
   #HINT: see quadratic syntax from Lecture4.2 (section 4.1)
     ols1q <- lm(arrperswipe ~ povrt_all_2016 + I(povrt_all_2016^2),
                data = stations) #include quadratic term
@@ -232,7 +232,7 @@ str(st_ridership)
            aes(x = povrt_all_2016, y = arrperswipe)) + 
       geom_point() + 
       ggtitle('Linear regression fit') + 
-      labs(x = 'poverty rate', y = 'arrest rate') + 
+      labs(x = 'poverty rate', y = 'arrests relative to ridership') + 
       geom_smooth(method = 'lm', formula = y ~ x + I(x^2)) 
 
   
@@ -251,7 +251,7 @@ str(st_ridership)
 
    
   #instead let's use bivariate regression (accepts weights!) w/robust SEs
-    diff1 <- lm(arrperswipe ~ highpov, data = stations, weight = swipes2016)
+    diff1 <- lm(arrperswipe ~ highpov, data = stations, weights = swipes2016)
     summary(diff1) #get summary of the model
     coeftest(diff1, vcov = vcovHC(diff1, type="HC1")) #get robust SEs
     
