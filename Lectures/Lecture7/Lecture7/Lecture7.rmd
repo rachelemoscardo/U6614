@@ -63,13 +63,14 @@ In this example, **exploiting cross-sectional variation (*****between*** **count
 
 With panel data, one can **exploit variation in the mask-mandate treatment over time** ***within*** **countries** to identify the impacts of a mask-mandate. More specifically, in this example fixed effects can be used to control for two broad categories of potentially confounding factors: (1) fixed (time-invariant) country-specific differences; and (2) time-varying differences shared by all countries.
 
-Note the salience of the major limitation of fixed effects models in this example: any factors that within-countries over time cannot be accounted for with fixed effects. Said another way, you can't have country-month fixed effects, because that would attempt to control for the policy variable under consideration; this would introduce perfect multicollinearity between the treatment dummy variable and the corresponding country-year fixed effect, leading one of them to be dropped from the regression).
+Note how salient major limitation of fixed effects models is in this example: any factors that within-countries over time cannot be accounted for with fixed effects. Said another way, you can't have country-month fixed effects, because that would attempt to control for the policy variable under consideration; it would introduce perfect multicollinearity between the treatment dummy variable and the corresponding country-year fixed effect, leading one of them to be dropped from the regression).
 
-For example of a threat to internal validity that fixed effects can't account, if a particular country's decision to implement a national mask mandate is made in tandem with other effective public health measures like free testing programs, then it is impossible to distinguish between the relative contributions of these two policies using fixed effects alone... but maybe you can start to explicitly control for confounding factors?
+What's an example of a threat to internal validity that fixed effects can't account for this research question? If a particular country's decision to implement a national mask mandate is made in tandem with other effective public health measures like free testing programs, then it is impossible to distinguish between the relative contributions of these two policies using fixed effects alone. Maybe you can start to explicitly control for these other policies and confounding factors with the available data, but there may be major limitations to that approach.
+
 
 ***Self-assessment question:*** 
 
-*With this hypothetical panel data structure, can you think of additional research design features and/or data that might help researchers to distinguish the effects of a mask-mandate from any national testing policies implemented at the same time?*
+*Given the hypothetical panel data structure implied above, can you think of additional research design features and/or data that might help researchers to distinguish the effects of a mask-mandate from any national testing policies implemented at the same time?*
 
 
 # Panel data structure
@@ -99,7 +100,7 @@ One advantage to wide-form panel data is that it is generally easier to compute 
 
 So how do we get the gapminder data frame in wide form?
 
-The `tidyr` package include a number of useful functions for restructuring data frames, but the `panelr` package is particularly useful for reshaping panel data.
+The `tidyr` package include a number of useful functions for restructuring data frames, and the `panelr` package is particularly useful for reshaping panel data.
 
 In the `panelr` package, first call the `panel_data()` function to tell R the nature of the panel data frame: use the `id` argument to specify the entity variable, and the `wave` argument to specify the time variable.
 
@@ -145,7 +146,7 @@ Fixed effects models allow us to control for certain kinds of unobserved factors
 
 Also note that in a conventional panel data setting you can choose to include both entity and time fixed effects, one, or neither. The decision to incorporate fixed effects should be done carefully as a reasoned strategy for controlling for otherwise omitted factors that could result in biased coefficient estimates of interest.
 
-Please consult Chapter 10 of [Introduction to Econometrics with R](https://www.econometrics-with-r.org/10-rwpd.html) for a review of fixed effects regression theory along with R code. The following is an excerpt of that chapter that summarizes two equivalent approaches for using R to estimate fixed effects models: the Least Squares Dummy Variable model.
+In addition to the fixed effects [video lecture](https://drive.google.com/file/d/1NPCtAUMg9eocWBaPr5jaY3KgsbxPkkeD/view?usp=sharing) from Quant II, you can consult Chapter 10 of [Introduction to Econometrics with R](https://www.econometrics-with-r.org/10-rwpd.html) for a review of fixed effects regression theory along with R code. The following is an excerpt of that chapter that summarizes two equivalent approaches for using R to estimate fixed effects models: the Least Squares Dummy Variable model, and traditional fixed effects models.
 
 ******
 
@@ -166,34 +167,42 @@ Model <a href="10-3-fixed-effects-regression.html#eq:drmodel">(10.2)</a> has <sp
 
 ******
 
-If specified properly, estimating a fixed effects model (as in 10.1) and a Least Squares Dummy Variable (LSDV) model (as in 10.2) will yield identical estimates for <span class="math inline">\(\beta_1\)</span>. The LSDV model will also report estimates for every "fixed effect" coefficient, whereas the fixed effects model will *sweep away* these fixed effects rather than estimating them.
+If specified properly, estimating a fixed effects model (as in 10.1) and a Least Squares Dummy Variable (LSDV) model (as in 10.2) will yield identical estimates for <span class="math inline">\(\beta_1\)</span>. The LSDV model will also report estimates for every "fixed effect" coefficient, whereas the fixed effects model will *sweep away* these fixed effects rather than estimating them; this happens by *residualizing* (or *demeaning*) the underlying data, as outlined in the fixed effects [video lecture](https://drive.google.com/file/d/1NPCtAUMg9eocWBaPr5jaY3KgsbxPkkeD/view?usp=sharing) from Quant II.
 
-Also note that you need to think carefully about the underlying error structure when estimating standard errors for inference on <span class="math inline">\(\hat\beta_1\)</span>. Examples of R functions for different standard error formulas for the LSDV and fixed effects models can be found in the following sections.
+Also note that you need to think carefully about the underlying error structure when estimating standard errors for inference on <span class="math inline">\(\hat\beta_1\)</span>. Examples of R functions for different standard error formulas for the LSDV and fixed effects models can be found below in Sections 5.1 and 5.2.
 
 
 ## Least Squares Dummy Variable model estimation
 
-The LSDV model can be estimated in R using the `lm()` function.
+The LSDV model can be estimated in R using the `lm()` function. The code examples below use the gapminder panel data frame to estimate the impact of GDP per capita on life expectancy with fixed effects for country and year (wave).
 
 ```{r}
 #specify LSDV model
 lsdv1 <- lm(lifeExp ~ gdpPercap + factor(country) + factor(wave), data = gap_long)
+```
 
-#robust SEs (just report for coefficient of interest)
+```{r, collapse= TRUE}
+#display R-squared and Adj. R-squared for full model
+summary(lsdv1)$r.squared
+summary(lsdv1)$adj.r.squared
+```
+
+```{r}
+#robust SEs (here we're just reporting on the coefficient for gdpPercap)
 coeftest(lsdv1, vcov = vcovHC(lsdv1, type = "HC1"))[2,]
 
 #clustered SEs (equivalent to areg in Stata)
 
   #stats for coefficient of interest is the 2nd element in this object. 
   lsdv1_vcov <- cluster.vcov(lsdv1, 
-                              cbind(gap_long$country),
+                              gap_long$country,
                               df_correction = T) #a small sample size adjustment
     
-  #just report stats for coefficient of interest (the second row)
+  #just report stats for coefficient of interest (the second row from coeftest)
     coeftest(lsdv1, lsdv1_vcov)[2,] 
-
 ```
 
+Note that the estimated slope effect of GDP per capita on life expectancy is negative! In other words, once we control for time-invariant country-specific characteristics and year-specific factors shared by all countries, we estimate a negative association between GDP per capita and life expectancy -- presumably contrary to our expectations!
 
 
 ## Fixed effects estimation
@@ -207,6 +216,10 @@ fe1 <- plm(lifeExp ~ gdpPercap,
           index = c("wave", "country"), 
           model = "within", 
           effect = "twoways")
+```
+
+```{r message=FALSE, warning=FALSE}
+summary(fe1) #note that the R-squared reported w/plm does not reflect the full model!
 
 #clustered SEs (equivalent to areg in Stata)
 
@@ -220,23 +233,57 @@ fe1 <- plm(lifeExp ~ gdpPercap,
   coeftest(fe1, vcov = fe1_c_country_vcov)
 ```
 
-[Here](https://alex.miller.im/posts/when-to-use-fixed-effects-vs-clustered-standard-errors-panel-data/) is a short overview of the motivation for clustered standard errors in panel data settings along with some practical guidance.
+[Here](https://alex.miller.im/posts/when-to-use-fixed-effects-vs-clustered-standard-errors-panel-data/) is a short overview of the motivation for clustered standard errors in panel data settings along with some practical guidance, and here is a short [video lecture](https://drive.google.com/file/d/1VJk5VGqJ4hyVxt8c-tboLQy-8K7zCa5C/view?usp=sharing) on the topic from Quant II.
 
 Some additional practical guidance to keep in mind: clustered standard errors generally lead to over-rejection of the null hypothesis when the number of clusters is small (<50). See [Cameron and Miller (2015)](http://cameron.econ.ucdavis.edu/research/Cameron_Miller_JHR_2015_February.pdf) for more details.
 
 
-# Exploratory data analysis with panel data
+## Visualizing fixed effects results
 
-When the data includes observations for entities over time and not just a single cross-section of data, we need to think carefully about what sort of descriptive statistics would be informative. More specifically, often times we don't want to compute summary statistics by pooling observations over time (e.g., a difference in groups means averaged across all times periods), instead it may be informative to calculate summary statistics separately within one or more time periods (e.g. a difference in group means within in each time period).
+In the fixed effects models estimated above, life expectancy is regressed on GDP capita with fixed effects for country and year. How can we think about visualizing the results of this fixed effects model? Let's start by writing out the population regression function (PRF), 
 
-Time series plots for different entities (or groups of entities) may be an informative visualization. For example, one could compare time-series plots of key variables averaged over treated entities vs untreated entities, or between some meaningful groups.
+$$lifeExp_{ct} = \beta_0 + \beta_1 gdpPercap_{ct} + \phi_c + \theta_t + u_{ct} \tag{1}$$
+where *c* indexes countries and *t* indexes years. For notational purposes we generally prefer the traditional FE model notation, since we often aren't interested in the values of the fixed effect terms themselves (we just want to use them to control for certain types of omitted variables). But it can still be instructive to return to the LSDV framework to understand what we're estimating.
+
+The LSDV model reminds us that we are estimating a single slope effect for GDP per capita, but we are allowing for different intercepts for every country and year. So we could plot separate regression lines to illustrate how the linear relationship between GDP per capita and life expectancy differs for every single country in 2007, for example; all the regression lines would be parallel, only the intercepts would differ. 
+
+In many cases, including this one, that approach would result in way too many regression lines on the same plot -- it would just look like a big mess to have separate regression lines for every country in 2007. Moreover, we're probably not even interested in visualizing different intercepts between countries. Rather, the point is to control for these differences so they aren't a source of omitted variable bias when estimating $\beta_1$, the slope effect of GDP per capita on life expectancy.
+
+Hence the more common FE notation seen in equation (1), rather than the LSDV model. Estimation of equation 1 is implemented by using ***residualized*** (or *demeaned*) versions of GDP per capita and life expectancy. That's what FE commands like `plm()` in R and areg in Stata do. First, they regress the outcome (lifeExp) on dummy variables for every country and year, and then obtain the residual for every observation. This residual represents the variation in the outcome that is *not* explained by time-invariant country-specific characteristics, or year-specific factors shared by all countries. The regressor of interest (gdpPercap) is residualized in a similar fashion. Then the FE coefficient estimate for $\beta_1$ can be obtained by regressing residualized life expectancy on residualized GDP per capita.
+
+With this process in mind, a natural visualization of the FE coefficient estimate of interest is to plot the regression line over the scatterplot of *residualized* GDP per capita vs *residualized* life expectancy.
 
 ```{r}
-#need to transform data to get continent-year means (bc we observe many countries per continent)
+#obtain residualized lifeExp and gdpPercap (with country and year FEs)
+lifeExp_r <- resid(lm(gap_long$lifeExp ~ factor(gap_long$country) + factor(gap_long$wave)))
+gdpPercap_r <- resid(lm(gap_long$gdpPercap ~ factor(gap_long$country) + factor(gap_long$wave)))
+
+#add residualized variables to gap_long as new columns (similar to cbind)
+gap_long_fe <- data.frame(gap_long, lifeExp_r, gdpPercap_r)
+
+#plot slope effect from FE model over residualized data
+ggplot(gap_long_fe, aes(x = gdpPercap_r, y = lifeExp_r)) +
+  geom_point(alpha = 0.2) + #adjusts the transparency of the geom_point layer
+  geom_smooth(method = 'lm', formula = y ~ x, se = FALSE) +
+  ggtitle(label = "Plot of residualized GDP per capita vs residualized life expectancy",
+          subtitle = "*Residuals take into account country and year fixed effects")
+  
+```
+
+
+
+# Exploratory data analysis with panel data
+
+When the data includes observations for entities over time and not just a single cross-section of data, we need to think carefully about what sort of descriptive statistics would be informative. More specifically, we usually don't want to compute summary statistics by pooling all observations over time (e.g., a difference in groups means averaged across all times periods). Instead it may be informative to calculate summary statistics separately *within groups*, or *within one or more time periods* (e.g. a difference in group means within in each time period).
+
+Time series plots for different entities (or groups of entities) may be an informative visualization. For example, one could compare time-series plots of key variables averaged over treated entities vs untreated entities, or between some meaningful groups. The following example shows times series plots of life expectancy for countries grouped by continent.
+
+```{r}
+#transform data to get continent-year means (bc we observe too many countries to plot separately)
 ggplot(data = gap_long, aes(x = wave, y = lifeExp, color = continent)) +
   stat_summary(fun = mean, geom = "line") + 
   ggtitle("Life expectancy over time by continent")
 ```
 
-Note that the above plot calculates the unweighted mean of lifeExp across all countries for a given continent-year grouping. If we wanted to report population-weighted means for each continent-year, we would need to transform the data frame *before* passing it to `ggplot()`, not from within the `ggplot()` function call. This is because the ggplot statistical transformation `stat_summary()` doesn't accept weights as an argument to allow for weighted mean calculations.
+Also note that the above plot calculates the unweighted mean of lifeExp across all countries for a given continent-year grouping. If we wanted to report population-weighted means for each continent-year, we would need to transform the data frame *before* passing it to `ggplot()`, not from within the `ggplot()` function call. This is because the ggplot statistical transformation `stat_summary()` doesn't accept weights as an argument to allow for weighted mean calculations.
 
