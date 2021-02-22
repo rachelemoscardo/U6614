@@ -53,9 +53,9 @@ In this section we'll explore variation in shutoffs *across* Census tracts (one 
 
 In this section, we'll explore variation *between* different groups of Census tracts and over time *within* groups (with groups defined based on tract-level income and racial composition).
 
-## Plot and interpret the shutoff race over time for tracts below/above citywide median housheold income (show two time series on a single plot).
+## Plot and interpret the shutoffs per capita over time for tracts below/above citywide median housheold income (show two time series on a single plot).
 
-## Plot and interpret the shutoff race over time for tracts that are at least 75% Black and those that aren't (show two time series on a single plot).
+## Plot and interpret the shutoffs per capita over time for tracts that are at least 75% Black and those that aren't (show two time series on a single plot).
 
 \medspace
 
