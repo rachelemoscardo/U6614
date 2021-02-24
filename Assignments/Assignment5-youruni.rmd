@@ -41,7 +41,7 @@ In this section we'll explore variation in shutoffs *across* Census tracts (one 
 ## Visualize and interpret the relationship between share Black and shutoffs per capita across census tracts in Detroit.
 
 
-## Visualize and interpret the relationship between share Black and shutoffs per capita across census tracts in Detroit.
+## Visualize and interpret the relationship between median income and shutoffs per capita across census tracts in Detroit.
 
 
 ## Visualize and interpret how shutoffs per capita relate to both Black share and median income on the ***same*** plot. Does race or income appear to be more salient? 
