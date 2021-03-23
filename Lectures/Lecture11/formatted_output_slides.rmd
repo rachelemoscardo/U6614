@@ -36,14 +36,14 @@ table, td, th {
 ## Slide title {.smaller .build}
 ```
 
-[Here](https://garrettgman.github.io/rmarkdown/ioslides_presentation_format.html) is a short tutorial. See Chapter 4.1 in [R Markwdown: The Definitive Guide]( https://bookdown.org/yihui/rmarkdown/ioslides-presentation.html) for a more comprehensive treatment.
+[Here](https://garrettgman.github.io/rmarkdown/ioslides_presentation_format.html) is a short tutorial. See Chapter 4.1 in [R Markdown: The Definitive Guide]( https://bookdown.org/yihui/rmarkdown/ioslides-presentation.html) for a more comprehensive treatment.
 
 
 # Using Stargazer for formatted output
 
 ## Loading packages {.build}
 
-First load the packages *tidyverse*, *stargazer*, *knitr*, *plm*, *lmtest* and *multiwayvcov*.
+This presentation uses the following packages: *tidyverse*, *stargazer*, *knitr*, *plm*, *lmtest* and *multiwayvcov*.
 ```{r}
 library(tidyverse)
 library(stargazer)
@@ -98,6 +98,7 @@ out <- capture.output(stargazer(as.data.frame(vf_joined), type = "html",
           notes = "Village Fund amounts in millions of rupiah."))
 
 out <- sub("text-align:center", "text-align:left", out) #a hack to align left
+        #need to call capture.out() above to get this to work
 
 cat(out)
 ```
@@ -121,13 +122,11 @@ cat(out)
 [Here](https://www.jakeruss.com/cheatsheets/stargazer) is a good tutorial with more stargazer examples and formatting options.
 
 
-## Difference-in-means table
+## Difference-in-means table 
 
 Suppose we're interested in comparing the *poverty rate* and *vfund_per_poor* of regencies between Java and Sulawesi islands.
 
-In the data, provinces on Java island are *Banten*, *Di Yogyakarta*, and those starting with *Jawa*; provinces on Sulawesi island are *Gorontalo* and those starting with *Sulawesi*.
-
-[Here](https://sebastiansauer.github.io/multiple-t-tests-with-dplyr/) is a tutorial for making this kind of table, shown below. 
+[Here](https://sebastiansauer.github.io/multiple-t-tests-with-dplyr/) is a tutorial for making this kind of table, shown below (this example does not rely on the stargazer package). 
 
 ```{r}
 vf_province <- vf_joined %>%
@@ -234,6 +233,8 @@ stargazer(mdls, align = TRUE, type = "html",
           notes = "Robust standard errors are shown in parentheses unless otherwise indicated.",
           notes.align = "l")
 ```
+
+# Additional ioslides formatting
 
 
 ## Creating bullet points {.build}
