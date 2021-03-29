@@ -45,7 +45,7 @@ t <- tm_shape(indonesia) + tm_polygons("FID")
 ## Load VF data, prepare to join to shapefile, create joined data frame
 ## -----------------------------------------------------------------------------
 
-vf_joined <- read.csv('joined.csv')
+load("vf_joined.RData")
 
 #before joining, let's perform some data cleaning
 
@@ -65,10 +65,9 @@ vf_joined <- read.csv('joined.csv')
 
 #which regencies have no match?
   no_match <- vf_joined2[is.na(vf_joined2$FID),]
-  no_match
 
 #do a manual check and perform a mapping correspondingly (same as Week 8)
-  to <- c('Kota Banda Aceh', 'Kpta Langsa', 'Kota Lhokseumawe', 'Kota Sabang',
+  to <- c('Kota Banda Aceh', 'Kota Langsa', 'Kota Lhokseumawe', 'Kota Sabang',
           'Kota Subulussalam', 'Kota Denpasar', 'Kabupaten Muko Muko', 'Kabupaten Pahuwato',
           'Kabupaten Batanghari', 'Kabupaten Tanjung Jabung Barat', 'Kabupaten Tanjung Jabung Timur',
           'Kota Sungai Penuh', 'Kota Batu', 'Kabupaten Mempawah',
@@ -99,9 +98,8 @@ vf_joined <- read.csv('joined.csv')
 
 #which regencies have no match?
   no_match <- vf_joined2[is.na(vf_joined2$FID),]
-  no_match
   
-#we managed to reduce 49 no-matches to 18 no-matches 
+#we managed to reduce 49 no-matches to 17 no-matches 
 #(mostly new regencies not contained in the shapefile)
 
 #now, we are ready to map!
