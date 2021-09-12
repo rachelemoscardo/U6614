@@ -31,7 +31,8 @@ library(gapminder)
 
 
 ## -----------------------------------------------------------------------------
-## 2. a) show the structure of the gapminder dataframe in the gapminder package
+## 2. a) use the str() function to give an overview of the gapminder data frame
+##        (found in the gapminder package)
 ##    b) how many observations and variables are there?
 ## -----------------------------------------------------------------------------
 
@@ -57,8 +58,9 @@ mean(gapminder$gdpPercap) #7,215.3
 
 #c
 View(gapminder)
-#7,215.3 is the mean GDP/cap among all 12 observations for every country
-#probably better to start by comparing stats across countries for a single year
+#7,215.3 is the mean GDP/cap across all 12 observations for every country
+#probably better to first look at the distribution of lifeExp across countries for a single year
+#or for a single country over time
 
 
 

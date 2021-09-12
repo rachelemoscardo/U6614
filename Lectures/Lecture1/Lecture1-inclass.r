@@ -1,128 +1,80 @@
-################################################################################
-##
-## [ PROJ ] Lecture1-inclass: Getting familiar with RStudio
-## [ FILE ] Lecture1-inclass.r
-## [ AUTH ] INSTRUCTOR FILE 
-## [ INIT ] Jan 19, 2021
-##
-################################################################################
-
-## -----------------------------------------------------------------------------
-## 0. create an R project that is includes this R script (Lecture1-inclass.r)
-## -----------------------------------------------------------------------------
+# 1. Create an R project including R script
 
 
-## -----------------------------------------------------------------------------
-#1. look around and get our bearings.
-## -----------------------------------------------------------------------------
+# 2. Look around and get our bearings.
 
-#get working directory
-  getwd()
-
-
-## -----------------------------------------------------------------------------
-## 2. install and load the gapminder package 
-## -----------------------------------------------------------------------------
-
-#first we have to install the package
-  install.packages("gapminder")
-
-#we can see the list of packages under in the bottom right panel of RStudio
-
-#load this package
-  library(gapminder)
-    #can also load by clicking the checkbox beside package name under "Packages"
+#####
+# 3. Install and load a package (gapminder)
+install.packages("gapminder")
+library(gapminder)
 
 
-## -----------------------------------------------------------------------------
-## 3. Use base R functions to inspect a data frame included w/ gapminder package 
-##    (this exercise is based on STAT545 by Jenny Bryan)
-## -----------------------------------------------------------------------------
-
-#let's use some functions inspect the structure of the gapminder object
-  str(gapminder) #str (structure) is the function, gapminder is the argument
-    #notice that each variable has its own data type (Factor, int, num)
-
-#access built-in help files/documentation (also use Google)
-  ?str
-
-#the function class() tells us what class(es) an object is assigned to... more next week
-  class(gapminder)
-
-#head is another function that shows us the first parts of an object
-  head(gapminder)
-  ?head
-    #note the optional argument n, which is the # of rows you want to display
-
-#let's try to see the first 10 rows
-  head(gapminder, n = 10)
-
-#in order to view the full data frame, simply type View(data_frame_name) on the Console
-  View(gapminder)
+#####
+# 4. Use base R functions to inspect a dataframe included w/gapminder package (also called “gapminder”)
+#Note: this exercise is based on STAT 545 by Jenny Bryan (https://stat545.com/index.html)
 
 
-## -----------------------------------------------------------------------------
-## 4. Use some base R functions to perform some very basic exploratory analysis
-## -----------------------------------------------------------------------------
+## let's use some functions inspect the structure of the gapminder object
+str(gapminder) 
 
-#let's use some base R functions to understand the basic structure of the data frame
-  names(gapminder) #get the column names
-  dim(gapminder) #get the number of rows and columns
-  ncol(gapminder) #get the number of columns (alternatively, dim(gapminder)[2])
-  nrow(gapminder) #get the number of rows (alternatively, dim(gapminder)[1])
-  names(gapminder)[3] #get the name of the third column
+## the class function tells us what classes an object is assigned to... more next week!
+class(gapminder)
 
-#note that indexing in R starts from 1, NOT 0
+## head is another function that shows us the first parts of an object
+head(gapminder)
 
-#we can assign the result of a function if we want to refer back to it:
-  num_of_vars <- ncol(gapminder) #assign the results of nrow to a new object called num_of_vars
-  num_of_vars #note that we need to type the object name again to view it
+## here's how we access built-in help files/documentation. also try google!
+?str
 
-#get summary statistics for each variable
-  summary(gapminder)
-  #notice that the stats shown depend on the type of each column/variable
-  #for Factor, it lists how many times each level appears
-  #for int or num, it lists the first, second, third quartiles as well as min, max and mean
 
-## let's plot the relationship of year (x) vs lifeExp (y) using base R
-  plot(lifeExp ~ year, gapminder) #the tilde (~) operator sets up a "formula"
+#####
+# 5. Use some functions to perform some basic analysis.
 
-#alternative 1
-  plot((y = lifeExp) ~ (x = year), data = gapminder)
+## let's understand what the basic characteristcs of the dataframe
+names(gapminder)
+dim(gapminder)
+ncol(gapminder)
 
-#alternative 2
-  plot(gapminder$year, gapminder$lifeExp)
+## we can assign the result of a function if we want to refer back to it:
+num_of_vars <- ncol(gapminder)
+num_of_vars #note that we need to type the object name again to view it
 
-#let's look at the documentation
+#Q: dim tells us the number of rows (observations) in the dataframe. 
+#Use ?ncol to find that information using another function
+nrow(gapminder)
+
+## let's get summary statistics for each variable
+summary(gapminder) 
+  #notice that the statistics shown depend on the object type of each column/variable
+
+## let's plot the relationship of gdpPercap (x) vs lifeExp (y) 
+plot(lifeExp ~ year, gapminder) #note how the tilde (~) operator sets up a 'formula'
+plot( (y = lifeExp) ~ (x = year), data = gapminder) 
+  #this notation is clumsy, but reminds us of the arguments we're using in the plot function call
   ?plot
 
-#let's apply some functions to specific variables (i.e. columns of data) 
-#start with a continuous numeric variable (object type 'int')
-#let's see how R uses $ to refer to a variable in a dataframe (subsetting)
-  head(gapminder$lifeExp)
-  summary(gapminder$lifeExp)
-  hist(gapminder$lifeExp)
+## let's apply some functions to specific variables 
 
-#next let's look at a factor variable
+### let's start with a continuous numeric variable (object type 'int')
+### let's see how R uses the $ to refer to a single variable within a dataframe 
+head(gapminder$lifeExp)
+summary(gapminder$lifeExp)
+hist(gapminder$lifeExp)
 
-#what is a factor? let's look at some base R functions to figure it out
-  str(gapminder)
-  class(gapminder$continent)
-  summary(gapminder$continent)
-  levels(gapminder$continent) #returns the levels of a factor vector
-  nlevels(gapminder$continent) #returns the number of levels of a factor vector
-  #in this case, it's 5 since we have Africa, Americas, Asia, Europe and Oceania
+### next let's look at a factor variable -- let's use the results to learn what a factor is
+class(gapminder$continent)
+summary(gapminder$continent)
+levels(gapminder$continent)
+nlevels(gapminder$continent)
+  #note that a factor is just a categorical variable
 
-#Note: a factor is just R's way of recognizing a categorical variable!
+## here's how we do a frequency table to check the number of obs per continent
+table(gapminder$continent)
 
-#here's one way to run a frequency table to check the number of obs per year
-  table(gapminder$year)
-
-#let's assign this frequency table to a new object called freq_byyear
-  freq_byyear <- table(gapminder$year)
-
-#then pass this object (a column of data!) as an argument to the barplot function
-  barplot(freq_byyear)
+## let's assign this frequency table to a new object called freq_bycon
+freq_bycon <- table(gapminder$continent)
+freq_bycon
 
 
-  
+
+

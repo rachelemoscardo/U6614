@@ -30,7 +30,8 @@
 
 
 ## -----------------------------------------------------------------------------
-## 2. a) show the structure of the gapminder dataframe in the gapminder package
+## 2. a) use the str() function to give an overview of the gapminder data frame
+##        (found in the gapminder package)
 ##    b) how many observations and variables are there?
 ## -----------------------------------------------------------------------------
 

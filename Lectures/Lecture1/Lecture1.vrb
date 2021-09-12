@@ -1,0 +1,36 @@
+\frametitle{Assignment}
+\protect\hypertarget{assignment}{}
+\textbf{Assignment} means assigning a value/set of values to an
+``object''
+
+\begin{itemize}
+\tightlist
+\item
+  \texttt{\textless{}-} is the assignment operator
+
+  \begin{itemize}
+  \tightlist
+  \item
+    in other languages \texttt{=} is the assignment operator
+  \end{itemize}
+\item
+  good practice to put a space before and after assignment operator
+\end{itemize}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\CommentTok{\# Create an object a and assign value}
+\NormalTok{a }\OtherTok{\textless{}{-}} \DecValTok{5}
+\NormalTok{a}
+\CommentTok{\#\textgreater{} [1] 5}
+
+\CommentTok{\# Create an object b and assign value}
+\NormalTok{b }\OtherTok{\textless{}{-}} \StringTok{"yay!"}
+\NormalTok{b}
+\CommentTok{\#\textgreater{} [1] "yay!"}
+\end{Highlighting}
+\end{Shaded}
+
+Note 1: comments start with one or more \texttt{\#} symbols
+
+Note 2: R is caps sensitive!

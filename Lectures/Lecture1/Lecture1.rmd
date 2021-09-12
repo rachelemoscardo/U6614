@@ -12,11 +12,11 @@ output:
     keep_tex: true
     toc: true
     slide_level: 3
-    theme: default # AnnArbor
-    #colortheme: "dolphin" 
+    theme: default # AnnArbor # push to header?
+    #colortheme: "dolphin" # push to header?
     #fonttheme: "structurebold"
-    highlight: default # Supported styles include "default", "tango", "pygments", "kate", "monochrome", "Aespresso", "zenburn", and "haddock" (specify null to prevent syntax highlighting)
-    df_print: tibble    
+    highlight: default # Supported styles include "default", "tango", "pygments", "kate", "monochrome", "Aespresso", "zenburn", and "haddock" (specify null to prevent syntax highlighting); push to header
+    df_print: tibble # push to header?    
     latex_engine: xelatex #  Available engines are pdflatex [default], xelatex, and lualatex; The main reasons you may want to use xelatex or lualatex are: (1) They support Unicode better; (2) It is easier to make use of system fonts.
     includes:
       in_header: ../beamer_header.tex
@@ -32,38 +32,40 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>", highlight = TRUE)
 # Introductions 
 
 
+### Student introductions
 
-### Harold Stolper, instructor (he/they)
+1. Preferred name
+1. Pronouns (if comfortable)
+1. Previous R exposure/experience
+1. And answer one of these two questions:
+    - What's something you would eventually like to learn how to do in R?
+    - What's something that you have observed or think is important that people in your field aren't paying attention to?
+1. (optional) One piece of culture you are excited about right now
+    - e.g. music, writing, fashion, a meme, sports, etc.
+
+### Liam Tay Kearney, Teaching Assistant
+
+### Harold Stolper, instructor
 
 Graduated from SIPA many moons ago, returned to Columbia for my PhD in economics.
 
 \medskip
 
-Past 6 years: 
+Past 5 years: 
 
-* Taught quant courses at SIPA.
-* Worked as the economist for a non-profit doing research and advocacy to promote upward mobility for low-income NYers.
-* Recent focus on documenting racist police enforcement of fare evasion, and other topics related to policing, neighborhood change, and transit accessibility.
+- This is my 7th year teaching quant courses at SIPA.
+- Worked as the economist for a non-profit doing research and advocacy to promote upward mobility for low-income NYers.
+ - Recent focus on documenting racist police enforcement of fare evasion, and other topics related to policing, neighborhood change, and transit accessibility.
 
  
 \medskip
 
-Transitioning from Stata to R after years of using and teaching Stata.
+Transitioned from Stata to R after years of using and teaching Stata.
 
 
-
-### Niyati Malhotra, Teaching Assistant (she/hers)
-
-Took this class last semester, graduating this May.
-
-\medskip
-
-* Previously worked on impact evaluations of public health and education programs.
-* Interested in social policy applications that address early childhood development and child poverty.
 
 
 # What is R and How Will We Use It?
-
 
 ### What is R?
 
@@ -73,27 +75,29 @@ Took this class last semester, graduating this May.
 
 - "R is an integrated suite of software facilities for data manipulation, calculation and graphical display." ([R-project.org](https://www.r-project.org/about.html))
 
-
 ### How will we use R?
 
 - [RStudio](https://www.rstudio.com/products/rstudio/download/preview) is a powerful user interface for R. 
-  - After you install R and RStudio, we'll be working entirely in the RStudio interface.
+  - After installing R and RStudio, we'll be working entirely in the RStudio interface.
 
 \medskip
 
-- [R Markdown](https://rmarkdown.rstudio.com/lesson-1.html) files are used in RStudio to "both save and execute code, and generate high quality reports that can be shared with an audience."
-  - These pdf lecture slides were created with R Markdown.
-  - Subsequent weeks we'll rely on html-based lessons created with R Markdown.
-  - After Assignment 1, everything **you** submit for this class will be a document generated with R Markdown.
+- [R Markdown](https://rmarkdown.rstudio.com/lesson-1.html) files are used in RStudio to "both save and execute code generate high quality reports that can be shared with an audience."
+  - This lecture was created using R Markdown.
+  - Beginning next week, everything you submit for this class will be a document generated with R Markdown.
 
 
 ### Base R vs. user-defined R packages
 
-R uses "packages" as bundles of code, data and documentation.
+R uses "packages" as a bundle of code, data and documention.
 
-The default R [base](https://stat.ethz.ch/R-manual/R-devel/library/base/html/00Index.html) package includes much of the basic functionality you will be using.  
+There are default [base packages](https://stat.ethz.ch/R-manual/R-devel/library/base/html/00Index.html) that come with R. Some examples:  
 
-Then there are [R packages](http://r-pkgs.had.co.nz/intro.html) developed and shared by others. Some R packages we'll be using include:  
+- `base`  
+- `stats`  
+- `utils`
+
+And there are [R packages](http://r-pkgs.had.co.nz/intro.html) developed and shared by others. Some R packages include:  
 
 - `tidyverse`  
 - `ggplot2` 
@@ -104,17 +108,17 @@ More about these in later weeks...
 ### Installing and loading R packages
 
 You only need to install a package once. To install an R package use `install.package()` function.
-```{r eval = FALSE, warning = FALSE, message = FALSE}
+```{r eval = FALSE, warning=FALSE, message=FALSE}
 install.packages("tidyverse")
 ```
 
-But before you can use it you need to load a package every time you open R using the `library()` function. 
+But you need to load a package every time you plan to use it using the `library()` function. 
 ```{r}
 library(tidyverse)
 ```
 
 
-###  What can you do with R + RStudio + RMarkdown?
+###  What can you do with R+RStudio+RMarkdown?
 
 Things you can also do using Stata:
 
@@ -131,7 +135,6 @@ Things you can't do in Stata:
   - Graphs
   - Dashboards
 
-
 ### What will we be doing in this class?
 
 We'll be learning how to use R to explore data to inform policy. 
@@ -147,83 +150,24 @@ That means we'll be spending a lot of time working through R, but also thinking 
 - **Explanatory analysis:** estimating relationships between variables to inform
 policy
 
-- **Data visualization and presentation:** conveying findings to your target audience
+- **Data visualization & presentation:** conveying findings to your target audience
 
-- **Policy writing and interpretation:** translating statistical analysis in accessible terms
+- **Policy writing & interpretation:** translating statistical analysis in accessible terms
 
-
-### Sample visualizations from student projects (Niyati & Crystal Avila)
-
-![](nm-ca_chart1.PNG){width=90%}
+- **Data advocacy**: thinking critically about using *data for good* 
 
 
-### Sample visualizations from student projects (Liz Olson & Jenny Ostrowski)
-
-![](lo_jo_map1.PNG){width=90%}
-
-
-
-# Course Logistics
-
-
-### Syllabus and file management
-
-Course materials:
-
-* All course files will be posted on the course website: https://hreplots.github.io/U6614/ 
-
-\medskip
-
-We'll be using Courseworks + Piazza for several purposes:
-
-* hosting Zoom links for classes and recitation
-* weekly quizzes on asynchronous lessons
-* submitting assignments and project deliverables
-* course communications and discussion using Piazza (register [here](https://piazza.com/demo_login?nid=keiqq7y84rt5y2&auth=6c81e06))
-
-\medskip
-
-
-### Synchronous and asynchronous instruction
-
-1. Review asynchronous lessons in advance of class
-
-    + will be posted to the course website by Thursday night
-    + class meetings will begin with a very short multiple choice quiz on the asynchronous material
-
-\medskip
-
-2. Synchronous instruction
-
-    + short Zoom quiz 
-    + discussion of data applications including assignments
-    + workshop-style instruction with R
-        - prepare for class by downloading the week's R script & data from the course website
-        - maintain a logical file structure to organize files (e.g. Lectures/Lecture1)
-    + we'll set *community guidelines* for in-class participation/R support next week
-
-\medskip
-
-**Questions?**
-
-
-# RStudio
-
-### What is RStudio?
-
-"[RStudio](https://rstudio.com/products/rstudio/) is an integrated development environment (IDE) for R. It includes a console, syntax-highlighting editor that supports direct code execution, as well as tools for plotting, history, debugging and workspace management."
-
-![](rstudio-capture1.PNG){width=90%}
+# Syllabus / Questions?
 
 
 # R Projects and Directory Structure
 
-
 ### Working directory
+
 
 R looks for files in your **working directory**
 
-The function `getwd()` shows the current working directory (also shown at the top of the RStudio console).
+Function `getwd()` shows the current working directory (also shown at the top of the RStudio console.)
 ```{r}
 getwd()
 ```
@@ -232,12 +176,10 @@ Function `list.files()` lists all files located in working directory
 list.files()
 ```
 
-*Note that functions can accept arguments inside of parentheses, but the simple functions shown above do not require any arguments.*
-
 
 ### So what is the working directory?
 
-When you run code from the **R Console** or an **R Script**, or from __code chunks__ in an R Markdown file (.rmd), the working directory is...
+When you run code from the **R Console** or an **R Script**, or from __code chunks__ in an RMarkdown file (.rmd), the working directory is...
 
 - the folder your file is saved in, or ...
 - if you are working within an **R Project**, the working directory is the main directory for the project (more on that shortly!)
@@ -247,8 +189,7 @@ When you run code from the **R Console** or an **R Script**, or from __code chun
 getwd()
 ```
 
-- For this class we'll generally be using R projects to keep organized.
-
+- For this class we'll be using R projects to keep organized.
 
 ### The path is how we refer to a directory 
 
@@ -261,7 +202,7 @@ getwd()
 
 **Relative file path**: a way of indicating a given file location relative to your working directory (note that they might be the same!)
 
-- Assuming your current working directory is in the "lecture2" folder and you want to go up 2 levels to the "Fall 2020" folder, your relative file path would look something like this:  
+- Assuming your current working directory is in the "lecture2" folder and you want to go up 2 levels to the "Fall 2021" folder, your relative file path would look something like this:  
 
 `setwd("../../")`  
 
@@ -271,7 +212,7 @@ getwd()
 
 | **Key** | **Description** |
 | ------ | -------- |
-| ~    | tilde is a shortcut for the user's home directory   |
+| ~    | tilde is a shortcut for user's home directory (mine is my name pm)   |
 | ../    | moves up a level   |
 | ../../    | moves up two level   |
 
@@ -280,53 +221,52 @@ getwd()
 
 What is an "R project"?
 
-* A file that keeps all "project" files organized together:
-  +  input data, R scripts, analytical results, and figures.
-* When you open an R project, your working directory is automatically set to the directory where your R project lives.
+- A file that keeps all "project" files organized together:
+   – input data, R scripts, analytical results, and figures.
+- When you open an R project, your working directory is automatically set to the directory where your R project lives.
 
 Why will we be asking you to create and work with R projects? 
 
-* We want you to be able to run the R Markdown files (.rmd) used to generate each lecture.
-* Sometimes these .rmd files point to certain sub-folders
-* You can create or download an R project with directory structure (i.e. organizing files and sub-folders in a particular way).
-* That way you'll be able to run .rmd files from your own computer that point to files in sub-folders without making any changes to file-paths.
+- We want you to be able to run the R Markdown files (.rmd) used to generate each lecture.
+- Often times these .rmd files point to data files or sub-folders
+- You can create or download an R project with directory structure (i.e. organizing files and sub-folders in a particular way).
+- That way you'll be able to run .rmd files from your own computer that point to files in sub-folders without making any changes to file-paths.
 
 
 # R Basics
-
 
 ### Executing code in R
 
 Three ways to execute commands in R
 
 1. **Console:** type/paste commands to run "on the fly"
-2. **R scripts** (.r files)
+1. **Code chunks** in R Markdown (.rmd files)
+    - Can execute one command at a time, one chunk at a time, or "knit" the entire file into a document (e.g. html or pdf)
+1. **R scripts** (.r files)
     - Just a text file full of R commands
     - Can execute one command at a time, several commands at a time, or the entire script
-3. **Code chunks** in R Markdown (.rmd files)
-    - Can execute one command at a time, one chunk at a time, or "knit" the entire file into a document (html or pdf) that includes output from R code chunks
 
 
 ### Shortcuts for executing commands
 
-1. Code chunks in R Markdown files
-    - **Cmd/Ctrl + Enter**: execute highlighted line(s) within chunk
-    - **Cmd/Ctrl + Shift + k**: "knit" entire document
+Three ways to execute commands in R
 
-    \medskip
-
-2. R scripts (.r files)
-    - **Cmd/Ctrl + Enter**: execute highlighted line(s)
-    - **Cmd/Ctrl + Shift + Enter** (without highlighting any lines): run entire script
+1. Type/paste commands directly into the "console" (and press ENTER)
+1. `code chunks' in RMarkdown (.Rmd files)
+    - __Cmd/Ctrl + Enter__: execute highlighted line(s) within chunk
+    - __Cmd/Ctrl + Shift + k__: "knit" entire document
+1. R scripts (.R files)
+    - __Cmd/Ctrl + Enter__: execute highlighted line(s)
+    - __Cmd/Ctrl + Shift + Enter__ (without highlighting any lines): run entire script
     
     
-### Assignment in R
+### Assignment
 
 __Assignment__ means assigning a value/set of values to an "object"
 
 - `<-` is the assignment operator
     - in other languages `=` is the assignment operator
-- code is dense and hard to read, so it's good practice to put a space before and after assignment operator
+- good practice to put a space before and after assignment operator
 
 ```{r}
 # Create an object a and assign value
@@ -338,9 +278,9 @@ b <- "yay!"
 b
 ```
 
-*Note 1: comments start with one or more `#` symbols*
+Note 1: comments start with one or more `#` symbols
 
-*Note 2: R is caps sensitive!*
+Note 2: R is caps sensitive!
 
 
 ### Objects and assignment
@@ -356,14 +296,12 @@ Some objects:
 - lists
 - functions
 - plots
-- data frames (the datasets of R!)
-
-Throughout this course, we'll be loading data objects to work with and assigning values to new objects.
+- dataframes (the datasets of R!)
 
 
 ### Functions
 
-Functions do things to different objects. They often accept arguments -- we say we "pass" arguments to functions.
+Functions do things to different objects. They often accept arguments -- we "pass" arguments to functions.
 
 Functions are also objects themselves that can be "called" to do things like:
 
@@ -373,7 +311,7 @@ Functions are also objects themselves that can be "called" to do things like:
 - manipulate objects (e.g. create a new column of data)
 - extract information from objects (e.g. the number of rows of data)
 
-Base R includes lots of functions. We'll be working with base R functions and handy functions from additional packages. 
+Base R includes lots of functions. We'll be working with additional packages that include some handy functions. 
 
 
 
@@ -384,69 +322,45 @@ Our goals for today's R workshop example are very modest:
 - Create an R project including R script.
 - Look around and get our bearings.
 - Install and load a package ([gapminder](https://www.gapminder.org/)).
-- Use base R functions to inspect a data frame included with this package.
+- Use base R functions to inspect a dataframe included with this package.
 - Use some functions to perform some very basic analysis.
 - Assign results from our analysis to new objects and display them.
 
 
 # Assignment 1
 
-### Assignment 1: submit an R script via CW before midnight next Monday
+### Assignment 1: submit an R script via CW by 9am next Tuesday
 
-See **Assignment1.r** for details. 
+Create an R script called assignment1.r that includes code and answers (as comments) for the following:
 
-\medskip
-
-Complete the assignment by including the necessary code, organized by (sub)question, and use comments for non-code responses. 
-
-\medskip
-
-Submit only your R script through CW using the following file name syntax: **"Assignment1-YOURUNI.r"** via CW
-
-* e.g. "Assignment1-hbs2103.r" 
+0. Create a new R project called assignment1.
+   - This is for your internal project management, do not submit your R project file.
+1. Load the gapminder data using the library function.
+   - You'll need to install the gapminder package if you didn't follow in class today.
+2. Show the data structure of the gapminder dataframe in the gapminder package.
+3. What is the average gdpPercap across all observations in the dataset?
+   - Use ?gapminder to access gapminder documentation and find the units for gdpPercap.
+   - How would you interpret this mean? i.e. what is it the mean of?
+4. Plot year (x-axis) vs. gdpPercap (y-axis).
+   - Describe what the plot says about economic growth over time.
+5. Create a barplot showing the number of observations in each continent.
+   - Start by using the table function with continents as its argument.
+   - Next pass the object created by this function to the barplot function.
 
 
 ### General assignment guidance
 
-- **Use blank spaces liberally**, code is hard to read and spaces help!
-- **Use comments liberally** throughout your R script to describe your steps.
-- **Try to keep your code within the margins** to make it more readable.
-    - R should know it can keep reading on the next line before executing... unless you break after executable code
-- Troubleshooting is a critical skill! Here are some tips and resources:
+- Use blank spaces liberally, code is hard to read and spaces help!
+- Use comments liberally throughout your R script to describe your steps.
+- Troubleshooting is a skill! Here are some tips and resources:
    - Consult the R script from today's class for examples.
-   - Get used to using R's built in documentation by using "?"
-   - Use Google liberally to identify functions and find examples that work.
+   - Get used to using R's built in documentation by using ?
+   - Use Google liberally for examples that work.
    - When you're stuck, focus on finding examples to get your own code to work, even if you don't feel comfortable with all the syntax just yet.
-- Consulting with others is fine! Copying, however, is not the way to learn to code or any language.
+- Consulting with others is good! Copying, however, is not the way to learn to code.
    - **Copied assignment submissions will result in a 0 for all parties.**
    
    
 
-# Course expectations
-
-### Course expectations
-
-1. Review asynchronous (pre-class) lessons **before class**
-
-2. Live attendance of class sessions is **required**
-
-    + CW quizzes, in-class discussion and R workshop participation
-
-3. 5 weekly assignments ("data memos")
-
-4. Data projects (starting week 5)
-
-    + will culminate with a presentation and report at end of semester
-    + see syllabus for dates of intermediate deliverables
-    + 3 required meetings with the teaching team to discuss progress
-    
-5. Piazza discussion board participation
-
-6. Recitation and office hours
-
-\medskip
-
-**Questions?**
-   
 
 

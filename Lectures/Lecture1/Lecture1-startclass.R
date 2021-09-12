@@ -32,7 +32,7 @@
 
 
 ## -----------------------------------------------------------------------------
-## 3. Use base R functions to inspect a data frame included w/ gapminder package 
+## 3. Inspect gapminder dataframe (in the gapminder package) w base R functions
 ##    (this exercise is based on STAT545 by Jenny Bryan)
 ## -----------------------------------------------------------------------------
 
