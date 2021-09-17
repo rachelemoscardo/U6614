@@ -78,11 +78,11 @@ The `filter()` function allows us to subset rows of the data, i.e. filter out ob
 filter(gapminder, country == "Burkina Faso")
 ```
 
-Let's make sure we understand the terminology for this sample code chunk: we're calling the `filter()` function and passing two arguments to it: (1)the data frame; and (2) a conditional statement that determines how the function works. Because it's a conditional statement, we need a `==` operator or R will return an error. Also note that R is case sensitive.
+Let's make sure we understand the terminology for this sample code chunk: we're calling the `filter()` function and passing two arguments to it: (1) the data frame; and (2) a conditional statement that determines how the function works. Because it's a conditional statement, we need a `==` operator or R will return an error. Also note that R is case sensitive.
 
 In the above code chunk, we just displayed the results of the `filter()` function without assigning them into a new object. 
 
-We NEVER want to alter the original object, in this case the gapminder data frame. But we might want to store the filtered data by assigning the results of the function call to a new object (using the assignment operator `<-`. Below we assign the results to a new data frame called `burkina`. We can show the first few observations of the new filtered data frame using the `head()` function, rather than printing the full data frame.
+We almost NEVER want to alter the original object, in this case the gapminder data frame. But we might want to store the filtered data by assigning the results of the function call to a new object (using the assignment operator `<-`). Below we assign the results to a new data frame called `burkina`. We can show the first few observations of the new filtered data frame using the `head()` function, rather than printing the full data frame.
 
 ```{r}
 burkina <- filter(gapminder, country == "Burkina Faso")
@@ -97,7 +97,7 @@ filter(gapminder, year == 1952 | year == 2007, country == "Burkina Faso")
 
 ### arrange()
 
-Let's use the `arrange()` function to sort by life expectancy (lifeExp) among all countries in 2007. Note the syntax we use on the second argument of the function in order to sort in descending order.
+Let's use the `arrange()` function to sort by life expectancy (lifeExp) among all countries in 2007. Note the syntax we use in the second argument of the function in order to sort in descending order.
 
 ```{r}
 gap_2007 <- filter(gapminder, year == 2007)
@@ -131,21 +131,21 @@ select(gap_2007.sort.asc, -continent, -pop, -year)
 The `mutate()` function is how we create new variables using the dplyr package. Say we want calculate total GDP by multiplying `gdpPercap` by `pop`.
 
 ```{r}
-gap.overwrite1 <- mutate(gapminder, totalgdp = gdpPercap * pop)
-head(gap.overwrite1)
+gap1 <- mutate(gapminder, totalgdp = gdpPercap * pop)
+head(gap1)
 ```
 
 
 It's also pretty straightforward to rename existing variables using the `rename()` function.
 ```{r}
-gap.overwrite2 <- rename(gapminder, gdppercap = gdpPercap)
-head(gap.overwrite2)
+gap2 <- rename(gapminder, gdppercap = gdpPercap)
+head(gap2)
 ```
 
 
 ### summarize()
 
-The `summarize` function takes a data frame with _n_ observations, computes specified summary statistics, and returns a data frame with a single observation (i.e. the data is collapsed).
+The `summarize` function takes a data frame with _n_ observations, computes specified summary statistics, and generally returns a data frame with a single observation (i.e. the data is collapsed).
 
 ```{r}
 summarise(gap_2007, lifeExp_min = min(lifeExp), lifeExp_max = max(lifeExp), n= n())

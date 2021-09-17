@@ -38,7 +38,7 @@ The process of generating a document from an .rmd file using RStudio is called *
 
 # The YAML header 
 
-The YAML header is code at the top of your R Markdown file that controls the look and feel of your document. At a minimum, your R Markdown file must contain the following YAML header located in between two sets of --- :
+The YAML header is code at the top of your R Markdown file that controls the look and feel of your document. At a minimum, your R Markdown file must contain the following YAML header located in between two sets of - - - :
 
 ```{r eval = FALSE}
 ---
@@ -53,7 +53,7 @@ The title and author, and any other fields you specify (e.g. date, subtitle) wil
 
 Also make sure that the `html_document: default` line is indented at least two spaces or you'll run into an error. Each level requires another two spaces of indentation to execute properly.
 
-Note: apparently YAML stands for "YAML Ain't Markup Language", which I think is an attempt at recursive programming "humor"... if you think humor is the appropriate word.
+Note: apparently YAML stands for "YAML Ain't Markup Language", which I think is an attempt at recursive programming "humor"... if you think humor is the appropriate word `r emo::ji("upside_down_face")`.
 
 
 # Section headings & table of contents
@@ -124,7 +124,7 @@ Without any options specified, your document will show the code from inside the 
 
 The handy keyboard shortcut to insert a code chunk is **Ctrl+Alt+I** or	**Cmd+Option+I** for Windows and Macs, respectively.
 
-There are a number of options you can use to specify the handling of each code chunk. Here is a code check with `echo = FALSE` so the code chunk will run but only the output will show up in your knitted documented.
+There are a number of options you can use to specify the handling of each code chunk. Here is a code chunk with `echo = FALSE` so the code chunk will run but only the output will show up in your knitted documented.
 
 <pre class="output_example">```{r echo = FALSE} 
 # nevermind
@@ -195,9 +195,9 @@ The mean life expectancy for India over this period was `r round(mean(gm_india$l
 
 ## Tips and troubleshooting
 
-* For the purposes of this class, all submissions should be submitted as html documents "knit" from an R Markdown file. Knitting pdf files requires Latex, which is pretty straightforward once you get things up and running, but we don't have the capacity to troubleshoot software setup issues that can arise. html files are also easier to share with others to run because they don't require the appropriate Latex setup.
+* For the purposes of this class, all submissions should be submitted as pdf documents "knit" from an R Markdown file. 
 
-* Treat R Markdown as its own system separate from the R console. If you refer to an object in a code chunk you first need to create it in R Markdown, an object created in the R Console won't be recognized by your R Markdown document.
+* Treat R Markdown as its own system object environment from the R console. If you refer to an object in a code chunk you first need to create it in R Markdown, an object created in the R Console won't be recognized by your R Markdown document.
 
 * Remember you only have to `install.packages()` once but you do have to load a package before using it with the `library()` function. You should never include `install.packages()` in your R Markdown script, but you should always load the libraries you need at the beginning of your script. Failing to load the correct libraries is a common source of errors.
 
