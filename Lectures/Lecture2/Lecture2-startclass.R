@@ -1,12 +1,10 @@
 ################################################################################
 ##
-## [ PROJ ] < Lecture2 >
-## [ FILE ] < Lecture2-startclass.r >
-## [ AUTH ] < YOUR NAME>
-## [ INIT ] < Date you started the file >
+## [ PROJ ] < Assessing gender wage gaps using the Current Population Survey >
+## [ FILE ] < lessonscript.r >
+## [ INIT ] < 07/20/2021 >
 ##
 ################################################################################
-
 
 ## ---------------------------
 ## libraries
@@ -20,217 +18,252 @@ library(tidyverse)
 
 getwd()
 
+
 ## -----------------------------------------------------------------------------
-## 1. load and inspect Coronavirus data
-##    data source: 
-##    https://www.ecdc.europa.eu/en/publications-data/data-national-14-day-notification-rate-covid-19
-##
+## 1. load and inspect CPS data: 
+##    
 ##    a. inspect the data frame and data types for each column
-##        make sure to explore the indicator column
+##          - make sure to inspect the age, sex, race, college columns
 ##
-##    b. use the mutate function to create a new column:
-##        ind.fac = as.factor(indicator),
+##    b. use the mutate function to create new column for sex:
+##        sex.fac = as.factor(sex),
 ##        check if it worked by calling the str() function
 ##
-##    c. include this column in a new data frame called covid.temp1, 
-##        use a pipe to exclude the columns for indicator, continent, country_code, source
-##        print the first 5 observations
+##    c. include sex.fac in a new data frame called cps.temp1, 
+##       also create factors for race and college education,
+##        use a pipe to exclude the columns for serial, ind
+##        after creating cps.temp1, print the first 5 observations
 ##
-##    d. inspect ind.fac using the levels() function,
+##    d. inspect race.fac, sex.fac, and college.fac using the levels() function,
 ##        what package is the levels() function located in?
 ##
-##    e. use filter() to only include rows representing "cases" and not "deaths",
-##        store as a new object covid_cases,
+##    e. use filter() to only include rows only for June 2020,
+##        store as a new object cps_2020,
 ##        print the first 5 observations,
-##        note the column rate_14_day as the variable of interest (cases/100,000 pop)
-##        confirm you did indeed drop rows representing deaths and recoveries
+##        confirm your data only includes observations for 2020
 ##
-##    f. remove the covid.temp1 object from memory using the rm() function
+##    f. remove the cps.temp1 object from memory using the rm() function
 ## -----------------------------------------------------------------------------
 
-#load the csv file and store as data frame called covid
-covid <- read.csv("ecdc_national_2021-01-14.csv")
-covid <- na.omit(covid) #remove all observations with NA values
-
-
-#1a.
-  str(covid) 
-  View(covid) #can also inspect object by double-clicking in the Environment tab
-  summary(covid$indicator) #not very useful for character variables
+# load the CPS data frame and store as an object 'cps'
+  cps <- read.csv("cps_june_20-21.csv")
+# should we explore why there are so many NA values?
+  cps <- na.omit(cps) #remove all observations with NA values
   
-  #looks like we want to treat indicator as a categorical var (a factor, in R-speak!)
-  #how do we inspect? #we can use the table function or we can coerce to a factor
-  table(covid$indicator) 
-  levels(covid$indicator) #returns NULL bc indicator is not a factor!
-  levels(as.factor(covid$indicator)) #levels only works with factors
-  summary(as.factor(covid$indicator))
-
-
-#1b. 
-  FILL IN CODE
+  
+# 1a. 
 
   
-#1c. 
-  covid.temp1 <- FILL IN CODE
+  #we can also inspect the data frame by double-clicking in the Environment tab
   
+ 
+  
+  
+# 1b.
 
+  
+  
+# 1c.
+  cps.temp1 <- FILL IN CODE
+  
+  
   #some helpful syntax for later: 
-    #subset the first row of covid.temp1
-    covid.temp1[1,]
-    #subset the cell in the first row, 4th column (i.e. first obs for year_week)
-    covid.temp1[1,4]
-
-
-#1d.
-  levels(covid.temp1$ind.fac) 
-  ?levels
-  #note that levels is a base R function
-  #so we can't refer to columns directly like a tidyverse function
-  #make sure you understand why this won't work: covid.df1 %>% levels(ind.fac)
-
-
-#1e.
-  covid_cases <- FILL IN CODE
-    
+  #subset the first row of cps.temp1
+  cps.temp1[1,]
+  #subset the cell in the first row, 4th column (i.e. first obs for age)
+  cps.temp1[1,4]
   
-  head(covid_cases, n = 5)
   
-  summary(covid_cases$ind.fac)
-  # this worked, but it still thinks there are 2 other empty categories (levels)
-  # here is a long way to fix that
-  covid_cases <- covid_cases %>%
-    mutate(ind.char = as.character(ind.fac),
-           ind.fac = as.factor(ind.char)) %>%
-    select(-ind.char)
-  #idea: convert the factor into a character first, then convert to factor again
-  #when we convert the factor to a character, the original levels are lost
-  #then R gets new levels based on the 1 remaining value ("confirmed")
+# 1d.
   
-  summary(covid_cases$ind.fac) # the # of obs for each level of ind.fac
 
-
-#1f.
-  rm(covid.temp1)
   
-    #for reference, here is the code to remove all objects from the workspace:
-    #rm(list = ls())
+  
+  
+# 1e.
+  cps_2020 <- FILL IN CODE HERE 
 
 
+  
+  
+# 1f.
+  rm(cps.temp1)
+
+  
 ## -----------------------------------------------------------------------------
-## 2. Describe the covid.confirmed data frame
+## 2. Describe the cps_2020 data frame
 ##
 ##    a. what is the unit of observation? 
-##       do you notice any observations that you think should be excluded?
 ##
-##    b. how many entities are observed?
+##    b. how many individuals are observed? from how many households?
 ##
-##    c. how many weeks are observed? earliest and latest year-week?
+##    c. what is the average age of individuals in the sample? youngest and oldest person?
 ## -----------------------------------------------------------------------------
-
-#2a.
-  str(covid_cases)
-  view(covid_cases)
-
-
-#2b. hint: we need to calculate a statistic for a given column of data
+  
+# 2a.
+ 
+  
+  #NOTE: don't include all of your inspection commands in your R Markdown submission
+  #      I've included view() as a reminder, but shouldn't be in your submission
+  #      neither should clunky str() output, be selective about the output you show!
+  
+  
+# 2b. HINT: we need to calculate a statistic for a given column of data
   ?summarise
-  FILL IN CODE
+
   
   #summarise is in the dplyr package which is part of the tidyverse
-  FILL IN CODE
+  cps_2020 %>% FILL IN CODE HERE
 
-  #short way: use in your .rmd file to reference code to answer questions
-  FILL IN CODE
+  
+  #short way: use in your .rmd file to reference code inline to answer questions
+  n_distinct(cps_2020$personid)
+  n_distinct(cps_2020$hhid)
+  #NOTE: you'll lose points for hardcoding numerical answers in your assignments!
   
   
-#2c.
+# 2c. 
   #use summarise with multiple arguments, one for each statistic
   #try ?summarise to find the syntax for different summary statistics
-  covid_cases %>% FILL IN CODE
   
+  cps_2020 %>% FILL IN CODE HERE
 
+  
 ## -----------------------------------------------------------------------------
-## 3. Let's look at COVID case rate for the most recent year-week: 
+## 3. Let's now look at earnings per week for different groups in June 2020
 ##
-##    a. find most recent year-week using the summarise() function, 
-##        assign this date to a new object called lastweek
+##    a. find the observation for the top weekly earnings using the summarise() function, 
+##        assign this to a new object called max_earnings
 ##
-##    b. find most recent week using the arrange function instead of summarise
+##    b. find max weekly earnings using the arrange function instead of summarise
 ##
-##    c. use the filter function to subset observations only for the most recent week
-##        (don't hardcode a year-week to filter on, refer to lastweek object from a),
-##        store in new data frame covid_cases_last,
+##    c. use the filter function to subset for the observation with max weekly earnings
+##        (don't hardcode the max earnings to filter on, refer to the max_earnings object from a),
+##        store in new data frame cps_max_earn,
 ##        confirm it worked
 ##
-##    d. what was max 14 day case rate in any country for the most recent week? 
-##       which country had the max rate?
+##    d. what is the age, sex, and race of the top weekly earner in the sample?
 ##
-##    e. list the top 10 countries by rate for the most recent week
+##    e. list the age, sex, and race of the top 10 weekly earners in the sample.
 ##
-##    f. how many entities had 0 reported cases for the most recent week?
+##    f. how many individuals earned more than $2000 in weekly earnings?
 ## -----------------------------------------------------------------------------
+  
+# 3a. 
+  cps_2020 %>% FILL IN CODE HERE
+  #Documentation: https://cps.ipums.org/cps-action/variables/EARNWEEK#codes_section
+  
+  #assign to object
+  max_earnings <- FILL IN CODE HERE
 
-#3a. 
-  lastweek <- FILL IN CODE
-  lastweek
-
-#3b. 
-  covid_cases %>% FILL IN CODE
-
-#3c. 
-  #HINT: your condition needs to refer to the last week.
-  # you created lastweek as a data frame in part a,
-  # so in your filter() call refer to the value from lastweek that you want to filter on
+    
+# 3b. 
+  cps_2020 %>% FILL IN CODE HERE
+  
+  
+# 3c. 
+  
+  #HINT: your condition needs to refer to the max weekly earnings.
+  # you created max_earnings as a data frame in part a,
+  # so in your filter() call refer to the value from max_earnings that you want to filter on
   # this requires subsetting the appropriate element from that data frame
   # (in this case just the 1st row of a 1-row data frame).
   # See Lecture2.1/Section 4.2 for examples of how to subset matrix/df elements
-  covid_cases_last <- FILL IN CODE
-
-  #confirm this worked
+  
+  cps_max_earn <- FILL IN CODE HERE
+  
+  
+# 3d. 
 
   
-
-#3d.
+  
+  #obviously better to refer to column names when you know them as we do here
+  #alternatively, you could refer to the elements you want within the cps_max_earn object
+  #by calling the 4th, 5th, and 6th columns from the first row
+  cps_max_earn[1,4:6]
+  
+  
+# 3e.
   
 
-#3e. 
+  
+# 3f.
+  
+  #HINT: use the nrow() function to return the number of observations
 
 
-#3f.
-
-
-
+  
 ## -----------------------------------------------------------------------------
-## 4. Let's look at the 14-day case rate for Panama: 
+## 4. Let's look at wage gaps between males and females:
 ##
-##    a. use the filter function to subset observations for Panama, 
-##        assign to new data frame, covid_cases_panama,
-##        sort in descending date order
-##        check it worked
+##    a. use the filter function to subset observations for males, 
+##        assign to new data frame, cps_2020_male,
+##        sort in descending order of weekly earnings
+##        check if it worked
 ##
-##    b. use summarise to find mean, min & max for rate_14_day for Panama over all observations,
+##    b. repeat part a for females and create a new data frame, cps_2020_female
+##
+##    c. use summarise to find mean, min & max for males and females, separately
 ##        name each statistic appropriately (i.e. name each column in the 1-row table of stats)
+##        what is the gender gap in mean weekly earnings?
 ##
-##    c. what was the average weekly rate over past 10 weeks?
-##        hint: see Lecture2.1/Section 4.2 for syntax to refer to first 10 rows
-##          if you're having trouble, you can try using the row_number function
+##    d. what is the wage gap in weekly earnings between white males and Black females?
 ##
-##    d. what was the average weekly rate over the first 10 weeks of data?
+##    e. what is the wage gap between college educated white males and college educated
+##       Black females?
 ## -----------------------------------------------------------------------------
   
-#4a. 
+# 4a. 
+  
+  #HINT: try levels(cps_2020$sex.fac) function to get the factor labels to filter on
+  
+  cps_2020_male <- FILL IN CODE HERE
 
   
-#4b.
+# 4b.
+  cps_2020_female <- FILL IN CODE HERE
+
+  
+# 4c.
+
+  #HINTt: use the newly created data frames for males and females to generate stats
+  
+
+  
+  #calculate gender gap in weekly earnings:
+  #HINT: use base R to calculate the wage gap directly in your .rmd file
+
+  
+# 4d. 
+  
+  #HINT: use levels() again to get the factor labels
+  
+  #create object w/observations for white males
+  cps_2020_wh_male <-  FILL IN CODE HERE
+  
+  
+  #create object w/observations for Black females
+  cps_2020_bl_female <-  FILL IN CODE HERE 
+  
+  
+  #calculate wage gap between white males and Black females
+
+  
+  #Q: do you see any potential issues with the demographic groups we just used?
+  
+  
+
+# 4e. 
+  
+  #create object w/observations for white college educated males
+  cps_2020_wh_male_college <- FILL IN CODE HERE
+
+  
+  #create object w/observations for Black college educated females
+  cps_2020_bl_female_college <- FILL IN CODE HERE
+  
+  
+  #calculate wage gap
 
 
-#4c.
-
-
-#4d.
-
-
-## -----------------------------------------------------------------------------
-## END SCRIPT
-## -----------------------------------------------------------------------------
-
+#NOTE: above exercises are done w/weekly earnings, but can easily be converted to hourly wages
