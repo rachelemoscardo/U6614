@@ -1,5 +1,5 @@
 ---
-title: 'U6614: Assignment 2: COVID-19 Country Case Data'
+title: 'U6614: Assignment 2: Assessing gender wage gaps using the Current Population Survey'
 author: "Your Name (your-uni)"
 date: "`r Sys.Date()`"
 output:
@@ -23,7 +23,7 @@ urlcolor: blue
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 ```
 
-##### *Please submit your knitted .pdf file along with the corresponding R markdown (.rmd) via Courseworks by 11:59pm on Monday, January 25th.* {-}
+##### *Please submit your knitted .pdf file along with the corresponding R markdown (.rmd) via Courseworks by 11:59pm on Monday, February 1st.* {-}
 
 \medspace
 
@@ -33,79 +33,83 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 
 *Please visit [this](https://bookdown.org/yihui/rmarkdown-cookbook/install-latex.html) link for more information on TinyTex installation.*
 
-*If you run intro problems knitting as a pdf, please test by first knitting as an html file. If your rmd file knits as an html file but not as a pdf, then it is likely an RStudio/TinyTex installation issue. A quick fix is to open your knit html file in Chrome or your preferred browser, print as a pdf and submit that file to Courseworks.*
+\medspace
 
-*If you are unable to knit as an html file, then the issue lies with your code and not your RStudio setup.*
+# Load and inspect CPS data: 
 
+### a) Inspect the data frame and data types for each column {-}
+- make sure to inspect the age, sex, race, college columns
 
-# Introduction {-}
+### b) Use the mutate function to create new column for sex {-}
+- sex.fac = as.factor(sex),
+- check if it worked by calling the str() function
 
-Load packages:
-```{r}
-#load packages here
-```
+### c) Include sex.fac in a new data frame called cps.temp1 {-}
+- also create factors for race and college education,
+- use a pipe to exclude the columns for serial, ind
+- after creating cps.temp1, print the first 5 observations
 
+### d) Inspect race.fac, sex.fac, and college.fac using the levels() function {-}
+- what package is the levels() function located in?
 
-# Load and prep the data
+### e) Use filter() to only include rows only for June 2020 {-}
+- store as a new object cps_2020,
+- print the first 5 observations,
+- confirm your data only includes observations for 2020
 
-#### Load the COVID-19 data from class and only keep observations without NA values for cases (not deaths). {-}
-
-Data source: https://www.ecdc.europa.eu/en/publications-data/data-national-14-day-notification-rate-covid-19
-\
-\
-[FOR EACH QUESTION, ADD YOUR WRITE-UP (IF APPLICABLE) UNDER THE QUESTIONS/HEADERS FOR ORGANIZATION]
-\
-```{r q1}
-#include any code you use to arrive at your answers as code chunks
-#but don't include code you don't need to arrive at your answers!
-#remember to use comments liberally to explain/organize your code
-```
-In your written answers, use inline code chunks to refer to any numbers from your analysis rather than hard-coding numbers. See Lecture2.2, Section 5.3 for an overview of in-line code chunks.
-
-
-# Describe the data
-
-#### Provide the following, along with any other information you think might be useful for the reader to know about the data. {-}
-
-- *unit of observation*
-- *date range observed in the data*
-- *number of countries (or administrative entities reporting data)*
-
-
-# Latest global 14-day case rate (per 100,000 population)
-
-#### a. Create a new data frame that only includes observations for the most recent week. {-}
+### f) Remove the cps.temp1 object from memory using the rm() function {-}
 
 \medspace
 
-*Note: don't hard-code a date to filter on, find the latest week, store as a data object, and then refer back to (the element in) that object (see Lecture2-inclass.r for guidance)*
+# Describe the cps_2020 data frame
 
+### a) What is the unit of observation? {-}
 
+### b) How many individuals are observed? from how many households? {-}
 
-#### b. What was the max 14-day rate for the most recent week observed in the data? {-}
-
-
-#### c. List the top 10 countries by 14-day rate for the most recent week observed in the data? {-}
-
-
-#### d. How many countries had zero reported cases for the most recent week? {-}
-
-
-# Panama 14-day case rates
-
-#### a.  Create a new data frame for the 14-day rate for Panama only. Sort in descending data order. {-}
-
-
-#### b.  Find the weekly mean, min, and max 14-day rate for Panama over all included data and name each column appropriately. {-}
-
-
-#### c.  What was the average 14-day rate in Panama over the *last* 10 weeks of reported data? {-}
+### c) What is the average age of individuals in the sample? Youngest and oldest person? {-}
 
 \medspace
 
-*[HINT: See Lecture2.1 -> Section 4.2 for examples of subsetting syntax that can help you refer to the first 10 rows of sorted data. If you're having trouble, you can also try using the `row_number()` function]*
+# Earnings per week for different groups in June 2020
 
+### a) Find the observation for the top weekly earnings using the summarise() function {-}
+- assign this to a new object called med_earnings
 
-#### d.  What was the average 14-day rate in Panama over the *first* 10 weeks of reported data? {-}
+### b) Find max weekly earnings using the arrange function instead of summarise {-}
+
+### c) Use the filter function to subset for the observation with max weekly earnings {-}
+- don't hardcode the max earnings to filter on, refer to the max_earnings object from a),
+- store in new data frame cps_max_earn,
+- confirm it worked
+
+### d) What is the age, sex, and race of the top weekly earner in the sample? {-}
+
+### e) List the age, sex, and race of the top 10 weekly earners in the sample {-}
+
+### f) How many individuals earned more than $2000 in weekly earnings? {-}
+
+\medspace
+
+# Wage gaps between males and females:
+
+### a) Use the filter function to subset observations for males {-}
+- assign to new data frame, cps_2020_male,
+- sort in descending order of weekly earnings
+- check if it worked
+
+### b) Repeat part a for females and create a new data frame, cps_2020_female {-}
+
+### c) Use summarise to find mean, min & max for males and females, separately {-}
+- name each statistic appropriately (i.e. name each column in the 1-row table of stats)
+- what is the gender gap in mean weekly earnings?
+
+### d) What is the wage gap in weekly earnings between white males and Black females? {-}
+
+### e) What is the wage gap between college educated white males and college educated Black females? {-}
+
+\medspace
+
+*NOTE: the exercises above are done using weekly earnings, but can easily be converted to hourly wages*
 
 
