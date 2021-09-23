@@ -49,7 +49,7 @@ I can suppress numbering, by adding "{-}"
 Here is some inline code: two plus two equals `r 2 + 2`. 
 
 Here is a code chunk, displaying a table and the code used to generate it.
-Piping a dataframe to knitr::kable makes it look nicer in rmarkdown.
+Piping a dataframe to knitr::kable() makes it look nicer in rmarkdown.
 ```{r}
 gapminder %>% 
   head(5) %>% 
