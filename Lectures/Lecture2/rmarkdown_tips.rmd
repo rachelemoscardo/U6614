@@ -1,0 +1,169 @@
+---
+title: "R Markdown Tips and Testing"
+author: "Your Name (your-uni)"
+date: "`r Sys.Date()`"
+output:
+  pdf_document:
+    toc: no
+    toc_depth: '3'
+    number_sections: yes
+  html_document:
+    toc: yes
+    toc_depth: 3
+    toc_float: yes
+    number_sections: yes
+    highlight: tango
+    theme: default
+    fig_caption: yes
+    df_print: tibble
+urlcolor: blue
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+```{r}
+#Load libraries
+library(tidyverse)
+library(gapminder) #only for this example
+```
+
+I can write normal text here.
+
+```{r}
+#I can also write text as comments within a code chunk.
+#The shortcut is cmd+alt+i (or ctrl+alt+i in windows).
+```
+
+Here is how numbering works.
+
+# Heading 
+## Subheading
+### Sub-subheading
+
+I can suppress numbering, by adding "{-}"
+
+## Suppress numbering here. {-}
+
+Here is some inline code: two plus two equals `r 2 + 2`. 
+
+Here is a code chunk, displaying a table and the code used to generate it.
+Piping a dataframe to knitr::kable makes it look nicer in rmarkdown.
+```{r}
+gapminder %>% 
+  head(5) %>% 
+  knitr::kable()
+```
+
+\newpage 
+
+Here is another code chunk, displaying a plot and the code used to generate it.
+```{r}
+plot(gapminder$year, gapminder$gdpPercap)
+```
+
+Let's make a new page.
+
+\newpage
+
+## Code chunk display options {-}
+
+In the setup chunk we defined the default (global) code chunk display option to be echo=TRUE, meaning the knitted chunk will display both code and results.
+
+Note that the global settings also suppress warnings and messages.
+Usually, you will not have to change these settings when answering assignment questions.
+
+For example, suppose I want to display the structure of the gapminder dataset.
+
+- Use **{r}** for the default options
+
+```{r}
+str(gapminder)
+#default display, inherited from the setup chunk.
+#this is how to display answers for most assignment questions.
+```
+
+\medspace
+
+If we want, we can change the display options within the code chunk.
+Suppose I only want to display the results, and not the code. 
+
+- Use **"{r echo = FALSE}"**
+
+```{r echo=FALSE}
+str(gapminder)
+```
+
+\medspace
+
+And the reverse, display the code (and not the results)
+
+- Use **"{r eval = FALSE}"**
+
+```{r eval=FALSE}
+str(gapminder)
+```
+
+\medspace
+
+Or, execute and not display anything (neither code nor results)
+
+- Use **"{r include = FALSE}"**
+
+```{r include=FALSE}
+str(gapminder)
+print("some incriminating stuff that won't see the light of day")
+```
+
+*(nothing here)*
+
+\newpage
+
+
+
+## Additional tips {-}
+
+Don't include "clunky" output that is not integral to answering the question.
+
+As an example, consider the following question: *what is the mean GDP per capita of the gapminder dataset?*
+
+The following is not a very good approach, since the output is clunky.
+```{r}
+summary(gapminder)
+#by inspection, 7215.3
+```
+
+\medspace 
+
+The following is neater, but also not very good, since it still displays unecessary information, and the answer is "hard coded" - i.e. numbers are typed in - this is bad practice.
+```{r}
+summary(gapminder$gdpPercap)
+#by inspection, 7215.3
+```
+
+\medspace 
+
+The best way is to use inline code, as per below:
+
+**The mean GDP in the gapminder dataset is `r round(mean(gapminder$gdpPercap),1)`.**
+
+\medspace 
+
+In general:
+
+- Do not hard code (i.e. do not type numeric values directly)
+- Instead, use inline code for simple calculations
+- And use code chunks for more complicated/longer operations
+- Be sensible about what output to display, and what to omit
+
+\newpage 
+
+## Some final remarks {-}
+
+Remember, you can execute code in rmarkdown without knitting, just like in a .r script. 
+
+Since knitting is memory exhaustive, in general, try to knit only when you're confident your code works, and/or when you want to view the formatting of the final output. 
+
+For more detail on rmarkdown visit [Yihui Xie's website](https://bookdown.org/yihui/rmarkdown/).
+
