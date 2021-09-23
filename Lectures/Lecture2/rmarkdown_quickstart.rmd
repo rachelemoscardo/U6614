@@ -1,5 +1,5 @@
 ---
-title: "R Markdown Tips and Testing"
+title: "Getting up and running with R Markdown"
 author: "Your Name (your-uni)"
 date: "`r Sys.Date()`"
 output:
@@ -49,7 +49,7 @@ I can suppress numbering, by adding "{-}"
 Here is some inline code: two plus two equals `r 2 + 2`. 
 
 Here is a code chunk, displaying a table and the code used to generate it.
-Piping a dataframe to knitr::kable() makes it look nicer in rmarkdown.
+Piping a dataframe to knitr::kable() makes it look nicer in R Markdown.
 ```{r}
 gapminder %>% 
   head(5) %>% 
@@ -97,7 +97,7 @@ str(gapminder)
 
 \medspace
 
-And the reverse, display the code (and not the results)
+And the reverse, display the code without evaluating (i.e. no results)
 
 - Use **"{r eval = FALSE}"**
 
@@ -107,7 +107,7 @@ str(gapminder)
 
 \medspace
 
-Or, execute and not display anything (neither code nor results)
+Or, execute code and not display anything (neither code nor results)
 
 - Use **"{r include = FALSE}"**
 
@@ -161,9 +161,9 @@ In general:
 
 ## Some final remarks {-}
 
-Remember, you can execute code in rmarkdown without knitting, just like in a .r script. 
+Remember, you can execute code in R Markdown without knitting, just like in a .r script. 
 
 Since knitting is memory exhaustive, in general, try to knit only when you're confident your code works, and/or when you want to view the formatting of the final output. 
 
-For more detail on rmarkdown visit [Yihui Xie's website](https://bookdown.org/yihui/rmarkdown/).
+For more detail on R Markdown visit [Yihui Xie's website](https://bookdown.org/yihui/rmarkdown/).
 
