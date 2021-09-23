@@ -15,6 +15,7 @@ library(tidyverse)
 ## ---------------------------
 ## directory paths
 ## ---------------------------
+
 getwd()
 
 
@@ -153,7 +154,6 @@ getwd()
     summarise(avg_age = mean(age),
               min_age = min(age),
               max_age = max(age))
-
   
 ## -----------------------------------------------------------------------------
 ## 3. Let's now look at earnings per week for different groups in June 2020
@@ -176,19 +176,17 @@ getwd()
 ## -----------------------------------------------------------------------------
   
 # 3a. 
-  cps_2020 %>% FILL IN CODE HERE
+  max_earnings <- cps_2020 %>% 
+    summarise(max_earnings = max(earnweek))
   #Documentation: https://cps.ipums.org/cps-action/variables/EARNWEEK#codes_section
-  
-  #assign to object
-  max_earnings <- FILL IN CODE HERE
-
     
 # 3b. 
-  cps_2020 %>% FILL IN CODE HERE
-  
+  cps_2020 %>% 
+    arrange(desc(earnweek)) %>% 
+    select(earnweek) %>% #this line is not necessary, but makes it tidier
+    head(n = 1)
   
 # 3c. 
-  
   #HINT: your condition needs to refer to the max weekly earnings.
   # you created max_earnings as a data frame in part a,
   # so in your filter() call refer to the value from max_earnings that you want to filter on
@@ -196,11 +194,13 @@ getwd()
   # (in this case just the 1st row of a 1-row data frame).
   # See Lecture2.1/Section 4.2 for examples of how to subset matrix/df elements
   
-  cps_max_earn <- FILL IN CODE HERE
-  
+  cps_max_earn <- cps_2020 %>% 
+    filter(earnweek == max_earnings[1,])
   
 # 3d. 
-
+  cps_max_earn %>% 
+    select(age,sex,race) %>% 
+    head(n = 1)
   
   #obviously better to refer to column names when you know them as we do here
   #alternatively, you could refer to the elements you want within the cps_max_earn object
@@ -209,14 +209,17 @@ getwd()
   
   
 # 3e.
-
-
+  cps_2020 %>% 
+    arrange(desc(earnweek)) %>% 
+    select(age, sex, race, earnweek) %>% 
+    head(n = 10)
+  
   
 # 3f.
-  
-  #HINT: use the nrow() function to return the number of observations
-
-
+  #use the nrow() function to return the number of observations
+  cps_2020 %>% 
+    filter(earnweek>=2000) %>% 
+    nrow()
   
 ## -----------------------------------------------------------------------------
 ## 4. Let's look at wage gaps between males and females:
