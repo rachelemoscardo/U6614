@@ -3,6 +3,10 @@ title: 'U6614: Assignment 2: Assessing gender wage gaps using the Current Popula
 author: "Your Name (your-uni)"
 date: "`r Sys.Date()`"
 output:
+  pdf_document:
+    toc: no
+    toc_depth: '3'
+    number_sections: yes
   html_document:
     toc: yes
     toc_depth: 3
@@ -12,19 +16,14 @@ output:
     theme: default
     fig_caption: yes
     df_print: tibble
-  pdf_document:
-    toc: no
-    toc_depth: '3'
-    number_sections: yes
 urlcolor: blue
 ---
 
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
-library(tidyverse)
 ```
 
-##### *Please submit your knitted .pdf file along with the corresponding R markdown (.rmd) via Courseworks by 11:59pm on Monday, February 1st.* {-}
+##### *Please submit your knitted .pdf file along with the corresponding R markdown (.rmd) via Courseworks by 11:59pm on Monday, September 27.* {-}
 
 \medspace
 
@@ -37,23 +36,8 @@ library(tidyverse)
 \medspace
 
 # Load and inspect CPS data: 
-```{r}
-cps <- read.csv("cps_june_20-21.csv")
-# should we explore why there are so many NA values?
-  cps <- na.omit(cps) #remove all observations with NA values
-```
 
 ### a) Inspect the data frame and data types for each column {-}
-
-```{r}
-  str(cps)
-  summary(cps$age)
-  summary(cps$sex)
-  summary(cps$race) 
-  summary(cps$college)
-```
-Comment something .
-
 - make sure to inspect the age, sex, race, college columns
 
 ### b) Use the mutate function to create new column for sex {-}
@@ -90,7 +74,7 @@ Comment something .
 # Earnings per week for different groups in June 2020
 
 ### a) Find the observation for the top weekly earnings using the summarise() function {-}
-- assign this to a new object called med_earnings
+- assign this to a new object called max_earnings
 
 ### b) Find max weekly earnings using the arrange function instead of summarise {-}
 
