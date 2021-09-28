@@ -1,0 +1,307 @@
+---
+title: 'Lecture 4.1: Data Analysis Tools Part 2'
+#subtitle: ""
+author: "SIPA U6614 | Instructor: Harold Stolper"
+date: 
+urlcolor: blue
+output: 
+  html_document:
+    toc: TRUE
+    toc_depth: 3
+    toc_float: TRUE
+    number_sections: TRUE
+    highlight: tango
+    theme: default
+    fig_caption: TRUE
+    #fig_width = 7 #Default width (in inches) for figures
+    #fig_height = 5 #Default height (in inches) for figures
+    #html_preview: TRUE #TRUE to also generate an HTML file for the purpose of locally previewing what the document will look like on GitHub.    
+    df_print: tibble # Method to be used for printing data frames. Valid values include "default", "kable", "tibble", and "paged". The "default" method uses print.data.frame. 
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Introduction
+
+Load packages:
+```{r, message = FALSE, warning = FALSE}
+library(tidyverse)
+library(gapminder)
+```
+
+Resources used to create this lesson:
+
+- https://dplyr.tidyverse.org/reference/join.html
+- https://stat545.com/join-cheatsheet.html
+- https://mgimond.github.io/ES218/Week03c.html
+- https://www.guru99.com/r-apply-sapply-tapply.html
+
+
+# Joins
+
+In this section we'll review the `dplyr` functions for joining columns of data from one data frame to another.
+
+We'll be using the gapminder dataset again, with country-year observations on average life expectancy, population, and GPD per capita. Remember to load the library and then take a minute to re-familiarize yourself with the dataset. Let's filter out gapminder observations for all years besides 2002 and 2007, and for the time-being we're also going to treat country as a character rather an a factor -- joining on a factor can cause a bit of trouble down the road.
+```{r warning = FALSE, message = FALSE}
+# filter gapminder for 2002 and 2007 and coerce country from factor to char
+gap <- gapminder %>% 
+  filter(year == 2007 | year == 2002) %>% 
+  mutate(country = as.character(country))
+
+# inspect new data frame
+str(gap)
+head(gap, n = 5)
+```
+
+Of course we can still temporarily treat `country` as a factor to count the number of distinct countries observed in the gapminder data for 2002 and 2007
+```{r warning = FALSE, message = FALSE}
+# check how many countries are in the gap data frame
+str(as.factor(gap$country))
+```
+
+To learn different `dplyr` join functions, we'll be working with a .csv file including annual country-level observations from the [World Bank](https://data.worldbank.org/indicator/SH.XPD.CHEX.PC.CD) on health expenditures per capita (from 2002-2017). Let's take a look.
+```{r warning = FALSE, message = FALSE}
+# load and inspect healthexp data
+healthexp <- readRDS("healthexp_long.rds")
+str(healthexp, give.attr = FALSE)
+head(healthexp, n = 5)
+```
+
+Note that the gapminder data includes observations for 142 countries 5 years apart, e.g. 2002 and 2007, while the health expenditure data includes annual observations for 264 countries between 2002 and 2017.
+
+
+## Mutating joins
+
+In the parlance of `dplyr`, a *mutating join* refers to merging in new columns of data to existing columns of data. Let's review the different types of mutating joins. 
+
+
+### `inner_join`
+
+`inner_join(df1, df2, by = col_to_join_by)` returns all rows in `df1` with values for `col_to_join_by` that match values in `df2`, and including all columns from both `df1` and `df2`. In this case we want to match on two columns that appear in both data frames, `country` and `year`. If there are multiple matches between `df1` and `df2`, all combinations of the matches are returned, which may not be what you want. This is considered a mutating join because we're adding columns to an existing data frame, in a similar fashion as the `mutate` function.
+```{r}
+# inner join by country-year with gap on the left, healthexp on the right
+gap_joined_inner <-  
+  inner_join(gap, healthexp, by = c("country", "year")) %>% 
+  mutate(country = as.factor(country)) 
+
+# inspect results of inner join
+gap_joined_inner %>% head(n = 5)
+```
+
+Note that all columns from the "right-hand" data frame (`healthexp`) that aren't already in the "left-hand" data frame (`gap`) are added as new columns at the end of the new, joined data frame: `Indicator.Name` and `healthexp`. The new joined data frame now has 8 columns in total.
+
+A requirement for a successful join is that the variable(s) we're matching on, in this case combinations of `country` and `year`, are coded identically in both data frames. For `year` this is pretty straightforward, visual inspection confirms years are coded as a familiar four digit number. For `country`, on the other hand, different spellings for the same country name in both data frames will prevent a match. This means it's critical to inspect the coding of `country` in each data frame and the results of the join to find any coding inconsistencies that need to be addressed.
+
+Also note that if the columns you're matching on have different names in each data frame, you can modify the `by` argument as `by = c("left_col" = "right_col")`.
+
+In the previous code chunk, we *coerced* `country` in the joined data frame from a character back to a factor, and we can confirm that 132 factor levels for `country` (e.g. countries) from `gap` were retained in the inner join. This means 12 countries in the gapminder data were not matched to the health expenditure data. 
+```{r}
+# use nlevels function to show how many factor levels for country survived the join
+nlevels(gap_joined_inner$country)
+```
+
+How can we identify the 10 countries that weren't matched? There are a number of ways to do this, but let's pause that discussion until we introduce filtering joins.
+
+
+### `full_join`
+
+`full_join(df1, df2, by = col_to_join_by)` return all rows and all columns from both `df1` and `df2`. For rows in each data frame with no matching values for `col_to_join_by` in the other, the rows are retained with `NA` values assigned to elements of missing column data. If there are multiple matches between `df1` and `df2`, all combination of the matches are returned, which may not be what you want. This is a mutating join where all elements of both data frames are retained in the new, joined data frame.
+
+```{r}
+# full join by country-year with gap on the left, healthexp on the right
+gap_joined_full <- full_join(gap, healthexp, by = c("country", "year")) %>% 
+  mutate(country = as.factor(country)) 
+
+# inspect results of full join
+gap_joined_full %>% head(n = 5)
+str(gap_joined_full)
+```
+Notice from the dimensions of the resulting data frame (4,244 x 8) that this approach retains all year-country gapminder observations, including those with no health expenditure data. It also retains observations for countries with health expenditure data that aren't included in the gapminder data (e.g. Azerbaijan). We can confirm that there are now 274 factor levels for `country`, i.e. 274 countries that appear in one data frame or the other. This is useful to know, but if we're interested in exploring the relationship between life expectancy and health expenditures, we probably want to analyze a data frame with only countries appear in 
+
+
+### `left_join` (and `right_join`)
+
+`left_join(df1, df2, by = col_to_join_by)` returns all rows from `df1` and all columns from `df1` and `df2`. If there are multiple matches between x and y, all combination of the matches are returned, which may not be what you want. This is also a mutating join where columns are added and all observations retained from the "left hand" data frame.
+```{r}
+# left join by country-year with gap on the left, healthexp on the right
+gap_joined_left <- left_join(gap, healthexp, by = c("country", "year")) %>% 
+  mutate(country = as.factor(country)) 
+
+# inspect results of left join
+gap_joined_left %>% head(n = 5)
+nlevels(gap_joined_inner$country)
+```
+Here we can see all 142 countries are retained from the gapminder data, even though we know that 12 countries from the gapminder data were not matched to countries in the health expenditure data.
+
+
+## Filtering joins
+
+Filtering joins keep cases from the left-hand data. 
+
+
+### `semi_join`
+
+`semi_join(df1, df2, by = col_to_join_by)` will only retain observations from `df1` with matching values in `df2`. Unlike an inner join, a semi join will never duplicate rows from `df1` if there are multiple matches. The results of a semi join with `gap` as the left-hand data frame should once again return a data frame with 132 matched countries and all 6 columns from `gap`.
+```{r}
+# semi join by country-year with gap on the left, healthexp on the right
+gap_joined_semi <- semi_join(gap, healthexp, by = c("country", "year")) %>% 
+  mutate(country = as.factor(country)) 
+
+# inspect results of semi join
+gap_joined_semi %>% head(n = 5)
+str(gap_joined_semi)
+```
+
+
+### `anti_join`
+
+`semi_join(df1, df2, by = col_to_join_by)` will only retain observations from `df1` **with no matching values** in `df2`. This is useful for inspecting unmatched observations. Let's start by filtering out gapminder observations for all years besides 2002 and 2007.
+```{r}
+# anti join by country-year with gap on the left, healthexp on the right
+gap_joined_anti <- anti_join(gap, healthexp, by = c("country", "year")) %>% 
+  mutate(country = as.factor(country)) 
+
+# inspect results of anti join
+gap_joined_anti
+nlevels(gap_joined_inner$country)
+```
+
+The full results of the anti-join are printed above, which includes 20 observations that were not matched between the two data frames -- each of 10 countries observed twice (in 2002 and 2007).
+
+This shows why `anti_join()` is a great tool for inspecting matches when we call join functions. We've now identified 10 countries from the left-hand data frame that don't appear in the right-hand data frame, and we should investigate further to see if this is just due to alternative country spellings, or countries in gapminder that are in fact missing from the health expenditure data.
+
+
+## Visual representation
+
+Below are graphics depicting what happens under different mutating join scenarios, taken from https://mgimond.github.io/ES218/Week03c.html:
+
+```{r, eval = FALSE}
+inner_join(df, dj, by = "y")
+```
+![](inner_join.png){width=75%}
+
+```{r, eval = FALSE}
+full_join(df, dj, by = "y")
+```
+![](full_join.png){width=75%}
+
+```{r, eval = FALSE} 
+left_join(df, dj, by = "y")
+```
+![](left_join.png){width=75%}
+
+```{r, eval = FALSE}
+right_join(df, dj, by = "y")
+```
+![](right_join.png){width=75%}
+
+
+# Grouping: aggregation
+
+Last week we worked with the `dplyr` functions `group_by()` and `summarise()` to compute statistics based on column values for groups of observations (e.g. average life expectancy by continent-year).
+
+`group_by()` in combination with `summarise()` is also how we aggregate observations and change the unit of analysis. For example, we might start with survey microdata (individual observations) and want to collapse individuals into meaningful groups such as families or states/provinces. 
+This is the same functionality we introduced in Lecture3.1, but here we'll be using it to generate a new data frame for ongoing analysis not just summary statistics by group.
+
+As a reminder of how this works, let's collapse all country observations in the original gapminder data frame to yearly observations with columns for the total population and GDP... with a bit of data manipulation to get there.
+```{r}
+# collapse to yearly (global) observations
+gap_global <- gapminder %>% 
+  group_by(year) %>% 
+  mutate(gdp_tot = gdpPercap * pop) %>% # get total GDP by country 
+  summarize(population = sum(pop), gdp = sum(gdp_tot)) %>% # compute global pop and GDP
+  mutate(gdppercap = gdp / population ) # compute global GDP per capita
+
+gap_global
+```
+
+
+# Grouping: normalizing observations
+
+Another application of `group_by()` is that it allows us to normalize variables based on group-wise statistics. Normalization can help us standardize the units of a variable for more meaningful measurement and comparisons over time/between groups. For example, comparing raw test scores between students in different years is misleading if the difficulty of the test varied over times. Instead we might want to use *standardized* test scores, measured as z-scores instead of raw test scores (or alternatively measured as standard deviations from the mean).
+
+In the following code chunk, we use the gapminder data and standardize the distribution of life expectancy across countries (separately within each year) so that life expectancy is measured in z-scores (life_z)
+```{r}
+# collapse to yearly (global) observations w/standardized lifeExp
+gap_z <- gapminder %>% 
+  group_by(year) %>% 
+  mutate(mean_life = mean(lifeExp), # compute mean lifeExp in each year across countries (store as col)
+         sd_life = sd(lifeExp),      # compute s.d. lifeExp in each year across countries (store as col)
+         life_z = (lifeExp - mean_life) / sd_life) %>% # normalize every lifeExp obs to a z-score (within-year) 
+  arrange(desc(life_z))
+
+# look at most extreme country-year life expectancy observations after standardization
+gap_z %>% head(n = 5)
+gap_z %>% tail(n = 5)
+```
+
+If you're interested in learning more about normalization, [here](https://kharshit.github.io/blog/2018/03/23/scaling-vs-normalization) is a short primer on standardization vs. scaling as normalization approaches using R.
+
+
+# The apply family of functions
+
+Recall that the base R `summary()` function is a quick and easy way to get a snapshot of the distribution of numeric variables. We've also used `dplyr`'s `summarize()` function to compute statistics. Another approach is to use an **apply** function to call another function multiple times for multiple objects or elements of objects (e.g. get the mean for different columns of data). Apply functions include `lapply()`, `sapply()`, `vapply()`, and `tapply()`. Let's briefly introduce `sapply()` and `tapply()` because they may come in handy down the road.
+
+`sapply()` will apply a specified function to each element of a list or vector and returns a corresponding list or vector of results.
+```{r, eval = FALSE}
+sapply(X, FUN)
+Arguments:
+-X: A vector or an object
+-FUN: Function applied to each element of x
+```
+
+For example:
+```{r}
+# isolate all numeric gapminder columns for 2007 in new data frame
+gap_cols <- gapminder %>% filter(year == 2007) %>% select(pop, lifeExp, gdpPercap)
+
+# use sapply to apply mean function to all columns in gap_cols
+sapply(gap_cols, mean)
+```
+
+`tapply()` is useful for factors, applying a specified function to each level of a given factor (e.g., to get group-specific means).
+```{r, eval = FALSE}
+tapply(X, INDEX, FUN = NULL)
+Arguments:
+-X: An object, usually a vector (stats will be computed based on X values)
+-INDEX: A list containing factor (stats will be computed for each INDEX group)
+-FUN: Function applied to each element of x (FUN specifies the type of statistic)
+```
+
+For example:
+```{r}
+# use tapply to get min lifeExp by country (i.e. for every level of country factor)
+tapply(gapminder$lifeExp, gapminder$country, min) %>% head()
+```
+
+
+# Dealing with missing values
+
+It's usually a good idea to assign all missing values--and values that we want R to treat as missing--as soon as you load your data. Recall one tool for doing this is to specify which characters should be treated as `NA` when reading in your data. Different data input functions have different options to specify which values should be treated as `NA`, but here is an example we used last week:
+```{r, eval = FALSE}
+# set na = option to specify strings to treat as NA
+arrests_bds <- read_csv("microdata_BDS_inclass.csv", na = "")
+```
+
+Sometimes missing values will be assigned with specific codes in survey data (e.g. 999999). You can specify which values should be treated as `NA` when loading your data, or replace them after the fact.
+
+In any event, getting a handle on which values should be treated as missing and why that is should be on the top of your to-do list. In some instances you may want to keep all observations and exclude `NA`'s as needed when making certain calculations. In other instances, you may want to drop incomplete rows from your analysis so that your sample remains the same throughout your analysis.
+
+Let's introduce some tools for making decisions about `NA` values using the `healthexp` data from the World Bank. First let's look at all observations with `NA` health expenditure data for 2002:
+```{r}
+# use is.na function filter to identify observations with NA health exp
+healthexp %>% filter(year == 2002, is.na(healthexp) == TRUE)
+```
+Right away we can recognize that many missing observations--though not all--are for sub-national territories that may not report this information (e.g. Aruba is considered a "constituent country of the Kingdom of the Netherlands").
+
+Here is an easy way to remove all observations with `healthexp` equal to `NA`, if that is what we decide to do:
+```{r}
+# use na.omit function to drop all observations with NA health exp
+healthexp_2002 <- healthexp %>% filter(year == 2002)
+na.omit(healthexp_2002)
+```
+Note that `NA` observations like Aruba have been dropped from `healthexp_2002` (but we can still access these observations in `healthexp` if need be).
+
+
