@@ -10,13 +10,11 @@
 ## POLICY QUESTION FOR THE NEXT 3 CLASSES:
 ## Police can stop and ticket or arrest people for subway fare evasion. 
 ## Is there racial bias in their subway fare evasion enforcement in Brooklyn? 
+
 ## Week 3: What can we learn from microdata?
 
-## About the microdata:
-
-## The two public defender groups operating in Brooklyn, (Brooklyn Defenders and
-## the Legal Aid Society), shared anonymized records for their clients who were 
-## arrested for fare evasion in during 2016.
+## Please consult the 2-page data primer before continuing
+## https://hreplots.github.io/U6614/Lectures/Lecture3/lecture_3-6_data_primer.pdf
 
 
 ## ---------------------------
@@ -43,12 +41,11 @@ getwd()
 ##      2. microdata_LAS_inclass.csv: Legal Aid Society
 ##
 ##    each row contains client data for an individual arrested for subway fare evasion
-##      (the statutory charge is "Theft of Services")
 ##
 ##    note these files were provided by the respective orgs with no documentation
 ##
 ##  a. give a brief overview of the data 
-##     (start to think about this now, but write up answer later after you know what
+##     (start to think about this now, but revisit after you know what
 ##      information proved most relevant for your analysis)
 ##
 ##  b. what is the unit of observation and population represented by this "sample"?
@@ -104,7 +101,7 @@ getwd()
 ## -----------------------------------------------------------------------------
 ## 3. clean BDS race and ethnicity data: 
 ##
-##  recode race and ethnicity vars and assign to new df called arrests_bds_clean
+##  recode race and ethnicity vars and assign to new df called arrests_bds.clean
 ##  generate 3 new columns for cleaned data:
 ##    a. race_clean
 ##    b. ethnicity_clean
@@ -115,7 +112,7 @@ getwd()
 ##    
 ##  in-class discussion questions: 
 ##  - what cat do you want to use for Black Hispanic identity?
-##  - what is missing by using mutually exclusive categories?
+##  - what is missing by using mutually exclusive, single identity categories?
 ## -----------------------------------------------------------------------------
 
 #3a. BDS race
@@ -147,7 +144,7 @@ getwd()
         arrests_bds.clean %>% count(race_clean, sort = TRUE)
         table(arrests_bds.clean$race_clean, arrests_bds.clean$race, useNA = "always")
       
-    #NOTE: recode doesn't work well with pipes like other dplyr functions,
+    #NOTE: recode doesn't always work well with pipes like other dplyr functions,
     #      instead we use the function as a part of the argument to mutate()
 
 
@@ -158,20 +155,20 @@ getwd()
     table(arrests_bds.clean$race_clean, arrests_bds.clean$ethnicity, useNA = "always")
   
   #now let's recode by creating a hispanic column where:
-    #1. hispanic takes the values Hispanic, Non-Hispanic, or NA
-    #2. then use factor() to set levels based on the above values
+  #1. hispanic takes the values Hispanic, Non-Hispanic, or NA
+  #2. then use factor() to set levels based on the above values
+    
     arrests_bds.clean <- arrests_bds.clean %>% 
-      mutate(hispanic = recode(ethnicity, "0" = "NA", "Other" = "Non-Hispanic") ) %>%
-      mutate(hispanic = factor(hispanic, levels = c("Hispanic", "Non-Hispanic"))) 
-  
+      mutate(hispanic = recode(ethnicity, "0" = "NA",
+                               "Other" = "Non-Hispanic")) %>% 
+      mutate(hispanic = factor(hispanic, 
+                               levels = c("Hispanic", "Non-Hispanic"))) 
+    
     #validation: confirm the recode worked as intended
-      summary(arrests_bds.clean$hispanic)
-      table(arrests_bds.clean$hispanic, arrests_bds.clean$ethnicity, useNA = "always")
-      table(arrests_bds.clean$race_clean, arrests_bds.clean$hispanic, useNA = "always")
+    table(arrests_bds.clean$hispanic, arrests_bds.clean$ethnicity, useNA = "always")
+    summary(arrests_bds.clean$hispanic) #ok but less useful for validation!
       
-      
-#NOTE: we used separate pipes to clean ethnicity & race, could do in a single pipe
-      
+  #NOTE: we used separate pipes to clean ethnicity & race, could do in a single pipe
       
 
 #3c. race_eth
@@ -198,14 +195,6 @@ getwd()
     
     #distribution of race_eth
       arrests_bds.clean %>% count(race_eth, sort = TRUE)
-      
-      
-  #here's a shorter way... but you'd need to label the factor levels separately
-    arrests_bds.clean %>% 
-      mutate(race_eth = factor(ifelse(hispanic == "Hispanic", 
-                                      hispanic, 
-                                      race_clean) ) ) %>%  
-      mutate(race_eth = recode(race_eth, "White" = "Non-Hispanic White"))  
     
   
 ## -----------------------------------------------------------------------------
@@ -220,8 +209,8 @@ getwd()
 
 #4a.
   FILL IN CODE
-
-    
+      
+      
 #4b. validate
   FILL IN CODE
 
@@ -250,9 +239,9 @@ getwd()
 #5a.
   arrests_bds.clean <- arrests_bds.clean %>% mutate(pd = "bds")
   #arrests_las.clean <- arrests_las.clean %>% mutate(pd = "las")
-    #we don't have arrests_las.clean yet, that's part of your assignment!
-
-    
+  #we don't have arrests_las.clean yet, that's part of your assignment!
+  
+  
 #5b. since we don't have arrests_las.clean yet, for now let's append arrests_bds.clean to itself
   arrests.clean <- plyr::rbind.fill(arrests_bds.clean, arrests_bds.clean) %>%
     mutate(pd = as.factor(pd),
@@ -264,14 +253,12 @@ getwd()
   MAKE SURE TO UPDATE ABOVE CODE TO APPEND arrests_las.clean TO arrests_bds.clean
   
 
-  
 #5c. 
   nrow(arrests.clean)
- 
-   
+  
 #5d.
-  saveRDS(arrests.clean, "../Assignment4/arrests_all.rds")
-
+  saveRDS(FILL IN ARGUMENTS)
+  
   
 ## -----------------------------------------------------------------------------
 ## 6. Descriptive statistics by race_eth (grouping)
@@ -279,7 +266,7 @@ getwd()
 ##    a. group arrests.clean by race_eth,
 ##       show arrest counts for each race_eth category using tidyverse functions
 ##        Note: we already obtained this information using the summary command,
-##        but sometimes it may be useful to store this information to work with
+##        but sometimes it's useful to store this information to work with
 ##
 ##    b. show a table with the proportion of total arrests in each race_eth category
 ##
@@ -309,7 +296,7 @@ getwd()
   #base R with table()
     table(arrests.clean$race_eth)
 
-  #if we wanted to exclude NAs
+  #another way to exclude NAs
     arrests.clean %>% 
       filter(!is.na(race_eth)) %>% 
       count(race_eth, sort = TRUE)
@@ -327,14 +314,14 @@ getwd()
 
   #if we want to exclude NAs
     prop.table(table(arrests.clean$race_eth)) %>% 
-    round(2) %>% 
+      round(2) %>% 
       as.data.frame() %>% 
       arrange(desc(Freq)) %>% 
       rename(race_eth = Var1)
 
   
 #6c. let's store results as a new data frame in case you want to refer to them in your write-up
-  race_eth_stats <- FILL IN CODE
+    race_eth_stats <- FILL IN CODE
 
 
 #6d. 
@@ -376,12 +363,11 @@ getwd()
 #7a.
   arrests.clean <- dummy_cols(arrests.clean, select_columns = "race_eth")
   str(arrests.clean)
-  summary(arrests.clean[,8:13]) #too clunky, don't show this!
+  summary(arrests.clean[,7:12]) #too clunky, don't show this!
   
   #what's a better way to show just the means using summarise()?
   arrests.clean %>% 
     FILL IN CODE
-
 
 #7b. use group_by to get counts by station
   arrests.clean %>%  
@@ -407,7 +393,7 @@ getwd()
 
 #7c. 
   arrests_stations_top <- FILL IN CODE
-
+  
   
 #7d.
   
@@ -447,13 +433,8 @@ getwd()
     arrange(desc(st_arrests)) %>% 
     filter(st_arrests > 100)
   arrests_stations_race_top
-  saveRDS(arrests_stations_race_top, "../Lecture5/arrests_stations_race_top.rds")
+  saveRDS(arrests_stations_race_top, "../Lecture3/arrests_stations_race_top.rds")
   
   ggplot(arrests_stations_race_top, aes(x = reorder(loc2, -st_arrests), y = arrests, fill = race_eth)) + 
     geom_bar(stat = "identity") + 
     theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1)) 
-
-
-
-
-
