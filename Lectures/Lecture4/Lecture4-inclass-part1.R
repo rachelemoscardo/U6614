@@ -3,7 +3,7 @@
 ## [ PROJ ] Lecture 4: Subway Fare Evasion Arrests and Racial Bias (part 1)
 ## [ FILE ] Lecture4-inclass.r
 ## [ AUTH ] < YOUR NAME >
-## [ INIT ] < Feb. 2nd, 2021 >
+## [ INIT ] < Oct 5, 2021 >
 ##
 ################################################################################
 
@@ -65,13 +65,14 @@ getwd()
 ## 3. joining ridership and neighborhood demographics to arrest data
 ##
 ##  a. import other station-level datasets and inspect
-##  
+##      - don't include inspection code in your rmd submission
+##
 ##  b. join both files to st_arrests and inspect results (store new df as st_joined),
 ##      - inspect results of join and describe any issues
 ##      - drop unnecessary columns from the ridership data
 ##      - group st_joined by st_id and mta_name
-##      - only display ungrouped version of st_joined for compactness
-##        - i.e. don't display all of your inspection commands in your knit submission
+##      - inspect but don't include inspection code in your rmd submission
+##        - confirm you have 157 station-level observations
 ##
 ##  c. print top 10 stations by arrest counts
 ##      - only display st_id, mta_name, arrests_all, shareblack, povrt_all_2016
@@ -98,27 +99,25 @@ getwd()
   #  each observation is a subway station w/a unique identifier (st_id)
   #  includes annual # of MetroCard swipes at each station for 2011-16
 
-str(st_poverty)
-str(st_ridership)
+  #make sure to inspect these new df's before we join them in 3b!
 
 
 #3b.
   #a vector of columns we don't need to keep
     drop_vars <- c("swipes2011", "swipes2012", "swipes2013", "swipes2014", "swipes2015")
     
+  #in-class exercise: join all 3 data frames (in a single pipe if you can):
+    #3 data frames to join: st_poverty, st_ridership, st_arrests
   st_joined <- inner_join(st_poverty, st_ridership) %>%
-      inner_join(st_arrests) %>% 
-      select(!drop_vars) %>% 
-      group_by(st_id, mta_name) 
+    inner_join(st_arrests) %>% 
+    select(!drop_vars) %>% 
+    group_by(st_id, mta_name) 
 
-  #inspect
-    str(st_joined) #too long, not informative to show in your rmd submission
+  #inspect - DO NOT INCLUDE IN RMD SUBMISSION
+    str(st_joined)  #why is this so long?
     summary(st_joined)
       #Note: 157 obs in joined df w/no NAs (except some missing demographics) 
       #inner join worked as intended!
-  
-  #display structure of ungrouped data frame to avoid lengthy output listing every group
-    st_joined %>% ungroup() %>% str()
 
     
 #3c.
@@ -156,20 +155,20 @@ str(st_ridership)
 
 #4a.
   stations <- st_joined %>%
-    filter(st_id != 66) %>%
     mutate(arrperswipe = round(arrests_all / (swipes2016 / 100000), 2),
            highpov = as.numeric(povrt_all_2016 > median(st_joined$povrt_all_2016)),
-           nblack = as.numeric(shareblack > .5), 
-           highpov = factor(highpov, levels = c(0,1), 
+           nblack = as.numeric(shareblack > .5),
+           shareblack = round(shareblack, 2),
+           povrt_all_2016 = round(povrt_all_2016, 2)) %>% 
+    mutate(highpov = factor(highpov, levels = c(0,1), 
                             labels = c("Not high poverty", "High poverty")),
            nblack  = factor(nblack, levels = c(0,1), 
-                            labels = c("Majority non-Black", "Majority Black")),
-           shareblack = round(shareblack, 2),
-           povrt_all_2016 = round(povrt_all_2016, 2)) 
+                            labels = c("Majority non-Black", "Majority Black"))) %>% 
+    filter(st_id != 66)
   
       #note we can directly test conditions as a logical comparison
       #then we convert logical results into numeric (i.e. a dummy variable)
-      #we also continued and converted to factors
+      #we also continued on and converted to factors
   
   #some inspection and validation
   
@@ -183,27 +182,55 @@ str(st_ridership)
       
   
   #display top 10 stations by arrest intensity (show st_id, mta_name, arrests_all and new variables)
-    stations_top10 <- stations %>% 
-      arrange(desc(arrperswipe)) %>% 
-      select(st_id, mta_name, arrperswipe, arrests_all, shareblack, povrt_all_2016, highpov, nblack) %>% 
-      head(n = 10)
-    kable(stations_top10) #kable offers better table formatting
+   stations %>% 
+     arrange(desc(arrperswipe)) %>% 
+     select(st_id, mta_name, arrperswipe, arrests_all, shareblack, povrt_all_2016, highpov, nblack) %>% 
+     head(n = 10) %>% 
+     kable() #kable offers better table formatting
   
 
   
 #4b. 
   ggplot(stations, #specify dataframe to use
-         aes(x = povrt_all_2016, y = arrperswipe, weights = swipes2016)) + #specify columns to use
+         aes(x = povrt_all_2016, y = arrperswipe)) + #specify columns to use
     geom_point() + #specify plot geometry
     ggtitle('Scatterplot of arrest rate vs. poverty rate') + #add title
     labs(x = 'poverty rate', y = 'arrest rate') #change axis labels
 
+  #fit linear model with station observations weighted by swipes
+    ols1l <- lm(arrperswipe ~ povrt_all_2016, data = stations)
+    summary(ols1l) #get summary of the model
+    coeftest(ols1l, vcov = vcovHC(ols1l, type="HC1")) #get robust SEs
+  
+  #how to refer to specific regression results
+    ?summary.lm
+    summary(ols1l)$adj.r.squared  #adj R-square
+    summary(ols1l)$coefficients   #coefficients
+    round(summary(ols1l)$coefficients[2,1],2) #beta1_hat
+    coeftest(ols1l, vcov = vcovHC(ols1l, type="HC1"))[2,4] #p-value on beta1_hat
   
   #add linear prediction line to scatter plot
+    ggplot(stations, 
+           aes(x = povrt_all_2016, y = arrperswipe)) + 
+      geom_point() + 
+      ggtitle('Scatterplot of arrest rate vs. poverty rate') + 
+      labs(x = 'poverty rate', y = 'arrest rate') + 
+      geom_smooth(method = 'lm', formula = y ~ x) #add linear SRF
 
-
+  #fit quadratic OLS model (arrest rate vs. poverty rate)
+    #HINT: see quadratic syntax from Lecture4.2 (section 4.1)
+    ols1q <- lm(arrperswipe ~ povrt_all_2016 + I(povrt_all_2016^2),
+                data = stations) #include quadratic term
+    summary(ols1q) 
+    coeftest(ols1q, vcov = vcovHC(ols1q, type="HC1"))
+    
   #add quadratic prediction line to scatter plot
-  
+    ggplot(stations,
+           aes(x = povrt_all_2016, y = arrperswipe)) + 
+      geom_point() + 
+      ggtitle('Linear regression fit') + 
+      labs(x = 'poverty rate', y = 'arrest rate') + 
+      ADD GEOMETRY FOR REGRESSION LINE #add quadratic SRF
 
   
 #4c. calculate and test difference in means between high/low poverty stations
