@@ -220,7 +220,7 @@ getwd()
     ggtitle('Scatterplot of arrest intensity vs. poverty rate') + #add title
     labs(x = 'poverty rate', y = 'arrests relative to ridership') #change axis labels
 
-  #fit linear model with station observations weighted by swipes
+  #fit linear model with station observations (can also add optional weights argument)
     ols1l <- lm(arrperswipe ~ povrt_all_2016, data = stations)
     summary(ols1l) #get summary of the model
     
@@ -375,12 +375,12 @@ getwd()
     stations_black <- stations %>% filter(nblack == "Majority Black")
     stations_nonblack <- stations %>% filter(nblack == "Majority non-Black")
     
-    #nblack == 1: linear model with station observations weighted by swipes
-    ols1l <- lm(arrperswipe ~ povrt_all_2016, data = stations_black, weights = swipes2016)
+    #nblack == 1: linear model with station observations (can also add optional weights argument)
+    ols1l <- lm(arrperswipe ~ povrt_all_2016, data = stations_black)
     summary(ols1l) #get summary of the model
     
-    #nblack == 1: quadratic model with station observations weighted by swipes
-    ols1l <- lm(arrperswipe ~ povrt_all_2016 + I(povrt_all_2016^2), data = stations_black, weights = swipes2016)
+    #nblack == 1: quadratic model with station observations
+    ols1l <- lm(arrperswipe ~ povrt_all_2016 + I(povrt_all_2016^2), data = stations_black)
     summary(ols1l) #get summary of the model
 
   

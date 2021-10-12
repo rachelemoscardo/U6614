@@ -197,7 +197,7 @@ getwd()
     ggtitle('Scatterplot of arrest rate vs. poverty rate') + #add title
     labs(x = 'poverty rate', y = 'arrest rate') #change axis labels
 
-  #fit linear model with station observations weighted by swipes
+  #fit linear model with station observations (can also add optional weights argument)
     ols1l <- lm(arrperswipe ~ povrt_all_2016, data = stations)
     summary(ols1l) #get summary of the model
     coeftest(ols1l, vcov = vcovHC(ols1l, type="HC1")) #get robust SEs
