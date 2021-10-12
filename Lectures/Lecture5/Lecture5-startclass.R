@@ -51,7 +51,6 @@ st_arrests <- arrests_all %>%
   arrange(desc(arrests_all))
   
   
-  
 #1c.
 ggplot(data = st_arrests, aes(x = arrests_all)) + geom_histogram()
   
