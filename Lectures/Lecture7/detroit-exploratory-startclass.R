@@ -17,7 +17,7 @@
 
 
 ## -----------------------------------------------------------------------------
-## libraries
+## load libraries
 ## -----------------------------------------------------------------------------
 
 #install.packages("readstata13")
@@ -43,28 +43,31 @@ getwd()
 ## -----------------------------------------------------------------------------
 
 #get census tract level demographic data from ACS 
-  input_acs_tract <- read.dta13("data/ACS_10_17_5YR_CensusTract.dta")
+input_acs_tract <- read.dta13("data/ACS_10_17_5YR_CensusTract.dta")
 
   #unit of observation?
   
   
 #clean, rename/construct key variables, prep for merge on a tractid
-  acs_tract.clean <- input_acs_tract %>% 
-    select(census_tract_long, year, num_pop_total, num_income_median, 
-           per_race_black_alone_or_combo, geodisplaylabel) %>% 
-    rename(tractid = census_tract_long, 
-           pop = num_pop_total,
-           medianinc = num_income_median,
-           blackshare = per_race_black_alone_or_combo) %>% 
-    mutate(black75 = as.numeric(blackshare >= 75),
-           inc_above_median = as.numeric(medianinc > 26884.59)) %>%
-    arrange(tractid, year)
+acs_tract.clean <- input_acs_tract %>% 
+  select(census_tract_long, year, num_pop_total, num_income_median, 
+         per_race_black_alone_or_combo, geodisplaylabel) %>% 
+  rename(tractid = census_tract_long, 
+         pop = num_pop_total,
+         medianinc = num_income_median,
+         blackshare = per_race_black_alone_or_combo) %>% 
+  mutate(black75 = as.numeric(blackshare >= 75),
+         inc_above_median = as.numeric(medianinc > 26884.59)) %>%
+  arrange(tractid, year)
   
   #inspect
-    summary(acs_tract.clean)
-    acs_tract.clean %>% filter(is.na(year) == TRUE)
-    acs_tract.clean %>% filter(is.na(medianinc) == TRUE)
-    table(acs_tract.clean$tractid, acs_tract.clean$year) %>% head(n = 10)
+  summary(acs_tract.clean)
+  
+  #what is the unit of observation?
+
+    
+  #why the NA values?
+
 
 
     
@@ -75,7 +78,7 @@ getwd()
 #get service interruption data
 input_si <- read.dta13("data/si_1017_cleaned.dta")
   
-    #unit of observation?
+  #what is the unit of observation? each observation is a shutoff record.
     
     
 #focus on key variables to identify period/location of every shutoff
@@ -86,10 +89,7 @@ si.clean <- input_si %>%
   arrange(tractid, year, month)
 
 #aggregate to tract-year/month totals
-si_tract_ym <- si.clean %>% 
-  group_by(tractid, year, month) %>% 
-  summarise(si_count = n_distinct(si_order_number)) %>% 
-  arrange(tractid, year, month)
+si_tract_ym <- FILL IN CODE
 
   #inspect
     summary(si_tract_ym)
@@ -97,31 +97,34 @@ si_tract_ym <- si.clean %>%
 
 
 ## -----------------------------------------------------------------------------
-## Join shutoff & demographic data: construct tract-month panel & tract-level totals
+## Join shutoff & demographic data: construct tract-year/month panel w tract-level totals
 ## -----------------------------------------------------------------------------
 
 #join tract-year demographic data (acs_tract.clean) to tract-month shutoff data (si_tract_ym)
 #want to end up with a tract-month panel
+#new df should include: all columns from two dfs and a new date column
+#also filter out observation for 2017-11-01
 #HINT: what column(s) do you want to join on?
 #HINT: what kind of join would work here?
     
-tract_ym <- FILL IN JOIN CODE HERE %>% 
-  mutate(date = make_date(year, month, 1)) %>% 
-  arrange(tractid, year, month) %>% 
-  filter(date != "2017-11-01")
+tract_ym <- FILL IN CODE
 
   #inspect
-    summary(tract_ym)
-    table(tract_ym$month, tract_ym$year)
-    tract_ym %>% group_by(geodisplaylabel) %>% count(geodisplaylabel)
+  summary(tract_ym)
+    
+  #do we have a balanced panel? 
+  table(tract_ym$month, tract_ym$year)
+  tract_ym %>% group_by(geodisplaylabel) %>% count(geodisplaylabel)
+    #nope. if a tract had 0 shutoffs one month, there's no row for that county-month
     
 
-#collapse to tract-level totals 
+#collapse to tract-level totals (summed over all year-months)
 #i.e. a single obs per tract with shutoffs summed over all years
-#and other variables fixed over time
+#include time-invariant measures of other variables
 #NOTE: this allows us to focus on variation between tracts (not within-tracts over time)
+  #will no longer be a panel dataframe
 tract <- tract_ym %>% 
-  group_by(WHAT COLUMN DO WE WANT TO GROUP BY) %>% 
+  group_by(tractid) %>% 
   summarise(si_count = sum(si_count),
             pop = mean(pop, na.rm = TRUE),
             blackshare = mean(blackshare, na.rm = TRUE),
@@ -132,7 +135,9 @@ tract <- tract_ym %>%
   arrange(tractid)
 
   #inspect
-    summary(tract)
+  summary(tract)
+  
+  #what is the unit of observation? 1 observation for each census tract.
 
     
 ## -------------------------------------------------------------------------------------
@@ -143,6 +148,7 @@ tract <- tract_ym %>%
     
 #scatterplot: % black vs shutoffs
   ggplot(data = tract, aes(x = blackshare, y = si_1000)) + 
+    geom_point() +
     geom_smooth(method = 'lm', formula = y ~ x) 
     
 #QUESTION: how can we improve the above plot?
@@ -150,7 +156,7 @@ tract <- tract_ym %>%
 #how can we use aesthetic mappings to incorporate weighting in our visualization?
   IMPROVE ggplot() FUNCTION CALL ABOVE
 
-  #correlations for model fit
+  #compute correlation for assessing model fit (in addition to visual inspection)
     cor(tract$blackshare, tract$si_1000, use = "pairwise.complete.obs")
     wtd.cor(tract$blackshare, tract$si_1000, weight = tract$pop)
   
@@ -159,7 +165,7 @@ tract <- tract_ym %>%
 FILL IN CODE SIMILAR TO ABOVE BUT USE medianinc RATHER THAN blackshare
   
   #correlations for model fit
-   FILL IN CODE SIMILAR ABOVE
+   FILL IN CODE SIMILAR TO ABOVE
   
   
 #scatterplot: median income & race vs shutoffs
@@ -177,13 +183,13 @@ FILL IN CODE SIMILAR TO ABOVE BUT USE medianinc RATHER THAN blackshare
 ## Time series plots of citywide shutoffs (aggregate across all tracts in every month)
 ## -----------------------------------------------------------------------------------
   
-#get total population of Detroit (for simplicity, we assume the population does not change
-#over time; we estimate it by summing the `pop` column in the dataframe `tract`)
+#get total population of Detroit (for simplicity, assume pop doesn't change over time
+  #we estimate it by summing the `pop` column in the dataframe `tract`)
   detroit_pop <- sum(tract$pop)
 
 
 #first let's get citywide time series of shutoffs per capita
-#aggregate tract-level observations in tract_ym into a single observation for every month
+#aggregate tract-level observations in tract_ym into 1 observation for every month
   ym <- tract_ym %>% 
     group_by(date) %>% 
     summarise(si_count = sum(si_count)) %>% 
@@ -216,7 +222,7 @@ FILL IN CODE SIMILAR TO ABOVE BUT USE medianinc RATHER THAN blackshare
 #time series of shutoffs per capita for tracts above/below citywide median income
   #what should the unit of observation be for this new data frame?
   ym_inc <- tract_ym %>% 
-    group_by(FILL IN GROUPING VARIABLE TO GET RIGHT UNIT OF OBSERVATION) %>% 
+    group_by(FILL IN GROUPING VARIABLE TO GET RIGHT UNIT OF ANALYSIS) %>% 
     summarise(si_count = sum(si_count)) %>%
     mutate(pop = if_else(inc_above_median == 1, detroit_pop_hi_inc, detroit_pop_lo_inc),
            si_1000 = si_count / (pop / 1000)) %>%
@@ -229,7 +235,7 @@ FILL IN CODE SIMILAR TO ABOVE BUT USE medianinc RATHER THAN blackshare
 #in order to solve this, here is a possible solution:
   
   ym_inc <- tract_ym %>% 
-    group_by(date, inc_above_median) %>% 
+    group_by(FILL IN GROUPING VARIABLES TO GET RIGHT UNIT OF ANALYSIS) %>% 
     summarise(si_count = sum(si_count)) %>%
     na.omit() %>% 
     ungroup() %>%
@@ -240,7 +246,8 @@ FILL IN CODE SIMILAR TO ABOVE BUT USE medianinc RATHER THAN blackshare
 
 #plot time series: separate lines for tracts above/below median income
   ggplot(ym_inc, aes(x = date, y = si_1000)) + 
-    geom_line(aes(color = inc_above_median))
+    geom_line(aes(group = inc_above_median, color = inc_above_median))
+  #QUESTION: why did we specify both group and color aes() arguments?
 
 
 #QUESTION:
