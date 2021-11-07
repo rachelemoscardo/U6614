@@ -1,6 +1,6 @@
 ################################################################################
 ##
-## [ PROJ ] Lecture 8: Water shutoffs, race, and health in Detroit (Part 2)
+## [ PROJ ] Week 9: Water shutoffs, race, and health in Detroit (Part 2)
 ## [ FILE ] detroit-health.r
 ## [ AUTH ] < YOUR NAME >
 ## [ INIT ] < TBD >
@@ -51,7 +51,7 @@ getwd()
 
 
 ## -----------------------------------------------------------------------------
-## 1. Zip-code: gather all input data 
+## 1. Zip-code analysis: gather all input data 
 ## -----------------------------------------------------------------------------
 
 #A. Get 1 observation for every zipcode for population, income, race variables
@@ -79,7 +79,7 @@ getwd()
   #read in public health data
     input_hcup_zip <- read.dta13("data/hcup_total_&_viral.dta")
     
-    #notes:
+    #data notes: public health outcome variables
       #total_obs: total hospitalizations
       #viral_infect: hospitalizations related to viral infections
  
@@ -89,11 +89,13 @@ getwd()
     
   #join public health data (input_hcup_zip) to demographic data (acs_zip.clean)
   #Q: FILL IN THE CODE TO THE RIGHT OF THE ASSIGNMENT OPERATOR
-    #join to end up with zipcode-month observations 
+    #join to end up with zipcode-month observations - how many should there be? 
     #lesson w/join examples: https://hreplots.github.io/U6614/Lectures/Lecture4/Lecture4.1.html
     #also use mutate along with make_date to create a date variable(month_year)
+    #sort by zip5, then year, then month
     joined_temp1 <- left_join(input_hcup_zip, acs_zip.clean, by = "zip5") %>% 
-      mutate(month_year = make_date(year, month))
+      mutate(month_year = make_date(year, month)) %>% 
+      arrange(zip5, year, month)
   
     #inspect -- double-check unit of observation
       dim(joined_temp1)
@@ -107,7 +109,7 @@ getwd()
   #get service interruption data
   input_si <- read.dta13("data/si_1017_cleaned.dta")
   
-  #focus on key variables to identify month/tract of every shutoff
+  #focus on variables needed to identify month/tract of every shutoff
   #we'll eventually want to join to demographic data to get zip5-month_year obs
   si.clean <- input_si %>% 
     select(si_order_number, zip5, year, month) %>% 
@@ -133,16 +135,16 @@ getwd()
   
   #the catch here is that missing SI data before 2018 should be 0's not missing
   #one approach: a full_join w/joined_temp1 on the "left" bc it has every zip-date pair
-    #so we have dates w/no SI data, we just have to fill in si_count as 0s
-  joined_temp2 <- full_join(joined_temp1, si_zip_ym, by = c("zip5", "month_year")) %>% 
-    filter(zip5 != 48225, zip5 != 48127)  %>%  
-      #drop Harper Woods & Dearborn Heights (53 obs) bc they extend past Detroit
-    mutate(si_count = replace_na(si_count, 0)) %>%
-      #fill in SI count for months w/health data but no SI present
-    rename(year = year.x, 
-           month = month.x ) %>% 
-    select(-month.y, -year.y) %>% 
-    filter(year < 2018) #health data not available starting 2018
+    #that way we'll have dates w/no SI data, just have to fill in si_count as 0s
+    joined_temp2 <- full_join(joined_temp1, si_zip_ym, by = c("zip5", "month_year")) %>% 
+      filter(zip5 != 48225, zip5 != 48127)  %>%  
+        #drop Harper Woods & Dearborn Heights (53 obs) bc they extend past Detroit
+      mutate(si_count = replace_na(si_count, 0)) %>%
+        #fill in SI count for months w/health data but no SI present
+      rename(year = year.x, 
+            month = month.x ) %>% 
+      select(-month.y, -year.y) %>% 
+      filter(year < 2018) #health data not available starting 2018
   
     #inspect
       summary(joined_temp2)
@@ -167,7 +169,6 @@ getwd()
     table(input_vacancy_qtr$zip5, input_vacancy_qtr$year)
     joined_temp4 <- left_join(joined_temp3, input_vacancy_qtr, 
                               by = c("zip5", "year", "quarter"))
-
     #inspect
       dim(joined_temp4)
       head(joined_temp4)
@@ -189,10 +190,6 @@ getwd()
   #get FE dummy for each year-month combination, and for each zipcode
     zip_panel <- dummy_cols(zip_panel, select_columns = c("ym", "zip5")) 
 
-  
-  #remove temporary data frames from environment (check the upper right pane)
-    rm(joined_temp1, joined_temp2, joined_temp3)
-  
   
   
 #G. Also collapse panel data to one observation for each zip code
@@ -216,7 +213,8 @@ getwd()
     save(zip_cross, file="data/zip_cross.rda")
     write.csv(zip_cross, "data/zip_cross.csv")
             
-  rm(joined_temp4)
+  #remove temporary data frames from environment (check the upper right pane)
+    rm(joined_temp1, joined_temp2, joined_temp3, joined_temp4)
   
 
   
@@ -231,6 +229,7 @@ getwd()
   coeftest(cross_total_1, vcov = vcovHC(cross_total_1, type="HC1")) #robust SEs
   
   #QUESTION: Write out the PRF and interpret coefficient
+  
   
   
   cross_total_2 <- lm(total_obs_1000 ~ si_1000 + vac_res_p100, 
@@ -271,6 +270,7 @@ getwd()
     summary(panel_total_1)$adj.r.squared
     
     #QUESTION: what would happen if we didn't coerce zip5 into a factor?
+    
     
     #robust SEs
       coeftest(panel_total_1, vcov = vcovHC(panel_total_1, type = "HC1"))[2,]
@@ -345,8 +345,8 @@ getwd()
     
     
   #plot FE results by plotting residual shutoff rate vs residual hospital admission rate 
-      #(residuals after accounting for FEs)
-    #if you're confused here, review Lecture 7 & Quant II Video Lecture 5.2.a on FEs
+    #(residuals after accounting for FEs)
+    #if you're confused about why, review pre-class Lesson 7 & Quant II Video Lecture 5.2.a on FEs
     
     panel_total_y_feonly <- lm(total_obs_1000 ~ as.factor(zip5) + as.factor(ym), 
                             data = zip_panel, 
