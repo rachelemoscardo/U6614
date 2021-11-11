@@ -1,9 +1,9 @@
 ################################################################################
 ##
-## [ PROJ ] Lecture 9: Working with strings and dates 
+## [ PROJ ] Working with strings and dates 
 ## [ FILE ] indonesian_village_fund.r
 ## [ AUTH ] < YOUR NAME >
-## [ INIT ] < Nov 10, 2020 >
+## [ INIT ] < Nov 9, 2021 >
 ##
 ################################################################################
 
