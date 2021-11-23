@@ -52,8 +52,6 @@ This presentation uses the following packages to generate and display output:
 <div>
 - *kableExtra* 
 <div>
-- *knitr* 
-<div>
 - *plm*
 <div>
 - *lmtest* 
@@ -64,7 +62,6 @@ This presentation uses the following packages to generate and display output:
 library(tidyverse)
 library(stargazer)
 library(kableExtra)
-library(knitr)
 library(plm)
 library(lmtest)
 library(multiwayvcov)
@@ -233,7 +230,7 @@ stargazer(mdls, align = TRUE, type = "html",
 ## Add a plot
 
 ```{r}
-load("datasets/ym_race.rda")
+#load("datasets/ym_race.rda")
 
 ggplot(data = ym_race, 
        aes(x = date, y = si_1000, group = black75)) + 
