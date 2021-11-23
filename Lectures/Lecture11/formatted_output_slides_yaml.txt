@@ -1,0 +1,5 @@
+---
+title: "Formatted Output & R Markdown Presentations"
+output:
+  ioslides_presentation: default
+---
