@@ -39,87 +39,49 @@ table, td, th {
 [Here](https://garrettgman.github.io/rmarkdown/ioslides_presentation_format.html) is a short tutorial. See Chapter 4.1 in [R Markdown: The Definitive Guide]( https://bookdown.org/yihui/rmarkdown/ioslides-presentation.html) for a more comprehensive treatment.
 
 
-# Using Stargazer for formatted output
+# Including output in your slides
 
 ## Loading packages {.build}
 
-This presentation uses the following packages: *tidyverse*, *stargazer*, *knitr*, *plm*, *lmtest* and *multiwayvcov*.
+This presentation uses the following packages to generate and display output:
+
+<div>
+- *tidyverse*
+<div>
+- *stargazer*
+<div>
+- *kableExtra* 
+<div>
+- *knitr* 
+<div>
+- *plm*
+<div>
+- *lmtest* 
+<div>
+- *multiwayvcov*
+
 ```{r}
 library(tidyverse)
 library(stargazer)
+library(kableExtra)
 library(knitr)
 library(plm)
 library(lmtest)
 library(multiwayvcov)
 ```
 
-**stargazer** is an R package that creates LATEX code, HTML code and ASCII text for displaying:
-
-  - formatted regression tables, w/multiple models side-by-side
-  - tables for summary statistics
-  - data frames
-
-
 ## Loading data for today's examples {.smaller}
 
-Load cleaned Village Fund data:
+Load `vf_joined` dataframe from strings and dates lecture
 ```{r}
-load("datasets/vf_joined.RData")
-vf_joined <- vf_joined %>% 
-  mutate(vfund_allocation = vfund_allocation / 1000, 
-         vfund_per_poor = vfund_per_poor / 1000)
+load("formatted_output_slides_data.RData")
 head(vf_joined)
 ```
 
-Load cleaned Detroit data (cross-sectional and panel; panel data shown here)
+Load Detroit data (cross-sectional and panel; cross-sectional shown here)
 ```{r}
-#cross-sectional data
-load("datasets/zip_cross.rda")
 head(zip_cross)
-
-#panel data
-load("datasets/zip_panel.rda")
 ```
-
-
-## Descriptive statistics of numeric variables {.smaller}
-
-We can use stargazer to show summary stats for numeric variables in a data frame.
-
-The R Markdown code chunk options should include `results = 'asis'`, and the `stargazer()` function should include the argument `type = "html"`:
-
-```{r, results = 'asis', eval = FALSE, echo = TRUE}
-out <- capture.output(stargazer(as.data.frame(vf_joined), type = "html", 
-          summary.stat = c("n", "mean", "sd", "min", "max"), #specify columns
-          covariate.labels = c("VF allocation", 
-                               "Population in poverty (1000s)", 
-                               "VF allocation/poor residents"),
-          align = TRUE, digits = 2, column.sep.width = "15pt", #other formatting
-          notes = "Village Fund amounts in millions of rupiah."))
-
-out <- sub("text-align:center", "text-align:left", out) #a hack to align left
-        #need to call capture.out() above to get this to work
-
-cat(out)
-```
-
-```{r results = 'asis'}
-out <- capture.output(stargazer(as.data.frame(vf_joined), type = "html", 
-          summary.stat = c("n", "mean", "sd", "min", "max"), #specify columns
-          covariate.labels = c("VF allocation", 
-                               "Population in poverty (1000s)", 
-                               "VF allocation/poor residents"),
-          align = TRUE, digits = 2, column.sep.width = "15pt", #other formatting
-          notes = "Village Fund amounts in millions of rupiah."))
-
-out <- sub("text-align:center", "text-align:left", out) #a hack to align left
-
-cat(out)
-```
-
-## Descriptive statistics of numeric variables {.smaller}
-
-[Here](https://www.jakeruss.com/cheatsheets/stargazer) is a good tutorial with more stargazer examples and formatting options.
 
 
 ## Difference-in-means table 
@@ -128,17 +90,20 @@ Suppose we're interested in comparing the *poverty rate* and *vfund_per_poor* of
 
 [Here](https://sebastiansauer.github.io/multiple-t-tests-with-dplyr/) is a tutorial for making this kind of table, shown below (this example does not rely on the stargazer package). 
 
-```{r}
+```{r preprocessing 1}
 vf_province <- vf_joined %>%
-  mutate(island = if_else(str_starts(province, 'Jawa') | province == 'Banten' | province == 'Di Yogyakarta', 'Java', 
-                          if_else(str_starts(province, 'Sulawesi') | province == 'Gorontalo',
+  mutate(island = if_else(str_starts(province, 'Jawa') | 
+                            province == 'Banten' | 
+                            province == 'Di Yogyakarta', 
+                          'Java', 
+                          if_else(str_starts(province, 'Sulawesi') | 
+                                    province == 'Gorontalo',
                                   'Sulawesi', 'Other'))) %>%
   filter(island != 'Other') %>%
   select('poverty', 'vfund_per_poor', 'island')
 ```
 
-
-```{r}
+```{r preprocessing 2}
 vf_diff <- vf_province %>%
   gather(key = variable, value = value, -island) %>%
   group_by(island, variable) %>%
@@ -146,19 +111,34 @@ vf_diff <- vf_province %>%
   spread(island, value) %>%
   group_by(variable) %>%
   mutate(mean_java = round(mean(unlist(Java)), 2),
-         n_java = length(unlist(Java)),
          mean_sulawesi = round(mean(unlist(Sulawesi)), 2),
-         n_sulawesi = format(length(unlist(Sulawesi))),
+         diff = round(mean_java - mean_sulawesi,2),
          p_value = t.test(unlist(Java), unlist(Sulawesi), var.equal = FALSE)$p.value) %>%
-  mutate(p_value = sprintf("%.2f", round(p_value, 2))) %>%
+  mutate(p_value = sprintf("%.3f", round(p_value, 3))) %>%
   select(-Java, -Sulawesi)
 
-vf_diff$variable <- c("Population in poverty (1000s)", "VF allocation/poor residents")
-
-kable(vf_diff, align = "l",
-      col.names = c("Variable", "Mean (Java)", "N (Java)", "Mean (Sulawesi)", "N (Sulawesi)", 
-                    "p-value"))
+vf_diff$variable <- c("Population in poverty (1000s)", "VF allocation/poor resident")
 ```
+
+```{r output}
+kable(vf_diff, 
+      align = "l",
+      col.names = c("Variable", 
+                    "Java", 
+                    "Sulawesi", 
+                    "Difference", 
+                    "p-value")) %>% 
+      kable_paper("hover", 
+                  full_width = F, 
+                  html_font = "Helvetica") %>% 
+      kable_styling(font_size = 20)
+```
+
+## Using Stargazer for formatted output {.smaller}
+
+`stargazer` is an R package that creates LATEX code, HTML code and ASCII text for well-formatted regression tables, with multiple models side-by-side, as well as for summary statistics tables, data frames, vectors and matrices."
+
+[Here](https://www.jakeruss.com/cheatsheets/stargazer) is a good tutorial with more stargazer examples and formatting options.
 
 
 ## Regression tables {.smaller}
