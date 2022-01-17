@@ -134,6 +134,19 @@
 \makeatletter
 \def\fnum@table{\tablename~\thetable}
 \makeatother
+\usepackage{graphicx}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+% Set default figure placement to htbp
+\makeatletter
+\def\fps@figure{htbp}
+\makeatother
 \setlength{\emergencystretch}{3em} % prevent overfull lines
 \providecommand{\tightlist}{%
   \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
@@ -277,13 +290,20 @@
   \begin{itemize}
   \tightlist
   \item
-    e.g.~music, writing, fashion, a meme, sports, etc.
+    e.g.~music, writing, fashion, a meme, other art, sports, etc.
   \end{itemize}
 \end{enumerate}
 \end{frame}
 
-\begin{frame}{Liam Tay Kearney, Teaching Assistant}
-\protect\hypertarget{liam-tay-kearney-teaching-assistant}{}
+\begin{frame}{Teaching Assistants}
+\protect\hypertarget{teaching-assistants}{}
+\begin{itemize}
+\tightlist
+\item
+  Liam Tay Kearney (morning section)
+\item
+  Sasha Foster-Andres (afternoon section)
+\end{itemize}
 \end{frame}
 
 \begin{frame}{Harold Stolper, instructor}
@@ -293,7 +313,7 @@ economics.
 
 \medskip
 
-Past 5 years:
+Recent background:
 
 \begin{itemize}
 \tightlist
@@ -353,6 +373,9 @@ It?}\label{what-is-r-and-how-will-we-use-it}}
   \item
     After installing R and RStudio, we'll be working entirely in the
     RStudio interface.
+  \item
+    We'll be working with R scripts every week! (an R script is more or
+    less a text file that RStudio recognizes as R code)
   \end{itemize}
 \end{itemize}
 
@@ -370,15 +393,18 @@ It?}\label{what-is-r-and-how-will-we-use-it}}
   \item
     This lecture was created using R Markdown.
   \item
-    Beginning next week, everything you submit for this class will be a
-    document generated with R Markdown.
+    Beginning next week, everything you \emph{submit} for this class
+    will be a document generated with R Markdown.
+  \item
+    But you're workflow should always begin with an R script before
+    writing up your work using R Markdown
   \end{itemize}
 \end{itemize}
 \end{frame}
 
 \begin{frame}[fragile]{Base R vs.~user-defined R packages}
 \protect\hypertarget{base-r-vs.-user-defined-r-packages}{}
-R uses ``packages'' as a bundle of code, data and documention.
+R uses ``packages'' as a bundle of code, data and documentation.
 
 There are default
 \href{https://stat.ethz.ch/R-manual/R-devel/library/base/html/00Index.html}{base
@@ -419,7 +445,7 @@ You only need to install a package once. To install an R package use
 \end{Highlighting}
 \end{Shaded}
 
-But you need to load a package every time you plan to use it using the
+But you need to load a package every time you open R using the
 \texttt{library()} function.
 
 \begin{Shaded}
@@ -451,7 +477,7 @@ Things you can also do using Stata:
 
 \medskip
 
-Things you can't do in Stata:
+Things you generally can't do in Stata:
 
 \begin{itemize}
 \tightlist
@@ -482,10 +508,11 @@ Quant I and II:
 
 \begin{itemize}
 \item
-  \textbf{Research design:} understanding how data structure impacts
-  analysis and causal inference
+  \textbf{Research design:} understanding how data structure and methods
+  impact analysis and causal inference
 \item
-  \textbf{Data management:} cleaning and structuring data for analysis
+  \textbf{Data wrangling:} cleaning and structuring messy data for
+  analysis
 \item
   \textbf{Exploratory analysis:} identifying and analyzing key factors
   in your analysis
@@ -504,8 +531,29 @@ Quant I and II:
 \end{itemize}
 \end{frame}
 
-\hypertarget{syllabus-questions}{%
-\section{Syllabus / Questions?}\label{syllabus-questions}}
+\begin{frame}{Examples from student project work}
+\protect\hypertarget{examples-from-student-project-work}{}
+\includegraphics{lo_jo_map1.png}
+\end{frame}
+
+\begin{frame}{Examples from student project work}
+\protect\hypertarget{examples-from-student-project-work-1}{}
+\includegraphics{nm-ca_chart1.png}
+\end{frame}
+
+\begin{frame}{Examples from student project work}
+\protect\hypertarget{examples-from-student-project-work-2}{}
+\includegraphics[width=0.6\textwidth,height=\textheight]{ps_ra_regtable.png}
+\end{frame}
+
+\hypertarget{prerequisites-r-setup-course-goals}{%
+\section{Prerequisites, R setup, course
+goals}\label{prerequisites-r-setup-course-goals}}
+
+\begin{frame}{Questions for you}
+\protect\hypertarget{questions-for-you}{}
+\url{https://pollev.com/haroldpoll}
+\end{frame}
 
 \hypertarget{r-projects-and-directory-structure}{%
 \section{R Projects and Directory
@@ -525,14 +573,15 @@ shown at the top of the RStudio console.)
 \end{Highlighting}
 \end{Shaded}
 
-Function \texttt{list.files()} lists all files located in working
-directory
+You can see all files located in your working directory in the
+``Files/Plots/Packages/ Help/Viewer'' pane (by default in the lower
+right)
+\end{frame}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\FunctionTok{list.files}\NormalTok{()}
-\end{Highlighting}
-\end{Shaded}
+\begin{frame}{RStudio
+\href{https://bookdown.org/ndphillips/YaRrr/the-four-rstudio-windows.html}{interface}}
+\protect\hypertarget{rstudio-interface}{}
+\includegraphics{rstudio_session_4pane_layout.png}
 \end{frame}
 
 \begin{frame}[fragile]{So what is the working directory?}
@@ -561,6 +610,45 @@ directory is\ldots{}
 \tightlist
 \item
   For this class we'll be using R projects to keep organized.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{What is an R project? Why are we using them?}
+\protect\hypertarget{what-is-an-r-project-why-are-we-using-them}{}
+What is an ``R project''?
+
+\begin{itemize}
+\tightlist
+\item
+  A file that keeps all ``project'' files organized together: -- input
+  data, R scripts, analytical results, and figures.
+\item
+  When you open an R project, your working directory is automatically
+  set to the directory where your R project (and related files) lives.
+\end{itemize}
+
+Why will we be asking you to create and work with R projects?
+
+\begin{itemize}
+\tightlist
+\item
+  Projects are important for keeping organized and avoiding file path
+  errors
+\item
+  You should have a project for every week that will include R scripts
+  from class, data files, and also R Markdown files that you'll create
+  for assignments.
+\item
+  We also want you to be able to run the R Markdown files (.rmd) used to
+  generate each lecture.
+
+  \begin{itemize}
+  \tightlist
+  \item
+    You can create or download an R project with directory structure
+    (i.e.~organizing files and sub-folders in a particular way) to
+    recreate course documents on your own.
+  \end{itemize}
 \end{itemize}
 \end{frame}
 
@@ -605,39 +693,6 @@ is my name pm) \\
 \end{longtable}
 \end{frame}
 
-\begin{frame}{What is an R project? Why are we using them?}
-\protect\hypertarget{what-is-an-r-project-why-are-we-using-them}{}
-What is an ``R project''?
-
-\begin{itemize}
-\tightlist
-\item
-  A file that keeps all ``project'' files organized together: -- input
-  data, R scripts, analytical results, and figures.
-\item
-  When you open an R project, your working directory is automatically
-  set to the directory where your R project lives.
-\end{itemize}
-
-Why will we be asking you to create and work with R projects?
-
-\begin{itemize}
-\tightlist
-\item
-  We want you to be able to run the R Markdown files (.rmd) used to
-  generate each lecture.
-\item
-  Often times these .rmd files point to data files or sub-folders
-\item
-  You can create or download an R project with directory structure
-  (i.e.~organizing files and sub-folders in a particular way).
-\item
-  That way you'll be able to run .rmd files from your own computer that
-  point to files in sub-folders without making any changes to
-  file-paths.
-\end{itemize}
-\end{frame}
-
 \hypertarget{r-basics}{%
 \section{R Basics}\label{r-basics}}
 
@@ -650,15 +705,6 @@ Three ways to execute commands in R
 \item
   \textbf{Console:} type/paste commands to run ``on the fly''
 \item
-  \textbf{Code chunks} in R Markdown (.rmd files)
-
-  \begin{itemize}
-  \tightlist
-  \item
-    Can execute one command at a time, one chunk at a time, or ``knit''
-    the entire file into a document (e.g.~html or pdf)
-  \end{itemize}
-\item
   \textbf{R scripts} (.r files)
 
   \begin{itemize}
@@ -668,6 +714,15 @@ Three ways to execute commands in R
   \item
     Can execute one command at a time, several commands at a time, or
     the entire script
+  \end{itemize}
+\item
+  \textbf{Code chunks} in R Markdown (.rmd files)
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Can execute one command at a time, one chunk at a time, or ``knit''
+    the entire file into a document (e.g.~html or pdf)
   \end{itemize}
 \end{enumerate}
 \end{frame}
@@ -681,16 +736,6 @@ Three ways to execute commands in R
 \item
   Type/paste commands directly into the ``console'' (and press ENTER)
 \item
-  `code chunks' in RMarkdown (.Rmd files)
-
-  \begin{itemize}
-  \tightlist
-  \item
-    \textbf{Cmd/Ctrl + Enter}: execute highlighted line(s) within chunk
-  \item
-    \textbf{Cmd/Ctrl + Shift + k}: ``knit'' entire document
-  \end{itemize}
-\item
   R scripts (.R files)
 
   \begin{itemize}
@@ -700,6 +745,16 @@ Three ways to execute commands in R
   \item
     \textbf{Cmd/Ctrl + Shift + Enter} (without highlighting any lines):
     run entire script
+  \end{itemize}
+\item
+  `code chunks' in RMarkdown (.rmd files)
+
+  \begin{itemize}
+  \tightlist
+  \item
+    \textbf{Cmd/Ctrl + Enter}: execute highlighted line(s) within chunk
+  \item
+    \textbf{Cmd/Ctrl + Shift + k}: ``knit'' entire document
   \end{itemize}
 \end{enumerate}
 \end{frame}
@@ -731,9 +786,9 @@ Three ways to execute commands in R
 \CommentTok{\#\textgreater{} [1] 5}
 
 \CommentTok{\# Create an object b and assign value}
-\NormalTok{b }\OtherTok{\textless{}{-}} \StringTok{"yay!"}
+\NormalTok{b }\OtherTok{\textless{}{-}} \StringTok{"I\textquotesingle{}m so excited to be on Zoom again!"}
 \NormalTok{b}
-\CommentTok{\#\textgreater{} [1] "yay!"}
+\CommentTok{\#\textgreater{} [1] "I\textquotesingle{}m so excited to be on Zoom again!"}
 \end{Highlighting}
 \end{Shaded}
 
@@ -766,7 +821,7 @@ Some objects:
 \item
   plots
 \item
-  dataframes (the datasets of R!)
+  data frames (the datasets of R!)
 \end{itemize}
 \end{frame}
 
@@ -810,7 +865,7 @@ Our goals for today's R workshop example are very modest:
   Install and load a package
   (\href{https://www.gapminder.org/}{gapminder}).
 \item
-  Use base R functions to inspect a dataframe included with this
+  Use base R functions to inspect a data frame included with this
   package.
 \item
   Use some functions to perform some very basic analysis.
@@ -819,12 +874,13 @@ Our goals for today's R workshop example are very modest:
 \end{itemize}
 \end{frame}
 
-\hypertarget{assignment-1}{%
-\section{Assignment 1}\label{assignment-1}}
+\hypertarget{assignments-and-other-course-responsibilities}{%
+\section{Assignments and other course
+responsibilities}\label{assignments-and-other-course-responsibilities}}
 
-\begin{frame}{Assignment 1: submit an R script via CW by 9am next
-Tuesday}
-\protect\hypertarget{assignment-1-submit-an-r-script-via-cw-by-9am-next-tuesday}{}
+\begin{frame}{Assignment 1: submit an R script via CW by 11:59pm next
+Monday}
+\protect\hypertarget{assignment-1-submit-an-r-script-via-cw-by-1159pm-next-monday}{}
 Create an R script called assignment1.r that includes code and answers
 (as comments) for the following:
 
@@ -846,14 +902,15 @@ Create an R script called assignment1.r that includes code and answers
   \begin{itemize}
   \tightlist
   \item
-    You'll need to install the gapminder package if you didn't follow in
-    class today.
+    You'll need to install the gapminder package if you didn't follow
+    along in class today.
   \end{itemize}
 \item
-  Show the data structure of the gapminder dataframe in the gapminder
+  Show the data structure of the gapminder data frame in the gapminder
   package.
 \item
-  What is the average gdpPercap across all observations in the dataset?
+  What is the average gdpPercap across all observations in the data
+  frame?
 
   \begin{itemize}
   \tightlist
@@ -922,5 +979,98 @@ Create an R script called assignment1.r that includes code and answers
   \end{itemize}
 \end{itemize}
 \end{frame}
+
+\begin{frame}{Use Ed Discussion for help!}
+\protect\hypertarget{use-ed-discussion-for-help}{}
+\begin{itemize}
+\tightlist
+\item
+  If you need help troubleshooting errors, posting to
+  \href{https://edstem.org/us/courses/18438/discussion/}{Ed Discussion}
+  is usually a great place to start (in addition to office hours).
+\item
+  Your post should provide a
+  \href{https://stackoverflow.com/help/minimal-reproducible-example}{reproducible
+  example}, including code and a screenshot of the output/error message
+  if applicable.
+\item
+  Don't hesitate to post for help troubleshooting code or setup
+  issues\ldots{} if you're running intro trouble, odds are somebody else
+  is too!
+\item
+  A teaching team member will reply soon, and you are also encouraged to
+  reply to each others' posts if you have insight about how to resolve
+  the issue.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Quizzes on pre-class lessons}
+\protect\hypertarget{quizzes-on-pre-class-lessons}{}
+Starting next class, every class will begin with a short Courseworks
+quiz covering the pre-class lessons:
+
+\begin{itemize}
+\tightlist
+\item
+  Typically 10 multiple choice questions in total, \textasciitilde5
+  minutes to complete
+\item
+  Will include 1 question on the Data Primer covering the data to be
+  used next class
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Attendance and participation}
+\protect\hypertarget{attendance-and-participation}{}
+\textbf{Recitation}
+
+\begin{itemize}
+\tightlist
+\item
+  You must be able to attend one of the Thursday recitation times
+
+  \begin{itemize}
+  \tightlist
+  \item
+    Early in the semester recitation will be used to review code from
+    class and prep for assignments
+  \item
+    Later in the semester this time will be used for extra office hours
+    and project meetings
+  \end{itemize}
+\end{itemize}
+
+\textbf{Zoom}
+
+\begin{itemize}
+\tightlist
+\item
+  After in-person instruction resumes, whenever possible Zoom links will
+  be shared w/students who are feeling unwell or dealing with COVID
+  related disruptions
+
+  \begin{itemize}
+  \tightlist
+  \item
+    To request a Zoom link, please email the instructor as soon as
+    possible and briefly explain your circumstances
+  \end{itemize}
+\end{itemize}
+
+\textbf{Participation}
+
+\begin{itemize}
+\tightlist
+\item
+  Keep in mind that participation--in-class and through Ed
+  Discussion--is worth 10\% of your total grade. We want to create our
+  own data community with engagement from everybody in ways they are
+  comfortable with.
+\end{itemize}
+\end{frame}
+
+\hypertarget{questions-about-the-syllabus-and-course-expectations}{%
+\section{Questions about the syllabus and course
+expectations?}\label{questions-about-the-syllabus-and-course-expectations}}
 
 \end{document}

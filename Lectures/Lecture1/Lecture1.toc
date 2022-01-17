@@ -1,6 +1,7 @@
 \beamer@sectionintoc {1}{Introductions}{3}{0}{1}
 \beamer@sectionintoc {2}{What is R and How Will We Use It?}{7}{0}{2}
-\beamer@sectionintoc {3}{Syllabus / Questions?}{14}{0}{3}
-\beamer@sectionintoc {4}{R Projects and Directory Structure}{15}{0}{4}
-\beamer@sectionintoc {5}{R Basics}{20}{0}{5}
-\beamer@sectionintoc {6}{Assignment 1}{27}{0}{6}
+\beamer@sectionintoc {3}{Prerequisites, R setup, course goals}{17}{0}{3}
+\beamer@sectionintoc {4}{R Projects and Directory Structure}{19}{0}{4}
+\beamer@sectionintoc {5}{R Basics}{25}{0}{5}
+\beamer@sectionintoc {6}{Assignments and other responsibilities}{32}{0}{6}
+\beamer@sectionintoc {7}{Questions about the syllabus and course expectations?}{38}{0}{7}

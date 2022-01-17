@@ -25,9 +25,9 @@
 \CommentTok{\#\textgreater{} [1] 5}
 
 \CommentTok{\# Create an object b and assign value}
-\NormalTok{b }\OtherTok{\textless{}{-}} \StringTok{"yay!"}
+\NormalTok{b }\OtherTok{\textless{}{-}} \StringTok{"I\textquotesingle{}m so excited to be on Zoom again!"}
 \NormalTok{b}
-\CommentTok{\#\textgreater{} [1] "yay!"}
+\CommentTok{\#\textgreater{} [1] "I\textquotesingle{}m so excited to be on Zoom again!"}
 \end{Highlighting}
 \end{Shaded}
 

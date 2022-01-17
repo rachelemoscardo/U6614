@@ -3,7 +3,7 @@
 ## [ PROJ ] Lecture1-startclass: Getting familiar with RStudio
 ## [ FILE ] Lecture1-startclass.r
 ## [ AUTH ] INSTRUCTOR FILE 
-## [ INIT ] Jan 12, 2021
+## [ INIT ] Jan 18, 2022
 ##
 ################################################################################
 
@@ -32,7 +32,7 @@
 
 
 ## -----------------------------------------------------------------------------
-## 3. Inspect gapminder dataframe (in the gapminder package) w base R functions
+## 3. Inspect gapminder data frame (in the gapminder package) w base R functions
 ##    (this exercise is based on STAT545 by Jenny Bryan)
 ## -----------------------------------------------------------------------------
 

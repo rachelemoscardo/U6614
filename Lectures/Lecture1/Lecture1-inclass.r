@@ -3,7 +3,7 @@
 ## [ PROJ ] Lecture1-inclass: Getting familiar with RStudio
 ## [ FILE ] Lecture1-inclass.r
 ## [ AUTH ] INSTRUCTOR FILE 
-## [ INIT ] Jan 19, 2021
+## [ INIT ] Jan 18, 2022
 ##
 ################################################################################
 
@@ -18,7 +18,6 @@
 
 #get working directory
   getwd()
-  dev.new()
 
 ## -----------------------------------------------------------------------------
 ## 2. install and load the gapminder package 
@@ -35,7 +34,7 @@
 
 
 ## -----------------------------------------------------------------------------
-## 3. Inspect gapminder dataframe (in the gapminder package) w base R functions
+## 3. Inspect gapminder data frame (in the gapminder package) w base R functions
 ##    (this exercise is based on STAT545 by Jenny Bryan)
 ## -----------------------------------------------------------------------------
 
@@ -60,17 +59,16 @@
 #to view full data frame use View(), or click on object in Environment pane
   View(gapminder)
   
-view(gapminder)
 
 ## -----------------------------------------------------------------------------
 ## 4. Use some base R functions to perform some very basic exploratory analysis
 ## -----------------------------------------------------------------------------
 
 #let's use some more base R functions to understand the data structure
-  names(gapminder) #get the column names
   dim(gapminder) #get the number of rows and columns
   ncol(gapminder) #get the number of columns (alternatively, dim(gapminder)[2])
   nrow(gapminder) #get the number of rows (alternatively, dim(gapminder)[1])
+  names(gapminder) #get the column names
   names(gapminder)[3] #get the name of the third column
     #note that indexing in R starts from 1, NOT 0
 
@@ -82,21 +80,20 @@ view(gapminder)
   summary(gapminder)
   #notice that the stats shown depend on the type of each column/variable
   #for Factor, it lists how many times each level appears
-  #for int or num, it lists the first, second, third quartiles as well as min, max and mean
+  #for int or num, it lists the 1st, 2nd, 3rd quartiles and min, max, mean
 
-## let's plot the relationship of year (x) vs lifeExp (y) using base R
+#let's plot the relationship of year (x) vs lifeExp (y) using base R
   plot(lifeExp ~ year, gapminder) #the tilde (~) operator sets up a "formula"
-  plot(gapminder$year,gapminder$lifeExp, xlab="hello",ylab="nothing")
+  plot(lifeExp ~ year, gapminder, xlab = "year", ylab = "life expectancy")
+  
+  #alternative 1
+    plot((y = lifeExp) ~ (x = year), data = gapminder)
 
-#alternative 1
-  plot((y = lifeExp) ~ (x = year), data = gapminder)
-  plot()
+  #alternative 2
+    plot(gapminder$year, gapminder$lifeExp)
 
-#alternative 2
-  plot(gapminder$year, gapminder$lifeExp) 
-
-#let's look at the documentation
-  ?plot
+  #let's look at the documentation
+    ?plot
 
 #let's apply some functions to specific variables (i.e. columns of data) 
 #start with a continuous numeric variable (object type 'int')
@@ -115,7 +112,7 @@ view(gapminder)
   nlevels(gapminder$continent) #returns the number of levels of a factor vector
   #in this case, it's 5 since we have Africa, Americas, Asia, Europe and Oceania
 
-#Note: a factor is R's way of recognizing categorical variables... more next week
+  #Note: a factor is R's way of recognizing categorical variables... more next week
 
 #here's one way to run a frequency table to check the number of obs per year
   table(gapminder$year)
@@ -125,6 +122,3 @@ view(gapminder)
 
 #then pass this object (a column of data!) as an argument to the barplot function
   barplot(freq_byyear)
-
-dev.new()
-  
