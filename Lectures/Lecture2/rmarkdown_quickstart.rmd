@@ -19,6 +19,10 @@ output:
 urlcolor: blue
 ---
 
+For your assignments, copy and paste the YAML header from Ed Discussion exactly at the top of your R Markdown document.
+
+Remember to also include the setup chunk right below the YAML header, and load your libraries right after that.
+
 ```{r setup, include = FALSE}
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 ```
@@ -29,7 +33,9 @@ library(tidyverse)
 library(gapminder) #only for this example
 ```
 
-I can write normal text here.
+We can write normal text here.
+
+We can also make **bold** and *italic* script. 
 
 ```{r}
 #I can also write text as comments within a code chunk.
@@ -42,85 +48,76 @@ Here is how numbering works.
 ## Subheading
 ### Sub-subheading
 
-I can suppress numbering, by adding "{-}"
+\medspace
 
-## Suppress numbering here. {-}
+I can suppress default numbering, by adding "{-}"
 
-Here is some inline code: two plus two equals `r 2 + 2`. 
+## Suppressed numbering here. {-}
 
-Here is a code chunk, displaying a table and the code used to generate it.
-Piping a dataframe to knitr::kable() makes it look nicer in R Markdown.
+\newpage
+
+We can execute code in a code chunk, like this:
 ```{r}
-gapminder %>% 
-  head(5) %>% 
-  knitr::kable()
+2+2
 ```
 
-\newpage 
+We can do the same thing using inline code: two plus two equals `r 2 + 2`. 
+
+\medspace
+
+Here is a code chunk, displaying a table and the code used to generate it.
+```{r}
+gapminder %>% 
+  head(5)
+```
+
+\medspace
 
 Here is another code chunk, displaying a plot and the code used to generate it.
 ```{r}
 plot(gapminder$year, gapminder$gdpPercap)
 ```
 
-Let's make a new page.
-
 \newpage
 
 ## Code chunk display options {-}
 
-In the setup chunk we defined the default (global) code chunk display option to be echo=TRUE, meaning the knitted chunk will display both code and results.
+In the setup chunk we set the global knit options to display **both code and results**, and suppress warnings and messages in our pdf output.
 
-Note that the global settings also suppress warnings and messages.
-Usually, you will not have to change these settings when answering assignment questions.
+Usually, you will **not** have to change these settings when answering assignment questions.
 
 For example, suppose I want to display the structure of the gapminder dataset.
 
 - Use **{r}** for the default options
 
 ```{r}
-str(gapminder)
+table(gapminder$continent)
 #default display, inherited from the setup chunk.
 #this is how to display answers for most assignment questions.
 ```
 
 \medspace
 
-If we want, we can change the display options within the code chunk.
-Suppose I only want to display the results, and not the code. 
+In very rare cases, we *can* change the display options within the code chunk.
+Suppose I only want to display results, and not code. 
 
-- Use **"{r echo = FALSE}"**
+- Use **"{r echo = FALSE}"** in the chunk header to do this.
 
 ```{r echo=FALSE}
-str(gapminder)
+table(gapminder$continent)
 ```
 
 \medspace
 
-And the reverse, display the code without evaluating (i.e. no results)
+I can also display code, without results.
 
-- Use **"{r eval = FALSE}"**
+- Use **"{r results = 'hide'}"** in the chunk header to do this.
 
-```{r eval=FALSE}
-str(gapminder)
+```{r results='hide'}
+table(gapminder$continent)
 ```
-
-\medspace
-
-Or, execute code and not display anything (neither code nor results)
-
-- Use **"{r include = FALSE}"**
-
-```{r include=FALSE}
-str(gapminder)
-print("some incriminating stuff that won't see the light of day")
-```
-
-*(nothing here)*
 
 \newpage
-
-
 
 ## Additional tips {-}
 
@@ -146,24 +143,15 @@ summary(gapminder$gdpPercap)
 
 The best way is to use inline code, as per below:
 
-**The mean GDP in the gapminder dataset is `r round(mean(gapminder$gdpPercap),1)`.**
+**The mean GDP in the gapminder dataset is `r round(mean(gapminder$gdpPercap),1)`.** *(Note here that the number is generated using code, not typed out)*
 
 \medspace 
 
-In general:
-
-- Do not hard code (i.e. do not type numeric values directly)
-- Instead, use inline code for simple calculations
-- And use code chunks for more complicated/longer operations
-- Be sensible about what output to display, and what to omit
-
-\newpage 
-
 ## Some final remarks {-}
 
-Remember, you can execute code in R Markdown without knitting, just like in a .r script. 
+- Do not hard code (i.e. do not type numeric values directly), instead, use inline code for simple calculations and code chunks for more complicated operations
 
-Since knitting is memory exhaustive, in general, try to knit only when you're confident your code works, and/or when you want to view the formatting of the final output. 
+-  **Fill in code in your .R script first, and make sure everything works as intended. Only transfer your code to R Markdown when you are happy with your .R script.**
 
 For more detail on R Markdown visit [Yihui Xie's website](https://bookdown.org/yihui/rmarkdown/).
 
