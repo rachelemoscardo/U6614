@@ -1,6 +1,5 @@
 ---
-title: 'U6614: Assignment 2: Assessing gender wage gaps using the Current Population
-  Survey'
+title: 'U6614: Assignment 2'
 author: "Your Name (your-uni)"
 date: "`r Sys.Date()`"
 output:
@@ -24,7 +23,7 @@ urlcolor: blue
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 ```
 
-##### *Please submit your knitted .pdf file along with the corresponding R markdown (.rmd) via Courseworks by 11:59pm on Monday, September 27th.* {-}
+##### *Please submit your knitted .pdf file along with the corresponding R markdown (.rmd) via Courseworks by 11:59pm on Monday, January 31st.* {-}
 
 \medspace
 
@@ -39,6 +38,7 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 # Load and inspect CPS data: 
 
 ### 1a) Inspect the data frame and data types for each column {-}
+- remember to remove NAs
 - make sure to inspect the age, sex, race, college columns
 
 ### 1b) Use the mutate function to create new column for sex {-}
