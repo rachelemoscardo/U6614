@@ -3,10 +3,6 @@ title: "Getting up and running with R Markdown"
 author: "Your Name (your-uni)"
 date: "`r Sys.Date()`"
 output:
-  pdf_document:
-    toc: no
-    toc_depth: '3'
-    number_sections: yes
   html_document:
     toc: yes
     toc_depth: 3
@@ -16,10 +12,14 @@ output:
     theme: default
     fig_caption: yes
     df_print: tibble
+  pdf_document:
+    toc: no
+    toc_depth: '3'
+    number_sections: yes
 urlcolor: blue
 ---
 
-For your assignments, copy and paste the YAML header from Ed Discussion exactly at the top of your R Markdown document.
+For your assignments, copy and paste the YAML header from the class website (.rtf file) exactly at the top of your R Markdown document.
 
 Remember to also include the setup chunk right below the YAML header, and load your libraries right after that.
 
