@@ -3,7 +3,7 @@
 ## [ PROJ ] Lecture 3: Subway Fare Evasion Arrests in Brooklyn
 ## [ FILE ] Lecture3-startclass.r
 ## [ AUTH ] < YOUR NAME >
-## [ INIT ] < Jan 26, 2021 >
+## [ INIT ] < Feb 01, 2022 >
 ##
 ################################################################################
 
@@ -12,6 +12,8 @@
 ## Is there racial bias in their subway fare evasion enforcement in Brooklyn? 
 
 ## Week 3: What can we learn from microdata?
+##  - Which demographic groups experience the most enforcement?
+##  - Where is the NYPD making the most subway fare evasion arrests?
 
 ## Please consult the 2-page data primer before continuing
 ## https://hreplots.github.io/U6614/Lectures/Lecture3/lecture_3-6_data_primer.pdf
@@ -62,9 +64,9 @@ getwd()
   arrests_bds <- read_csv("microdata_BDS_inclass.csv", na = "")
   arrests_las <- read_csv("microdata_LAS_inclass.csv", na = "")
   
-  str(arrests_bds, give.attr = FALSE)
+  str(arrests_bds, give.attr = FALSE) 
   str(arrests_las, give.attr = FALSE)
-
+  #note the give.attr argument - use to make long str() output more readable
 
 #note that string variables are imported as characters by default (not factors)
 #let's convert race and ethnicity to factors to inspect before cleaning
@@ -127,7 +129,8 @@ getwd()
     
     #a quick and easy way to show crosstabs using base R (just show this!)
       table(arrests_bds$race, arrests_bds$ethnicity, useNA = "always")
-    
+      #NOTE: why set useNA = "always" here?
+      
       
   #ok now let's recode in an internally consistent manner
     #recode 0 and Unknown into NA
@@ -139,6 +142,9 @@ getwd()
                                        "Am Indian" = "Other" ) ) %>% 
       mutate(race_clean = factor(race_clean, 
                                  levels = c("Black", "White", "Asian/Pacific Islander", "Other")))
+      #note: the character string "NA" is not the same as a system NA
+      #      by explicitly setting factor levels, 
+      #       the omitted category ("NA") is forced into system NA values
   
       #validation: confirm the recode worked as intended
         arrests_bds.clean %>% count(race_clean, sort = TRUE)
@@ -220,9 +226,7 @@ getwd()
 ##    a. create a column (pd) to identify PD data source (= "las" or "bds")
 ##
 ##    b. Append arrests_bds.clean and arrests_las.clean
-##        - use rbind.fill from the plyr package
-##          - bc of a conflict w/another package, use a "lazy load" of plyr:
-##             plyr::rbind.fill()
+##        - use bind_rows from the dplyr package
 ##        - store combined data as new data frame called arrests_all
 ##        - only keep columns for pd, race_eth, age, male, dismissal, st_id, loc2,
 ##          converting to factors for columns w/categorical data as needed
@@ -242,7 +246,7 @@ getwd()
 
 
 #5b. since we don't have arrests_las.clean yet, for now let's append arrests_bds.clean to itself
-  arrests.clean <- plyr::rbind.fill(arrests_bds.clean, arrests_bds.clean) %>%
+  arrests.clean <- bind_rows(arrests_bds.clean, arrests_bds.clean) %>%
     mutate(pd = as.factor(pd),
            st_id = as.factor(st_id),
            loc2 = as.factor(loc2)) %>% #station/location info is not continuous
