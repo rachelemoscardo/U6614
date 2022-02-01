@@ -27,7 +27,7 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 library(tidyverse)
 ```
 
-##### *Please submit your knitted .pdf file along with the corresponding R markdown (.rmd) via Courseworks by 11:59pm on Monday, September 27th.* {-}
+##### *Please submit your knitted .pdf file along with the corresponding R markdown (.rmd) via Courseworks by 11:59pm on Monday, January 31st.* {-}
 
 \medspace
 
@@ -178,7 +178,7 @@ The average age in the sample is `r round(sumstats$avg_age,2)`, with individuals
 
 ```{r}
 max_earnings <- cps_2020 %>%
-                  summarise(max_earnings = max(earnweek))
+                  summarise(max_earnings = max(earnweek),)
 max_earnings
 ```
 
