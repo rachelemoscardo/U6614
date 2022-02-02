@@ -39,7 +39,7 @@ library(gapminder)
 # a
 str(gapminder)
 
-#b. 1,706 observations
+#b. 1,704 observations of 6 variables
 
 
 
@@ -54,13 +54,14 @@ str(gapminder)
 mean(gapminder$gdpPercap) #7,215.3
 
 #b 
-?gapminder #GDP per capita is measures as US$, inflation-adjusted
+?gapminder #GDP per capita is measured in US$, inflation-adjusted
 
 #c
 View(gapminder)
-#7,215.3 is the mean GDP/cap across all 12 observations for every country
-#probably better to first look at the distribution of lifeExp across countries for a single year
-#or for a single country over time
+#7,215.3 is the mean GDP/cap across all 12 observations for 142 countries from 
+#1952 to 2007 in increments of 5 years
+#probably better to first look at the distribution of gdpPercap across 
+#countries for a single year or for a single country over time
 
 
 
