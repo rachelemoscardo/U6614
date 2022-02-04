@@ -3,7 +3,7 @@
 ## [ PROJ ] Lecture 4: Subway Fare Evasion Arrests and Racial Bias
 ## [ FILE ] Lecture4-startclass.r
 ## [ AUTH ] < YOUR NAME >
-## [ INIT ] < Oct 5, 2021 >
+## [ INIT ] < Feb 08, 2022 >
 ##
 ################################################################################
 
@@ -58,7 +58,10 @@ getwd()
 #2c.
   ggplot(data = st_arrests, aes(x = arrests_all)) + geom_histogram()
   
+  #remember ggplot is in the tidyverse, so we can also start by passing the data into a pipe
+    st_arrests %>% ggplot(aes(x = arrests_all)) + geom_histogram()
 
+    
 ## -----------------------------------------------------------------------------
 ## 3. joining ridership and neighborhood demographics to arrest data
 ##
@@ -304,9 +307,9 @@ getwd()
                      tapply(povrt_all_2016, 
                             list("High Poverty" = highpov, "Predominantly Black" = nblack), 
                             mean) )    
-    t1_arrper
-    t1_arrper_wtd
-    t1_povrt
+    t1_arrper %>% round(2)
+    t1_arrper_wtd %>% round(2)
+    t1_povrt %>% round(2)
   
   
 #5b.
