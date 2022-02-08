@@ -133,7 +133,7 @@ gap_joined_left <- left_join(gap, healthexp, by = c("country", "year")) %>%
 gap_joined_left %>% head(n = 5)
 nlevels(gap_joined_inner$country)
 ```
-Here we can see all 142 countries are retained from the gapminder data, even though we know that 12 countries from the gapminder data were not matched to countries in the health expenditure data.
+Here we can see all `r nlevels(gap_joined_inner$country)` countries are retained from the gapminder data, even though we know that 12 countries from the gapminder data were not matched to countries in the health expenditure data.
 
 
 ## Filtering joins
