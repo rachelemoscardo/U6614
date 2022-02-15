@@ -406,20 +406,20 @@ getwd()
     stations_nonblack <- stations %>% filter(nblack == "Majority non-Black")
     
     #nblack == 1: linear model with station observations (can also add optional weights argument)
-    ols1lb <- lm(arrperswipe ~ povrt_all_2016, data = stations_black)
-    summary(ols1lb) #get summary of the model
+    ols_l_black <- lm(arrperswipe ~ povrt_all_2016, data = stations_black)
+    summary(ols_l_black) #get summary of the model
     
     #nblack == 1: quadratic model with station observations
-    olsqlb <- lm(arrperswipe ~ povrt_all_2016 + I(povrt_all_2016^2), data = stations_black)
-    summary(olsqlb) #get summary of the model
+    ols_q_black <- lm(arrperswipe ~ povrt_all_2016 + I(povrt_all_2016^2), data = stations_black)
+    summary(ols_q_black) #get summary of the model
     
     #nblack == 0: linear model with station observations (can also add optional weights argument)
-    ols1lnb <- lm(arrperswipe ~ povrt_all_2016, data = stations_nonblack)
-    summary(ols1lnb) #get summary of the model
+    ols_l_nonblack <- lm(arrperswipe ~ povrt_all_2016, data = stations_nonblack)
+    summary(ols_l_nonblack) #get summary of the model
     
     #nblack == 0: quadratic model with station observations
-    ols1qnb <- lm(arrperswipe ~ povrt_all_2016 + I(povrt_all_2016^2), data = stations_nonblack)
-    summary(ols1lnb) #get summary of the model 
+    ols_q_nonblack <- lm(arrperswipe ~ povrt_all_2016 + I(povrt_all_2016^2), data = stations_nonblack)
+    summary(ols_q_nonblack) #get summary of the model 
 
   
 #5d.
