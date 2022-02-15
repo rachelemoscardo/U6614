@@ -52,9 +52,7 @@ getwd()
     arrange(desc(arrests_all))
 
   #could use count() in place of group_by() & summarise() - shorter but less flexible
-  arrests_all %>% 
-    count(st_id, loc2) %>% 
-    arrange(desc(n))
+    #arrests_all %>% count(st_id, loc2) %>% arrange(desc(n))
   
 #2c.
   ggplot(data = st_arrests, aes(x = arrests_all)) + geom_histogram()
@@ -102,7 +100,7 @@ getwd()
 
   st_ridership$mta_name %>% n_distinct()
   st_poverty$mta_name %>% n_distinct()
-  c(st_ridership$mta_name, st_poverty$mta_name)
+  #c(st_ridership$mta_name, st_poverty$mta_name)
 
 #3b.
   #a vector of columns we don't need to keep
@@ -123,7 +121,7 @@ getwd()
     group_by(st_id, mta_name) 
 
   #inspect - DO NOT INCLUDE IN RMD SUBMISSION
-    str(st_joined)  #why is this so long? 
+    #str(st_joined)  #why is this so long? 
     summary(st_joined)
       #Note: 157 obs in joined df w/no NAs (except some missing demographics) 
       #inner join worked as intended!
@@ -313,7 +311,7 @@ getwd()
 ##    c. which model do you prefer, linear or quadratic?
 ##      - why? be clear about your logic and if applicable cite statistical evidence to support your decision
 ##
-##    d. interpret your preferred regression specification (carefully!)
+##    d. interpret the results from your preferred regression specification (carefully!)
 ## -----------------------------------------------------------------------------
     
 #5a. HINT: use tapply()
@@ -343,49 +341,90 @@ getwd()
                      tapply(povrt_all_2016, 
                             list("High Poverty" = highpov, 
                                  "Predominantly Black" = nblack), 
-                            mean))    
-    t1_povrt
-    t1_arrper
-    t1_arrper_wtd
+                            mean)) 
+    t1_povrt_wtd <-
+      tapply(stations$povrt_all_2016 * stations$swipes2016,
+             list(stations$highpov, 
+                  stations$nblack), 
+             sum) / 
+      tapply(stations$swipes2016,
+             list(stations$highpov, 
+                  stations$nblack), 
+             sum)
     
+    t1_povrt_wtd
+    t1_arrper_wtd
+    #t1_arrper #note how group means change with weighting
+    
+
+
 #5b.
+    
   #scatter plot by nblack w/linear plots
     ggplot(stations, aes(x = povrt_all_2016, y = arrperswipe, color = nblack)) +
       geom_point()  +
-      #geom_smooth(method = 'lm', formula = y ~ x) +    ###add linear fit
-      #geom_smooth(method = 'lm', formula = y ~ x + I(x^2)) ###add quadratic fit
+      geom_smooth(method = 'lm', formula = y ~ x) + 
       ylab("Arrests relative to ridership") + xlab("Station area poverty rate") +
       ggtitle("Fare Evasion Arrest Intensity vs Poverty by Race", 
-        subtitle = "Subway stations in Brooklyn (2016)") +
+              subtitle = "Subway stations in Brooklyn (2016)") +
       scale_color_discrete(name = "Predominantly Black Station",
                            labels=c("No", "Yes"),
                            guide = guide_legend(reverse=TRUE)) +
       theme(legend.position = "bottom", 
-            legend.background = element_rect(color = "black", fill = "grey90", size = .2, linetype = "solid"), 
+            legend.background = element_rect(color = "black", 
+                                             fill = "grey90", 
+                                             size = .2, 
+                                             linetype = "solid"), 
             legend.direction = "horizontal",
             legend.text = element_text(size = 8), 
             legend.title = element_text(size = 8) )
-  
-  #scatterplot by nblack w/quadratic plots - as above
     
+  #w/quadratic plots
+    ggplot(stations, aes(x = povrt_all_2016, y = arrperswipe, color = nblack)) +
+      geom_point()  +
+      geom_smooth(method = 'lm', formula = y ~ x + I(x^2)) + 
+      ylab("Arrests relative to ridership") + 
+      xlab("Station area poverty rate") +
+      ggtitle("Fare Evasion Arrest Intensity vs Poverty by Race", 
+              subtitle = "Subway stations in Brooklyn (2016)") +
+      scale_color_discrete(name = "Predominantly Black Station",
+                           labels=c("No", "Yes"),
+                           guide = guide_legend(reverse=TRUE)) +
+      theme(legend.position = "bottom", 
+            legend.background = element_rect(color = "black", 
+                                             fill = "grey90", 
+                                             size = .2, 
+                                             linetype = "solid"), 
+            legend.direction = "horizontal",
+            legend.text = element_text(size = 8), 
+            legend.title = element_text(size = 8) )    
 
 #5c.  
   
-    #by predominantly Black stations: get separate data frames
+    #by nblack: get separate data frames
     stations_black <- stations %>% filter(nblack == "Majority Black")
     stations_nonblack <- stations %>% filter(nblack == "Majority non-Black")
     
     #nblack == 1: linear model with station observations (can also add optional weights argument)
-    ols1l <- lm(arrperswipe ~ povrt_all_2016, data = stations_black)
-    summary(ols1l) #get summary of the model
+    ols1lb <- lm(arrperswipe ~ povrt_all_2016, data = stations_black)
+    summary(ols1lb) #get summary of the model
     
     #nblack == 1: quadratic model with station observations
-    ols1l <- lm(arrperswipe ~ povrt_all_2016 + I(povrt_all_2016^2), data = stations_black)
-    summary(ols1l) #get summary of the model
+    olsqlb <- lm(arrperswipe ~ povrt_all_2016 + I(povrt_all_2016^2), data = stations_black)
+    summary(olsqlb) #get summary of the model
+    
+    #nblack == 0: linear model with station observations (can also add optional weights argument)
+    ols1lnb <- lm(arrperswipe ~ povrt_all_2016, data = stations_nonblack)
+    summary(ols1lnb) #get summary of the model
+    
+    #nblack == 0: quadratic model with station observations
+    ols1qnb <- lm(arrperswipe ~ povrt_all_2016 + I(povrt_all_2016^2), data = stations_nonblack)
+    summary(ols1lnb) #get summary of the model 
 
   
 #5d.
   
+    
     
 ## -----------------------------------------------------------------------------
 ## 6. Similar to analysis above, examine relationship between arrest intensity & criminal complaints
@@ -422,7 +461,8 @@ getwd()
       arrange(desc(crimes)) %>% 
      #filter(ADD CODE)
       
-    str(stations_wcrime$crimes)
+    #make sure to validate!
+      #str(stations_wcrime$crimes)
   
 #6c. 
   
