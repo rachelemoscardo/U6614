@@ -3,7 +3,7 @@
 ## [ PROJ ] Lecture 4: Subway Fare Evasion Arrests and Racial Bias (part 1)
 ## [ FILE ] Lecture4-inclass.r
 ## [ AUTH ] < YOUR NAME >
-## [ INIT ] < Oct 5, 2021 >
+## [ INIT ] < Feb 15, 2022 >
 ##
 ################################################################################
 
@@ -411,7 +411,7 @@ getwd()
     
     #nblack == 1: quadratic model with station observations
     olsqlb <- lm(arrperswipe ~ povrt_all_2016 + I(povrt_all_2016^2), data = stations_black)
-    summary(ols1lb) #get summary of the model
+    summary(olsqlb) #get summary of the model
     
     #nblack == 0: linear model with station observations (can also add optional weights argument)
     ols1lnb <- lm(arrperswipe ~ povrt_all_2016, data = stations_nonblack)
