@@ -3,7 +3,7 @@
 ## [ PROJ ] Supplemental Example: Women in STEM
 ## [ FILE ] womeninstem.r
 ## [ AUTH ] < YOUR NAME >
-## [ INIT ] < Feb 14, 2022 >
+## [ INIT ] < Feb 22, 2022 >
 ##
 ################################################################################
 
@@ -11,7 +11,7 @@
 ##  - Do countries with more mandated maternal leave have a greater share of 
 ##    women graduating in STEM fields?
 ##  - A more interesting causal framing of that question:
-##     Does maternal leave increase the women's representation in STEM fiels?
+##     Does maternal leave increase the women's representation in STEM fields?
 
 ## Data source: World Bank's DataBank Gender Statistics
 ##  (https://databank.worldbank.org/source/gender-statistics)
@@ -23,7 +23,7 @@
 
 
 #install.packages("ggrepel")
-#install.package("ggpmisc")
+#install.packages("ggpmisc")
 
 library(tidyverse)
 library(ggrepel)
