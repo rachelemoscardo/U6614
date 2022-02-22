@@ -75,51 +75,52 @@ wbgender <- read_csv("worldbank-genderstats.csv", na = "..")
   summary(stem.unmetcontr)
     #uh oh, way too many missing values in any given year!
     #obs come from diff surveys in diff years. values of vars may change slowly.
-    #for now let's try using the maximum over all years to reduce NAs
-      #i.e. get max fem share of STEM grads for every year (2011-2020)
-  
+    #for now let's try using the mean over all years to reduce NAs
+      #i.e. get mean fem share of STEM grads for every year (2011-2020)
   
 
-## B. create 'analysis variables' = max value across all years for each country
-##    - hint: use mutate to create a new column
-##    - hint: with mutate, use the pmax() function to get the max across rows
-##    - pay attention to how NAs are treated
-##    - only keep new cols for each analysis var, `Country Name`, `Country Code`
-  
-  stem.fmshstemgrads <- stem.fmshstemgrads %>% 
-    mutate(fmshstemgrads = pmax(`2011 [YR2011]`, `2012 [YR2012]`, `2013 [YR2013]`, 
-                                `2014 [YR2014]`, `2015 [YR2015]`, `2016 [YR2016]`,
-                                `2017 [YR2017]`, `2018 [YR2018]`, `2019 [YR2019]`, na.rm = TRUE)) %>% 
-    select(`Country Name`, `Country Code`, fmshstemgrads) 
+## B. for each variable, create 'analysis variable' = mean value across all years for each country
+##  - 1. start by reshaping data from wide to long form in each df using pivot_longer
+##    - new long form df should have 1 obs for every country-year combination
+##    - i.e. reshape stem.fmshstemgrads into new df stem.fmshstemgrads_long, etc.
+##  - 2. next use group_by + summarise to generate aggregated stats for each group
+##    - new df should have 3 columns: `Country Name`, `Country Code`, fmshstemgrads
+##    - repeat for each input variable to end up with 3 data frames
+##    - round to 2 decimal points if you need to
 
-  stem.unmetcontr <- stem.unmetcontr %>% 
-    mutate(unmetcontr = pmax(`2011 [YR2011]`, `2012 [YR2012]`, `2013 [YR2013]`, 
-                                `2014 [YR2014]`, `2015 [YR2015]`, `2016 [YR2016]`,
-                                `2017 [YR2017]`, `2018 [YR2018]`, `2019 [YR2019]`, na.rm = TRUE)) %>% 
-    select(`Country Name`, `Country Code`, unmetcontr) 
+  #here's a basic pivot_longer example: 
+    #https://statisticsglobe.com/pivot_longer-and-pivot_wider-functions-in-r
+   
+  stem.fmshstemgrads_long <- stem.fmshstemgrads %>% 
+    pivot_longer(cols = `2011 [YR2011]`:`2020 [YR2020]`,
+                 names_to = "Year",
+                 values_to = "value") %>% 
+    group_by(`Country Name`,`Country Code`) %>% 
+    summarise(fmshstemgrads = round(mean(value, na.rm=TRUE),2) )
   
-  stem.dayspaidmatleave <- stem.dayspaidmatleave %>% 
-    mutate(dayspaidmatleave = pmax(`2011 [YR2011]`, `2012 [YR2012]`, `2013 [YR2013]`, 
-                                `2014 [YR2014]`, `2015 [YR2015]`, `2016 [YR2016]`,
-                                `2017 [YR2017]`, `2018 [YR2018]`, `2019 [YR2019]`, na.rm = TRUE)) %>% 
-    select(`Country Name`, `Country Code`, dayspaidmatleave) 
+  stem.dayspaidmatleave_long  <- stem.dayspaidmatleave  %>% 
+    pivot_longer(cols = `2011 [YR2011]`:`2020 [YR2020]`,
+                 names_to = "Year",
+                 values_to = "value") %>% 
+    group_by(`Country Name`,`Country Code`) %>% 
+    summarise(dayspaidmatleave = round(mean(value, na.rm=TRUE), 2) )
+  
+  stem.unmetcontr_long <- stem.unmetcontr %>% 
+    pivot_longer(cols = `2011 [YR2011]`:`2020 [YR2020]`,
+                 names_to = "Year",
+                 values_to = "value") %>% 
+    group_by(`Country Name`,`Country Code`) %>% 
+    summarise(unmetcontr = round(mean(value, na.rm=TRUE), 2) ) 
+  
 
-  
-  #here's an alternative solution that avoids writing out every column name
-  stem.fmshstemgrads <- wbgender %>% 
-    filter(`Series Code` == "SE.TER.GRAD.FE.SI.ZS") 
-  stem.fmshstemgrads <- stem.fmshstemgrads %>%
-    mutate(fmshstemgrads = do.call(pmax, c(stem.fmshstemgrads[,5:14], na.rm=TRUE))) %>% 
-    select(`Country Name`, `Country Code`, fmshstemgrads)  
-  
   
   
 ## C. join 3 new df's together to get a single "tidy" dataframe
 ##    - include 3 analysis variables and `Country Name` and `Country Code`
 ##    - how many countries have non-missing values for all 3 vars?
 
-  stem.cross <- inner_join(stem.fmshstemgrads, stem.unmetcontr) %>% 
-    inner_join(stem.dayspaidmatleave) %>% 
+  stem.cross <- inner_join(stem.fmshstemgrads_long, stem.unmetcontr_long) %>% 
+    inner_join(stem.dayspaidmatleave_long) %>% 
     na.omit()
 
   #think about sample selection issues! 

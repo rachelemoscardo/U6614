@@ -21,8 +21,8 @@
 ## load libraries
 ##-------------------------
 
-# install.packages("ggrepel")
-#install.packages("ggpmisc")
+#install.packages("ggrepel")
+#install.package("ggpmisc")
 
 library(tidyverse)
 library(ggrepel)
@@ -35,11 +35,13 @@ getwd()
 ## 1. load & prep input data
 ##---------------------------
 
-wbgender <- read_csv(FILL IN CODE)
+wbgender <- read_csv("worldbank-genderstats.csv") #ADD ARGUMENT TO ADDRESS NAs
 
-#wait this data isn't "tidy"! diff vars for diff variables is... weird
+
+#wait this data isn't "tidy"! 
+#each row is not its own observation! there are diff rows for diff vars
   
-#first, let's keep *rows* with information for 3 variables:
+#here are the 3 input variables we want to work with
   #SE.TER.GRAD.FE.SI.ZS : 
     #Y: Female share of graduates from STEM programmes, tertiary (%)
   #SH.MMR.LEVE :
@@ -47,9 +49,12 @@ wbgender <- read_csv(FILL IN CODE)
   #SP.UWT.TFRT :
     #X2: Unmet need for contraception (% of married women ages 15-49) 
 
+
+#first, let's keep *rows* with information for 3 variables:
   keepvars <- c(FILL IN CODE)
   stem <- wbgender %>% filter(`Series Code` %in% keepvars)
-    #note: use backticks to refer to `Series Code` bc of space in col name 
+    #NOTE: use backticks to refer to `Series Code` bc of space in col name 
+    #NOTE: the %in% operator checks if two vectors contain overlapping values 
 
   
 ##---------------------------
@@ -57,37 +62,60 @@ wbgender <- read_csv(FILL IN CODE)
 ##---------------------------
 
 ## A. create 3 separate df's for each variable
-##    - stem.fmshstemgrads, stem.dayspaidmatleave, stem.unmetcontr
-##    - each df should be a subset of rows for each variable 
+##  - stem.fmshstemgrads, stem.dayspaidmatleave, stem.unmetcontr
+##  - each df should be a subset of rows for each variable 
+##  - in each df, look at the distribution for each var in each year - any concerns?
+
+  stem.fmshstemgrads <- FILL IN CODE   
+
+  stem.dayspaidmatleave <- FILL IN CODE
+  
+  stem.unmetcontr <- FILL IN CODE
   
 
+## B. for each variable, create 'analysis variable' = mean value across all years for each country
+##  - 1. start by reshaping data from wide to long form in each df using pivot_longer
+##    - new long form df should have 1 obs for every country-year combination
+##    - i.e. reshape stem.fmshstemgrads into new df stem.fmshstemgrads_long, etc.
+##  - 2. next use group_by + summarise to generate aggregated stats for each group
+##    - new df should have 3 columns: `Country Name`, `Country Code`, fmshstemgrads
+##    - repeat for each input variable to end up with 3 data frames
   
+  stem.fmshstemgrads_long <- stem.fmshstemgrads %>% 
+    pivot_longer(cols = FILL IN ARGUMENT FOR COLS TO RESHAPE,
+                 names_to = FILL IN ARGUMENT FOR NEW COL NAME W/TIME INFO,
+                 values_to = "value" ) #ARGUMENT FOR NEW COL NAME W/VARIABLE VALUES
+  #here's a basic pivot_longer example: 
+  #https://statisticsglobe.com/pivot_longer-and-pivot_wider-functions-in-r
 
-## B. create 'analysis variables' = max value across all years for each country
-##    - hint: use mutate to create a new column
-##    - hint: with mutate, use the pmax() function to get the max across rows
-##    - pay attention to NAs
-##    - only keep new cols for each analysis var, `Country Name`, `Country Code`
   
-  stem.fmshstemgrads <- stem.fmshstemgrads %>%
+  #once you get the reshape down above, 
+  #then extend the pipe w/group_by + summarize to get aggregate observations
+  stem.fmshstemgrads_long <- stem.fmshstemgrads %>% 
+    pivot_longer(cols = FILL IN ARGUMENT FOR COLS TO RESHAPE,
+                 names_to = FILL IN ARGUMENT FOR NEW COL NAME W/TIME INFO,
+                 values_to = "value") %>% 
+    group_by(FILL IN ARGS) %>% 
+    summarise(fmshstemgrads = FILL IN CODE TO GET COUNTRY-LEVEL STATISTICS)
+  
+  
+  stem.unmetcontr_long <- stem.unmetcontr %>% 
     FILL IN CODE
-
-
-  stem.unmetcontr <- stem.unmetcontr %>% 
-    FILL IN CODE
   
-  stem.dayspaidmatleave <- stem.dayspaidmatleave %>% 
+  
+  stem.dayspaidmatleave_long <- stem.dayspaidmatleave %>% 
     FILL IN CODE
 
   
   
 ## C. join 3 new df's together to get a single "tidy" dataframe
-##    - including 3 analysis variables and `Country Name` and `Country Code`
+##  - include 3 analysis variables and `Country Name` and `Country Code`
+##  - how many countries have non-missing values for all 3 vars?
 
-
+  stem.cross <- FILL IN CODE 
 
   #think about sample selection issues! 
-  #are missing observations for 3 analysis variables randomly distributed?
+  #are missing observations for original variables randomly distributed?
 
     
   
@@ -95,6 +123,11 @@ wbgender <- read_csv(FILL IN CODE)
 ## 3. exploratory analysis
 ##---------------------------
 
+## stem.cross has issues w/measurement error and non-random sample selection
+## these issues limit the usefulness of this data for credible project work
+## but we'll proceed a bit further for this in-class exercise 
+  
+  
 ## A. explore relationship between days paid maternity leave & fem share of STEM grads
 
   
@@ -106,7 +139,7 @@ wbgender <- read_csv(FILL IN CODE)
      
      
 ## B. could other country-level differences in part explain this relationship?
-  
+##    - what can you check in the data? 
     
 
 ## C. what can we do to improve internal validity?
