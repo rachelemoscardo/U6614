@@ -23,10 +23,9 @@ urlcolor: blue
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 ```
 
-##### *Please submit your knitted .pdf file along with the corresponding R markdown (.rmd) via Courseworks by 11:59pm on Friday, October 15 (extension until Saturday, October 16).* {-}
+##### *Please submit your knitted .pdf file along with the corresponding R markdown (.rmd) via Courseworks by 11:59pm on Friday, Feb 18 (extension until Saturday, Feb 19).* {-}
 
 \medspace
-
 
 # Load libraries
 ```{r}
@@ -149,7 +148,7 @@ st_joined %>%
 
 ```{r}
 stations <- st_joined %>%
-  filter(st_id != 66) %>%
+  filter(st_id != 66) %>% #Coney Island
   mutate(arrperswipe = round(arrests_all / (swipes2016 / 100000), 2),
          highpov = as.numeric(povrt_all_2016 > median(st_joined$povrt_all_2016)),
          nblack = as.numeric(shareblack > .5),
@@ -160,13 +159,18 @@ stations <- st_joined %>%
          shareblack = round(shareblack, 2),
          povrt_all_2016 = round(povrt_all_2016, 2)) 
 
-#display top 10 stations by arrest intensity (show st_id, mta_name, arrests_all and new variables)
+#display top 10 stations by arrest intensity
+#show st_id, mta_name, arrests_all and new variables
   stations_top10 <- stations %>% 
     arrange(desc(arrperswipe)) %>% 
     select(st_id, mta_name, arrperswipe, arrests_all, shareblack, 
            povrt_all_2016, highpov, nblack) %>% 
     head(n = 10)
-  kable(stations_top10)
+  
+  kable(stations_top10, 
+        booktabs=TRUE, 
+        caption = "Top 10 Stations by Arrest Intensity") %>% 
+    kableExtra::kable_styling(latex_options="scale_down") #scale to fit
 ```
 
 ### 4b) Examine the relationship between arrest intensity and poverty rates {-}
@@ -278,9 +282,6 @@ The above tables show that mean arrests per 100,000 MetroCard swipes are more th
 \medskip
 
 ### 5b) Show a scatterplot of arrest intensity vs. poverty rates along with the regression line you think best fits this relationship. {-}
-
-  - Which regression specification do you prefer: linear or quadratic? Be clear about your logic and if applicable cite statistical evidence to support your decision.
-  - Interpret your preferred regression specification (caerfully)!
   
 ```{r}
 #quadratic
@@ -323,11 +324,15 @@ ols_nb_q <- lm(arrperswipe ~ povrt_all_2016 + I(povrt_all_2016^2),
                data = stations_nonblack)
 ```
 
+### 5c) Which regression specification do you prefer: linear or quadratic? Be clear about your logic and if applicable cite statistical evidence to support your decision. {-}
+
+Quadratic results are shown here because it explains a greater share of the variation in fare evasion arrest intensity for predominantly Black station areas than the linear model (`r round(summary(ols_b_q)$adj.r.squared, 2)` compared to `r round(summary(ols_b_l)$adj.r.squared, 2)`), but the same substantive conclusion holds regardless of functional form.
+
 Visual inspection of the fitted regression lines reveal a clear pattern for both the linear and quadratic specifications: fare evasion arrest intensity increases (at an increasing rate) along with poverty rates at subway stations in predominantly Black areas, but not at other stations. Said another way, the result suggest that a predominantly Black station area tends to experience significantly higher arrest intensity than a non-Black station with a similarly high poverty rate. 
 
 Note that the above interpretation is qualitative in nature: it's a bit more straightforward to provide a numerical interpretation of coefficient estimates with a linear model. Alternatively, it would be informative to compare predicted fare evasion arrest intensity for a predominantly Black station area with a specified poverty rate (say, 40%) compared to a non-Black station area with the same poverty rate. If you prefer the linear specification because it is a bit simpler to interpret without changing the substantive conclusions, that is a reasonable justification.
 
-Quadratic results are shown here because it explains a greater share of the variation in fare evasion arrest intensity for predominantly Black station areas than the linear model (`r round(summary(ols_b_q)$adj.r.squared, 2)` compared to `r round(summary(ols_b_l)$adj.r.squared, 2)`), but the same substantive conclusion holds regardless of functional form.
+### 5d) Interpret your preferred regression specification (caerfully)! {-}
 
 For both quadratic and linear models, poverty rates explain very little of the variation in arrest intensity among non-Black station areas in Brooklyn (`r round(summary(ols_nb_q)$adj.r.squared, 2)` and `r round(summary(ols_nb_l)$adj.r.squared, 2)`, respectively).
 
@@ -338,20 +343,35 @@ Regardless of functional form, poverty is only a statistically significant deter
 
 # Examine the relationship between arrest intensity and crime 
 
-### 6a) Load the crime data and join to the existing stations data frame (`nypd_criminalcomplaints_2016.csv`). {-}
+### 6a) Read in `nypd_criminalcomplaints_2016.csv`. {-}
 
 ```{r}
 st_crime <- read.csv("nypd_criminalcomplaints_2016.csv")
+```
 
+### 6b) Join stations dataframe to subway station area crime data {-}
+
+- join on st_id
+- exclude the stations with the 4 highest counts of criminal complaints, since they do not face comparable
+neighbourhood policing conditions
+
+
+```{r}
 stations_wcrime <- stations %>%
   inner_join(st_crime) %>%
-  arrange(desc(crimes)) %>% 
-  filter(crimes < 2367) #exclude the stations with the 4 highest counts of criminal complaints
+  arrange(desc(crimes))
+
+cutoffs <- stations_wcrime %>% 
+  select(crimes)
+ 
+#exclude the stations with the 4 highest counts of criminal complaints
+stations_wcrime <- stations_wcrime %>% 
+  filter(crimes < cutoffs$crimes[4]) 
 ```
 
 \medspace
 
-### 6b) Examine the overall relationship between arrest intensity and crime (without taking neighborhood racial composition or poverty into account) (comparable to Section 4.2).{-}
+### 6c) i. Examine the overall relationship between arrest intensity and crime (without taking neighborhood racial composition or poverty into account) (comparable to Section 4.2).{-}
 
 ```{r}
 #linear
@@ -406,7 +426,7 @@ From the linear model, we can see that the effect of criminal complaints on arre
 \medskip
 
 
-### 6c) Examine how neighborhood racial composition mediates the relationship between arrest intensity and crime (comparable to Section 5.2).{-}
+### 6c) ii. Examine how neighborhood racial composition mediates the relationship between arrest intensity and crime (comparable to Section 5.2).{-}
 
 ```{r}
 #linear
