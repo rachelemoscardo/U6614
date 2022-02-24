@@ -91,21 +91,21 @@ wbgender <- read_csv("worldbank-genderstats.csv", na = "..")
   #here's a basic pivot_longer example: 
     #https://statisticsglobe.com/pivot_longer-and-pivot_wider-functions-in-r
    
-  stem.fmshstemgrads_long <- stem.fmshstemgrads %>% 
+  stem.fmshstemgrads <- stem.fmshstemgrads %>% 
     pivot_longer(cols = `2011 [YR2011]`:`2020 [YR2020]`,
                  names_to = "Year",
                  values_to = "value") %>% 
     group_by(`Country Name`,`Country Code`) %>% 
     summarise(fmshstemgrads = round(mean(value, na.rm=TRUE),2) )
   
-  stem.dayspaidmatleave_long  <- stem.dayspaidmatleave  %>% 
+  stem.dayspaidmatleave  <- stem.dayspaidmatleave  %>% 
     pivot_longer(cols = `2011 [YR2011]`:`2020 [YR2020]`,
                  names_to = "Year",
                  values_to = "value") %>% 
     group_by(`Country Name`,`Country Code`) %>% 
     summarise(dayspaidmatleave = round(mean(value, na.rm=TRUE), 2) )
   
-  stem.unmetcontr_long <- stem.unmetcontr %>% 
+  stem.unmetcontr <- stem.unmetcontr %>% 
     pivot_longer(cols = `2011 [YR2011]`:`2020 [YR2020]`,
                  names_to = "Year",
                  values_to = "value") %>% 
@@ -118,7 +118,13 @@ wbgender <- read_csv("worldbank-genderstats.csv", na = "..")
 ## C. join 3 new df's together to get a single "tidy" dataframe
 ##    - include 3 analysis variables and `Country Name` and `Country Code`
 ##    - how many countries have non-missing values for all 3 vars?
+  
+  inner_join(x = stem.fmshstemgrads_long, y=stem.dayspaidmatleave_long, )
 
+  stem.cross <- inner_join(stem.fmshstemgrads_long, 
+                          stem.dayspaidmatleave_long, 
+                          stem.unmetcontr_long)
+  
   stem.cross <- inner_join(stem.fmshstemgrads_long, stem.unmetcontr_long) %>% 
     inner_join(stem.dayspaidmatleave_long) %>% 
     na.omit()
