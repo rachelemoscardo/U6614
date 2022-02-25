@@ -1,5 +1,5 @@
 ---
-title: 'U6614 Assignment 5: \break Water shutoffs, race, and income in Detroit: \break Which communities have been hardest hit?'
+title: 'U6614 Assignment 5: \break Water shutoffs, race, and income in Detroit: \break Community impact by race and income'
 author: "SAMPLE SOLUTION"
 date: "`r Sys.Date()`"
 output:
@@ -23,7 +23,7 @@ urlcolor: blue
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 ```
 
-##### *Please submit your knitted .pdf file along with the corresponding R markdown (.rmd) via Courseworks by 11:59pm on Monday, Nov 1st.* {-}
+##### *Please submit your knitted .pdf file along with the corresponding R markdown (.rmd) via Courseworks by 11:59pm on Monday, March 7tht.* {-}
 
 ##### Remember to think carefully about what code you include in your knitted document. Only include code chunks that you need to generate the plots and statistics to answer the questions below. Don't include code from your working R script (that we started in class) that was only used to inspect and validate your results, and isn't necessary to answer the questions. {-}
 

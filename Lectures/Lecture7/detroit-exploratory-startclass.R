@@ -3,7 +3,7 @@
 ## [ PROJ ] Lecture 7: Water shutoffs, race, and health in Detroit (Part 1)
 ## [ FILE ] detroit-exploratory.r
 ## [ AUTH ] < YOUR NAME >
-## [ INIT ] < Feb 23, 2021 >
+## [ INIT ] < March 1, 2022 >
 ##
 ################################################################################
 
@@ -63,11 +63,9 @@ acs_tract.clean <- input_acs_tract %>%
   #inspect
   summary(acs_tract.clean)
   
-  #what is the unit of observation?
-
-    
-  #why the NA values?
-
+  #what is the unit of observation? 
+  
+  #population represented by the sample?
 
 
     
@@ -92,7 +90,7 @@ si.clean <- input_si %>%
 si_tract_ym <- FILL IN CODE
 
   #inspect
-    summary(si_tract_ym)
+    summary(si_tract_ym) 
     table(si_tract_ym$month, si_tract_ym$year) #what does this tell us?
 
 
@@ -141,7 +139,7 @@ tract <- tract_ym %>%
 
     
 ## -------------------------------------------------------------------------------------
-## Cross-sectional analysis of relationships between tract-level income, race & shutoffs
+## 1. Cross-sectional analysis of relationships between tract-level income, race & shutoffs
 ## -------------------------------------------------------------------------------------
 
 #NOTE: here "cross-sectional" means 1 obs/tract (w/shutoffs summed over all years)
@@ -158,7 +156,7 @@ tract <- tract_ym %>%
 
   #compute correlation for assessing model fit (in addition to visual inspection)
     cor(tract$blackshare, tract$si_1000, use = "pairwise.complete.obs")
-    wtd.cor(tract$blackshare, tract$si_1000, weight = tract$pop)
+    wtd.cors(tract$blackshare, tract$si_1000, weight = tract$pop)
   
   
 #scatterplot: median income vs shutoffs
@@ -204,7 +202,7 @@ FILL IN CODE SIMILAR TO ABOVE BUT USE medianinc RATHER THAN blackshare
 
 
 ## -----------------------------------------------------------------------------------
-## Time series plots of shutoffs by income level of Census tracts (above/below median)
+## 2.1 Time series plots of shutoffs by income level of Census tracts (above/below median)
 ## -----------------------------------------------------------------------------------
   
 #get total population of Detroit tracts which are above/below median income
@@ -254,6 +252,7 @@ FILL IN CODE SIMILAR TO ABOVE BUT USE medianinc RATHER THAN blackshare
   #should inc_above_median be treated as a numeric variable?
   #what is a better way to store this information?
   
+  
 #ANSWER: let's convert to a factor that works better with plots
     #turn inc_above_median into a factor with clear category labels
   ym_inc$inc_above_median <- factor(ym_inc$inc_above_median,
@@ -272,7 +271,7 @@ FILL IN CODE SIMILAR TO ABOVE BUT USE medianinc RATHER THAN blackshare
 
   
 ## -----------------------------------------------------------------------------
-## Time series plots of shutoffs by racial composition of Census tracts
+## 2.2 Time series plots of shutoffs by Census tracts racial composition
 ## -----------------------------------------------------------------------------
    
 #get total population of Detroit tracts which are above/below 75% black
