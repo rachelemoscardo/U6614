@@ -149,7 +149,7 @@ tract <- tract_ym %>%
 
     
 ## -------------------------------------------------------------------------------------
-## Cross-sectional analysis of relationships between tract-level income, race & shutoffs
+## 1. Cross-sectional analysis of relationships between tract-level income, race & shutoffs
 ## -------------------------------------------------------------------------------------
 
 #NOTE: here "cross-sectional" means 1 obs/tract (w/shutoffs summed over all years)
@@ -165,7 +165,10 @@ tract <- tract_ym %>%
     #how can we use aesthetic mappings to incorporate weighting in our visualization?  
     
 #scatterplot: % black vs shutoffs
-  ggplot(data = tract, aes(x = blackshare, y = si_1000, weight = pop, size = pop)) + 
+  ggplot(data = tract, aes(x = blackshare, 
+                           y = si_1000, 
+                           weight = pop, 
+                           size = pop)) + 
     geom_point(alpha = 0.1) + #alpha adjusts the transparency of points
     geom_smooth(method = 'lm', formula = y ~ x)  +
     scale_size(range = c(0.1, 6), guide = "none") 
@@ -194,7 +197,7 @@ FILL IN CODE SIMILAR TO ABOVE BUT USE medianinc RATHER THAN blackshare
 
   
 ## -----------------------------------------------------------------------------------
-## Time series plots of citywide shutoffs (aggregate across all tracts in every month)
+## 2.0 Time series plots of citywide shutoffs (aggregate across all tracts in every month)
 ## -----------------------------------------------------------------------------------  
 
 #get total population of Detroit (for simplicity, assume pop doesn't change over time
@@ -218,7 +221,7 @@ FILL IN CODE SIMILAR TO ABOVE BUT USE medianinc RATHER THAN blackshare
 
   
 ## -----------------------------------------------------------------------------------
-## Time series plots of shutoffs by income level of Census tracts (above/below median)
+## 2.1 Time series plots of shutoffs by income level of Census tracts (above/below median)
 ## -----------------------------------------------------------------------------------
   
 #get total population of Detroit tracts which are above/below median income
@@ -238,7 +241,9 @@ FILL IN CODE SIMILAR TO ABOVE BUT USE medianinc RATHER THAN blackshare
   ym_inc <- tract_ym %>% 
     group_by(date, inc_above_medianS) %>% 
     summarise(si_count = sum(si_count)) %>%
-    mutate(pop = if_else(inc_above_median == 1, detroit_pop_hi_inc, detroit_pop_lo_inc),
+    mutate(pop = if_else(inc_above_median == 1, 
+                         detroit_pop_hi_inc, 
+                         detroit_pop_lo_inc),
            si_1000 = si_count / (pop / 1000)) %>%
     na.omit()
   
@@ -252,8 +257,12 @@ FILL IN CODE SIMILAR TO ABOVE BUT USE medianinc RATHER THAN blackshare
     summarise(si_count = sum(si_count)) %>%
     na.omit() %>% 
     ungroup() %>%
-    complete(date, inc_above_median, fill = list(si_count = 0)) %>% #this fills in a new obs for Feb 2016
-    mutate(pop = if_else(inc_above_median == 1, detroit_pop_hi_inc, detroit_pop_lo_inc),
+    complete(date, 
+             inc_above_median, 
+             fill = list(si_count = 0)) %>% #this fills in a new obs for Feb 2016
+    mutate(pop = if_else(inc_above_median == 1, 
+                         detroit_pop_hi_inc, 
+                         detroit_pop_lo_inc),
            si_1000 = si_count / (pop / 1000)) 
 
 #plot time series: separate lines for tracts above/below median income
@@ -284,7 +293,7 @@ FILL IN CODE SIMILAR TO ABOVE BUT USE medianinc RATHER THAN blackshare
 
   
 ## -----------------------------------------------------------------------------
-## Time series plots of shutoffs by racial composition of Census tracts
+## 2.2 Time series plots of shutoffs by racial composition of Census tracts
 ## -----------------------------------------------------------------------------
    
 #get total population of Detroit tracts which are above/below 75% black
@@ -306,7 +315,9 @@ FILL IN CODE SIMILAR TO ABOVE BUT USE medianinc RATHER THAN blackshare
     na.omit() %>% 
     ungroup() %>%
     complete(date, black75, fill = list(si_count = 0)) %>%
-    mutate(pop = if_else(black75 == 1, detroit_pop_black, detroit_pop_nblack),
+    mutate(pop = if_else(black75 == 1, 
+                         detroit_pop_black, 
+                         detroit_pop_nblack),
            si_1000 = si_count / (pop / 1000))
 
   
