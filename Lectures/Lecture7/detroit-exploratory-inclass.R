@@ -239,7 +239,7 @@ FILL IN CODE SIMILAR TO ABOVE BUT USE medianinc RATHER THAN blackshare
 #time series of shutoffs per capita for tracts above/below citywide median income
   #what should the unit of observation be for this new data frame?
   ym_inc <- tract_ym %>% 
-    group_by(date, inc_above_medianS) %>% 
+    group_by(date, inc_above_median) %>% 
     summarise(si_count = sum(si_count)) %>%
     mutate(pop = if_else(inc_above_median == 1, 
                          detroit_pop_hi_inc, 
