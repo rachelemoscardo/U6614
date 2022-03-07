@@ -21,18 +21,22 @@
 ## ---------------------------
 ## libraries
 ## ---------------------------
- 
-#install.packages("plm")
-#install.packages("multiwayvcov")
 
-library(readstata13)  #imports .dta files from Stata 13 thru 15
+#install.packages("fixest")
+#install.packages("multiwayvcov")
+#install.packages("estimatr")
+#install.packages("modelsummary")
+
+library(readstata13)  #imports .dta files from Stata 13 and up
 library(tidyverse)
 library(lubridate)
 library(fastDummies)
-library(plm)
 library(weights)
 library(lmtest)
 library(multiwayvcov)
+library(fixest)
+library(estimatr)
+library(modelsummary)
 
 
 ## ---------------------------
@@ -87,12 +91,13 @@ getwd()
     table(input_hcup_zip$year, input_hcup_zip$month)
   
     
-  #join public health data (input_hcup_zip) to demographic data (input_acs_zip)
-  #Q: FILL IN THE CODE TO THE RIGHT OF THE ASSIGNMENT OPERATOR
-    #join to end up with zipcode-month observations - how many should there be?
-    #lesson w/join examples: https://hreplots.github.io/U6614/Lectures/Lecture4/Lecture4.1.html
+  #join public health data (input_hcup_zip) to demographic data (acs_zip.clean)
+    #join to end up with zipcode-month observations - how many should there be? 
     #also use mutate along with make_date to create a date variable(month_year)
-    joined_temp1 <- FILL IN CODE
+    #sort by zip5, then year, then month
+    joined_temp1 <- left_join(input_hcup_zip, acs_zip.clean, by = "zip5") %>% 
+      mutate(month_year = make_date(year, month)) %>% 
+      arrange(zip5, year, month)
       
   
     #inspect -- double-check unit of observation
@@ -129,13 +134,18 @@ getwd()
 #D. join zipcode-date level SI data (si_zip_ym) to joined ACS/health data (joined_temp1)
   
   #Q: WHAT KIND OF JOIN? DIFFERENT WAYS TO APPROACH THIS...
-      #HINT: start by thinking about the unit of obs you want to end up with
+  #HINT: start by thinking about the unit of obs you want to end up with
+  #lesson w/join examples: https://hreplots.github.io/U6614/Lectures/Lecture4/Lecture4.1.html
   
-  #the catch here is that missing SI data before 2018 should be 0's not missing
-  #one approach: a full_join w/joined_temp1 on the "left" bc it has every zip-date pair
-    #that way we'll have dates w/no SI data, just have to fill in si_count as 0s
+  #one catch here: missing SI data before 2018 should be 0's not missing
+  
   joined_temp2 <- FILL IN CODE
-    
+  
+  #after join, extend pipe:
+    #exclude two zip codes that extend past Detroit's borders: 
+      #48225 (Harper Woods) and 48127 (Dearborn Heights)
+    #inspect and rename columns so you 1 col each for year and month w/no NAs
+
   
   #inspect
     summary(joined_temp2)
@@ -212,30 +222,62 @@ getwd()
 ## 2. Cross-sectional: analyze health outcomes vs service interruptions
 ## -----------------------------------------------------------------------------
 
+### for all regression analysis to follow, weight obs by pop2015 ###
+    
+    
 #total hospital admissions as dependent variable (with + without vacancy control)
   cross_total_1 <- lm(total_obs_1000 ~ si_1000, 
-                      data = zip_cross, weight = pop2015)
+                      data = zip_cross, 
+                      weight = pop2015)
   summary(cross_total_1)
-  coeftest(cross_total_1, vcov = vcovHC(cross_total_1, type="HC1")) #robust SEs
-  
+  coeftest(cross_total_1, 
+           vcov = vcovHC(cross_total_1, type="HC1")) #robust SEs
+    
   #QUESTION: Write out the PRF and interpret coefficient
+    
   
-  
-  
+    
   cross_total_2 <- lm(total_obs_1000 ~ si_1000 + vac_res_p100, 
-                      data = zip_cross, weight = pop2015)
+                      data = zip_cross, 
+                      weight = pop2015)
   summary(cross_total_2)
-  coeftest(cross_total_2, vcov = vcovHC(cross_total_2, type="HC1")) #robust SEs
-  
-
-#plot cross-sectional data: shutoff rate vs. hospital admissions (weight by pop2015)
+  coeftest(cross_total_2, 
+           vcov = vcovHC(cross_total_2, type="HC1")) #robust SEs
+    
+  #can also use lm_robust to get robust SEs
+   cross_total_2alt <- lm_robust(total_obs_1000 ~ si_1000 + vac_res_p100, 
+                                 data = zip_cross, 
+                                 weight = pop2015, 
+                                 se_type = "stata")
+   summary(cross_total_2alt)
+    
+    
+#plot cross-sectional data: shutoff rate vs. hospital admissions
+   ggplot(data = zip_cross, 
+          aes(x = si_1000, 
+              y = total_obs_1000, 
+              size = pop2015, 
+              weight = pop2015)) + 
+     geom_point(alpha = 0.3) +
+     scale_size(range = c(0.1, 6), 
+                guide = "none") +
+     geom_smooth(method = 'lm', 
+                 formula = y ~ x) #not robust SEs for confidence band!
+    
+#replace confidence bands w/robust confidence bands
   ggplot(data = zip_cross, 
-         aes(x = si_1000, y = total_obs_1000, size = pop2015, weight = pop2015)) + 
+         aes(x = si_1000, 
+             y = total_obs_1000, 
+             size = pop2015, 
+             weight = pop2015)) + 
     geom_point(alpha = 0.3) +
-    scale_size(range = c(0.1, 6), guide = "none") +
-    geom_smooth(method = 'lm', formula = y ~ x)
+    scale_size(range = c(0.1, 6), 
+               guide = "none") +
+    geom_smooth(method = 'lm_robust', 
+                formula = y ~ x,
+                method.args = list(se_type = "stata") ) #robust SEs for confidence band
 
-  #check correlation
+#check correlation
   cor(zip_cross$si_1000, zip_cross$vac_res_p100, use = "pairwise.complete.obs")
   wtd.cor(zip_cross$si_1000, zip_cross$vac_res_p100, weight = zip_cross$pop2015)
   
@@ -249,88 +291,130 @@ getwd()
 
 #estimation with FEs for zip5 (entity) and ym (time) [NO VACANCY RATE CONTROL]
 
-  #Approach A: LSDV model
-    
-    #QUESTION: FILL IN MODEL FORMULA
-    panel_total_1 <- lm(FILL IN CODE HERE)
+  #QUESTION: write out the PRF we want to estimate
   
-    summary(panel_total_1)
-    panel_total_1$coefficients[1:2]
-    summary(panel_total_1)$adj.r.squared
+  
+#Approach A: LSDV model
     
-    #QUESTION: what would happen if we didn't coerce zip5 into a factor?
+  #QUESTION: FILL IN MODEL FORMULA
+  panel_total_1 <- lm(FILL IN CODE HERE)
+  
+  
+  summary(panel_total_1)
+  panel_total_1$coefficients[1:2]
+  summary(panel_total_1)$adj.r.squared
+    
+  #QUESTION: what would happen if we didn't coerce zip5 into a factor?
     
     
-    #robust SEs
-      coeftest(panel_total_1, vcov = vcovHC(panel_total_1, type = "HC1"))[2,]
+  #robust SEs
+    coeftest(panel_total_1, 
+             vcov = vcovHC(panel_total_1, type = "HC1"))[2,]
     
-    #clustered SEs by zip code (equivalent to areg in Stata)
-      #stats for coefficient of interest is the 2nd element in this object. 
-      panel_total_1_vcov <- cluster.vcov(panel_total_1, 
-                                 cbind(zip_panel$zip5),
-                                 df_correction = T) #a small sample size adjustment
+  #clustered SEs by zip code (equivalent to areg in Stata)
+    #stats for coefficient of interest is the 2nd element in this object. 
+    panel_total_1_vcov <- cluster.vcov(panel_total_1, 
+                                       cbind(zip_panel$zip5),
+                                       df_correction = T) #small sample adjustment
       
       #just report stats for coefficient of interest (the second row)
       coeftest(panel_total_1, panel_total_1_vcov)[2,] 
     
-    
-  #Approach B: FE estimation (w/plm package)
       
-    panel_total_1b <- plm(total_obs_1000 ~ si_1000, 
-                        data = zip_panel,
-                        index = c("ym", "zip5"), 
-                        effect = "twoways",
-                        model = "within",
-                        weight = pop2015 )
+    
+#Approach B: FE estimation (w/feols in the fixest package)
+    
+  #specify model with FEs for country and wave, w/robust SEs
+    panel_total_1b <- feols(total_obs_1000 ~ si_1000 | factor(zip5) + factor(ym), 
+                            data = zip_panel,
+                            weights = zip_panel$pop2015, #bug w/weights arg
+                            vcov = "hetero")
     summary(panel_total_1b)
-      #note 1: here the R-squared stat is not for the full model!
-      #note 2: can't estimate robust SEs using weighted plm models
-    
-    #QUESTION: Write out the PRF and interpret coefficient
-  
-  
-
-#estimation with FEs for zip5 (entity) and ym (time) + control for vacancy rate
-  
-  #Approach A: LSDV model
-    #try replicating this with Approach B (FE estimation w/plm package)
-    
-    panel_total_2 <- lm(total_obs_1000 ~ si_1000 + vac_res_p100 + as.factor(zip5) + as.factor(ym),
-                      data = zip_panel, 
-                      weight = pop2015)
-    summary(panel_total_2)
-    summary(panel_total_2)$adj.r.squared
-    coeftest(panel_total_2, vcov = vcovHC(panel_total_2, type = "HC1"))[2,]
-  
-    #clustered SEs by zip code (equivalent to areg w/cluster option in Stata)
-      #stats for coefficient of interest is the 2nd element in this object. 
-      panel_total_2_vcov <- cluster.vcov(panel_total_2, 
-                                         cbind(zip_panel$zip5),
-                                         df_correction = T) #a small sample size adjustment
       
-      #just report stats for coefficient of interest (the second row)
-      coeftest(panel_total_2, panel_total_2_vcov)[2,] 
+    #alternative tidyverse way to access results for coefficient of interest
+      tidy(panel_total_1b) %>% filter(term == "si_1000")
+    
+    
+    #QUESTION: interpret coefficient on si_1000
+      
+      
+    
+  #cluster SEs by zipcode
+    panel_total_1c <- feols(total_obs_1000 ~ si_1000 | factor(zip5) + factor(ym), 
+                            data = zip_panel,
+                            weights = zip_panel$pop2015,
+                            vcov = "hetero")
+    summary(panel_total_1c, cluster = ~ factor(zip5)) 
+      #note the clustered SE differs every so slightly from above method
+      #why? it seems complicated, but here is one person's attempt to understand:
+      #https://www.r-bloggers.com/2021/02/reghdfe-and-r-the-joys-of-standard-error-correction/
 
+    #alternative tidyverse way to access results for coefficient of interest
+      tidy(panel_total_1c, cluster = "factor(zip5)") %>% filter(term == "si_1000")
+    
+      
+    #QUESTION: which approach to SE estimation seems most appropriate?
     
     
-#plot model results 
-   
+
+  #specify model with FEs for country and wave AND vacancy control, w/robust SEs
+    panel_total_2b <- feols(total_obs_1000 ~ si_1000 + vac_res_p100 | factor(zip5) + factor(ym), 
+                            data = zip_panel,
+                            weights = zip_panel$pop2015, 
+                            vcov = "hetero")
+    summary(panel_total_2b)
+
+  
+  #compare model results
+    models <- list(
+      "1" = feols(total_obs_1000 ~ si_1000 | factor(zip5), 
+                  data = zip_panel,
+                  weights = zip_panel$pop2015, 
+                  vcov = "hetero"),
+      "2" = feols(total_obs_1000 ~ si_1000 | factor(zip5) + factor(ym), 
+                  data = zip_panel,
+                  weights = zip_panel$pop2015, 
+                  vcov = "hetero"),
+      "3" = feols(total_obs_1000 ~ si_1000 + vac_res_p100| factor(zip5) + factor(ym), 
+                  data = zip_panel,
+                  weights = zip_panel$pop2015,
+                  vcov = "hetero")
+    )
+    modelsummary(models,
+                 coef_omit = "Intercept",
+                 gof_omit = 'DF|Deviance|R2 Pseudo|AIC|BIC|Log.Lik.',
+                 stars = c('*' = .1, '**' = .05, '***' = .01))  
+  
+
+#Plot model results 
+      
   #plot relationship using pooled cross-sectional data
-    ggplot(zip_panel, aes(x = si_1000, y = total_obs_1000, weight = pop2015)) +
+    ggplot(zip_panel, 
+           aes(x = si_1000, y = total_obs_1000, weight = pop2015)) +
       geom_point() +
-      geom_smooth(method = 'lm', formula = y ~ x, se = FALSE)
-    
+      geom_smooth(method = 'lm_robust', 
+                  formula = y ~ x,
+                  method.args = list(se_type = "stata") )
+      
     #QUESTION: why doesn't this plot correspond to our FEs estimates?
-    
-    
-    #can also plot binned data
-    ggplot(zip_panel, aes(x = si_1000, y = total_obs_1000, weight = pop2015)) +
+
+     
+      
+  #can also plot binned data
+    ggplot(zip_panel, 
+           aes(x = si_1000, y = total_obs_1000, weight = pop2015)) +
       geom_point(alpha = 0.4) +
-      stat_summary_bin(fun.y = 'mean', binwidth = 1,
-                       color = 'orange', size=3, geom = 'point') +
-      geom_smooth(method = 'lm', formula = y ~ x, se = FALSE)
+      stat_summary_bin(fun.y = 'mean', 
+                       binwidth = 1,
+                       color = 'orange', 
+                       size=3, 
+                       geom = 'point') +
+      geom_smooth(method = 'lm_robust', 
+                  formula = y ~ x,
+                  method.args = list(se_type = "stata") )
+      
+    #QUESTION: is there anything about this approach that seems misleading?
     
-      #QUESTION: why do you think this approach could be considered misleading?
     
     
   #plot FE results by plotting residual shutoff rate vs residual hospital admission rate 
@@ -344,9 +428,14 @@ getwd()
                                data = zip_panel, 
                                weight = pop2015)
 
-    ggplot(data = zip_panel, aes(x= panel_total_x_feonly$residuals, 
+    ggplot(data = zip_panel, aes(x = panel_total_x_feonly$residuals, 
                                  y = panel_total_y_feonly$residuals, 
                                  weight = pop2015)) +
       geom_point(alpha = 0.2) +
-      geom_smooth(method = 'lm', formula = y ~ x, se = FALSE)
-
+      geom_smooth(method = 'lm_robust', 
+                  formula = y ~ x,
+                  method.args = list(se_type = "stata") ) 
+      #scale_x_continuous(limits = c(-10, 20)) 
+        #can add this ggplot option to zoom in and investiage main cluster of data
+    
+  
