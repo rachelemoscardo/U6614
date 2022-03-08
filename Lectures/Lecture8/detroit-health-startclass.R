@@ -1,6 +1,6 @@
 ################################################################################
 ##
-## [ PROJ ] Week 9: Water shutoffs, race, and health in Detroit (Part 2)
+## [ PROJ ] Week 8: Water shutoffs, race, and health in Detroit (Part 2)
 ## [ FILE ] detroit-health.r
 ## [ AUTH ] < YOUR NAME >
 ## [ INIT ] < TBD >
@@ -168,7 +168,8 @@ getwd()
     #HINT: check out the vacancy data first
     summary(input_vacancy_qtr)
     table(input_vacancy_qtr$zip5, input_vacancy_qtr$year)
-    joined_temp4 <- FILL IN CODE
+    joined_temp4 <- left_join(joined_temp3, input_vacancy_qtr, 
+                              by = c("zip5", "year", "quarter"))
       
     #inspect
       dim(joined_temp4)
@@ -212,6 +213,7 @@ getwd()
   
   #sample code if you want to save this as a dataframe or csv
     save(zip_cross, file="data/zip_cross.rda")
+      #use saveRDS() for saving a single R object
     write.csv(zip_cross, "data/zip_cross.csv")
             
   #remove temporary data frames from environment (check the upper right pane)
