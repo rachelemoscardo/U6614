@@ -23,7 +23,7 @@ urlcolor: blue
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 ```
 
-##### *Please submit your knitted .pdf file along with the corresponding R markdown (.rmd) via Courseworks by 11:59pm on Monday, March 7tht.* {-}
+##### *Please submit your knitted .pdf file along with the corresponding R markdown (.rmd) via Courseworks by 11:59pm on Monday, March 7th.* {-}
 
 ##### Remember to think carefully about what code you include in your knitted document. Only include code chunks that you need to generate the plots and statistics to answer the questions below. Don't include code from your working R script (that we started in class) that was only used to inspect and validate your results, and isn't necessary to answer the questions. {-}
 
@@ -48,7 +48,7 @@ In this section we'll explore variation in shutoffs *across* Census tracts (one 
 ```{r, results = 'hide', echo = FALSE}
 
 #get census tract level demographic data from ACS 
-  input_acs_tract <- read.dta13("data/ACS_10_17_5YR_CensusTract.dta")
+  input_acs_tract <- read.dta13("../data/ACS_10_17_5YR_CensusTract.dta")
 
 #clean, rename/construct key variables, prep for merge on a tractid
   acs_tract.clean <- input_acs_tract %>% 
@@ -63,7 +63,7 @@ In this section we'll explore variation in shutoffs *across* Census tracts (one 
     arrange(tractid, year)
   
 #get service interruption data
-input_si <- read.dta13("data/si_1017_cleaned.dta")
+input_si <- read.dta13("../data/si_1017_cleaned.dta")
   
     
 #focus on key variables to identify period/location of every shutoff
