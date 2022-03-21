@@ -31,11 +31,18 @@ getwd()
 ## get shapefile (geometry for Indonesia)
 ## -----------------------------------------------------------------------------
 
+
+
 indonesia <- readRDS('indonesia.rds')
+test <- st_read("indonesia.shp")
+
+test2 <- st_read("philly_tracts_384_crs-4326.shp")
+
+
   #shape file downloaded from https://gadm.org/download_country_v3.html
 
 #create a basic tmap object t that shows Indonesia's regencies shaded by FID
-t <- tm_shape(indonesia) + tm_polygons("FID")
+t <- tm_shape(indonesia) + tm_borders()
 t
 
 
@@ -112,12 +119,19 @@ vf_joined_final <- vf_joined2 %>%
 
 ?tmap
   
+  t
+  
 #explore what each component does!
   t2 <- tm_shape(vf_joined_final) + tm_fill('vfund_per_poor') + tm_borders() +
     tm_legend(outside = TRUE) 
   t2
+  
 
-#modifying the color schemes
+  g2 <- ggplot(vf_joined_final) + 
+    geom_sf(aes(fill = vfund_per_poor)) 
+  
+
+  #modifying the color schemes
 #suppose we want to have one color for every multiple of 10,000,000
 
 #explore what each component does!
