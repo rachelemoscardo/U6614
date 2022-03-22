@@ -3,7 +3,7 @@
 ## [ PROJ ] Working with strings and dates 
 ## [ FILE ] indonesian_village_fund.r
 ## [ AUTH ] < YOUR NAME >
-## [ INIT ] < Nov 9, 2021 >
+## [ INIT ] < Mar 13, 2022 >
 ##
 ################################################################################
 
