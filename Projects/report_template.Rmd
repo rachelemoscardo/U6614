@@ -1,20 +1,20 @@
 ---
 title: "Your title here"
-author: Your name and UNIs here
+author: "Your name and UNIs here"
 date: "`r format(Sys.time(), '%B %d, %Y')`"
-output: 
+output:
   pdf_document:
-    keep_tex: false
-    fig_caption: true
+    keep_tex: no
+    fig_caption: yes
     latex_engine: pdflatex
+  word_document: default
 header-includes:
-  -  \usepackage{hyperref}
-  - \usepackage{placeins}
+- \usepackage{hyperref}
+- \usepackage{placeins}
 biblio-style: apsr
 geometry: margin=1in
 fontfamily: mathpazo
 fontsize: 11pt
-# spacing: double
 endnote: no
 urlcolor: blue
 ---
@@ -43,12 +43,14 @@ load("report_template.RData")
 
 # 1. Introduction
 
-Clearly state your research questions. Motivate your study and describe the policy context.
+Clearly state your research questions. Motivate your study and describe the policy context. 
+
+You are by no means required to use the same section organization included in this template, this is just one approach to help you structure your reports.
 
 
 # 2. Background
 
-More policy background details here (if necessary, otherwise fold into Section 1).
+More policy background here (if necessary, otherwise fold into Section 1). 
 
 
 ## 2.1 A subsection, if appropriate
@@ -57,7 +59,7 @@ More policy background details here (if necessary, otherwise fold into Section 1
 
 # 3. Data description
 
-Describe data sources, representative population, and any other context the reader should know about the data as it pertains to the analysis you do. More details can be included in a data appendix - see [here](https://www.cssny.org/pages/false-narrative-data) for an example.
+Describe data sources, the population represented in your analysis, and any other context the reader should know about the data as it pertains to the analysis you do. More details can be included in a data appendix if necessary -- see [here](https://www.cssny.org/pages/false-narrative-data) for an example.
 
 
 # 4. Descriptive statistics
@@ -86,7 +88,7 @@ vf_diff %>% kable(align = "l",
 
 \medspace 
 
-You can also add notes for more documentation of technical details.
+You can also add notes with more documentation of any technical details.
 
 \medspace
 
