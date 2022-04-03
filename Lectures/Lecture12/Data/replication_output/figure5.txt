@@ -1,0 +1,33 @@
+	(1)
+VARIABLES	X3
+	
+HC_Texp_2	0.00318
+	0.00381
+HC_Texp_3	0.00163
+	0.00324
+HC_Texp_5	0.0118
+	0.00314
+HC_Texp_6	0.0306
+	0.00978
+HC_Texp_7	0.0347
+	0.0101
+HC_Texp_8	0.0496
+	0.0160
+HC_Texp_9	0.0439
+	0.0105
+HC_Texp_10	0.0429
+	0.00931
+HC_Texp_11	0.0410
+	0.00843
+Constant	-0.0517
+	0.0569
+	
+Observations	685
+R-squared	0.930
+pre	0.670
+post	0.000115
+ddtest	0.0216
+pltest	0.0213
+wlstest	-99
+dd	0.0383
+ddse	0.00943
