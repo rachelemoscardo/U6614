@@ -25,7 +25,7 @@ In the sections below, we will use this feature of the policy as well as the spe
 
 1. How successful was Medicaid in its immediate goal of providing public insurance to poor individuals?
 
-2. What was the **intent-to-treat effect (ITT)** of Medicaid's introduction on the mortality rates of white and nonwhite infants and children? (ITT estimates reflect the effect of the treatment on outcomes, without adjusting for incomplete take-up of the treatment.)
+2. What was the **intent-to-treat effect (ITT)** of Medicaid's introduction on the mortality rates of white and non-white infants and children? (ITT estimates reflect the effect of the treatment on outcomes, without adjusting for incomplete take-up of the treatment.)
 
 We'll use two data sets from the paper (one for each research question), which we've cleaned and simplified for this exercise. Let's begin by loading the necessary packages and the data into memory.
 
@@ -35,8 +35,8 @@ library(fixest)
 library(lmtest)
 library(sandwich)
 
-coverageDF <- read.csv("./medicaid_coverage.csv")
-mortalityDF <- read.csv("./medicaid_mortality.csv")
+coverageDF <- read.csv("medicaid_coverage.csv")
+mortalityDF <- read.csv("medicaid_mortality.csv")
 
 coverageDF
 ```
@@ -70,11 +70,11 @@ Thus, our treatment of interest corresponds to an increase in the AFDC rate by a
 
 ## Why do we need an event study?
 
-Why is an event study approach necessary to answer these questions? One might consider a simple comparison of states with high eligibility to those with low eligibility after the rollout of Medicaid (i.e., *cross-sectional comparisons after the treatment*). Related to our first research question, let's try this comparison by regressing the public insurance rate (`public_insurance_child`) on the treatment variable and a few simple controls (e.g., income per capita, hospitals per capita, and beds per capita before Medicaid implementation). Let's estimate the following population regression function (PRF),
+Why is an event study approach necessary to answer these questions? One might consider a simple comparison of states with high eligibility to those with low eligibility after the roll-out of Medicaid (i.e., *cross-sectional comparisons after the treatment*). Related to our first research question, let's try this comparison by regressing the public insurance rate (`public_insurance_child`) on the treatment variable and a few simple controls (e.g., income per capita, hospitals per capita, and beds per capita before Medicaid implementation). Let's estimate the following population regression function (PRF),
 
 $$Y_{s} = \beta_0 + \beta_1 D_{s} + X_{s}' \gamma + \varepsilon_{s}$$
 
-where $Y_{st}$ is the outcome of interest (public insurance rates, or mortality a bit later on) in state $s$ after the rollout of medicaid, $D_{st}$ is a binary variable that identifies treatment status (i.e. being a *high-eligibility state*), $X_{s}$ is a vector of controls, and $\varepsilon_{s}$ is an idiosyncratic error term.
+where $Y_{st}$ is the outcome of interest (public insurance rates, or mortality a bit later on) in state $s$ after the roll-out of medicaid, $D_{st}$ is a binary variable that identifies treatment status (i.e. being a *high-eligibility state*), $X_{s}$ is a vector of controls, and $\varepsilon_{s}$ is an idiosyncratic error term. Estimates are shown below with robust standard errors.
 
 ```{r}
 # Generate cross-sectional data set
@@ -96,11 +96,11 @@ ols_model <- lm(public_insurance_child ~ high_eligibility +
 coeftest(ols_model, vcov = vcovHC(ols_model, type = "HC1"))
 ```
 
-These results suggest that our treatment (i.e., high AFDC rates) is strongly related to public insurance rates. This may not be a surprise, but are we comfortable interpreting this relationship as causal? Of course, states with higher AFDC rates (and thus greater Medicaid eligibility) are likely to have more expansive public insurance programs for a variety of reasons that are unrelated to the specific intervention we are interested in.
+These results suggest that our treatment (i.e., high AFDC rates) has a strong positive effect on public insurance rates. This may not be a surprise, but are we comfortable interpreting this relationship as causal? Of course, states with higher AFDC rates (and thus greater Medicaid eligibility) are likely to have more expansive public insurance programs for a variety of reasons that are related to the specific intervention we are interested in.
 
-Failing to control for these factors introduces **omitted variable bias**. In an ideal quasi-experimental setting, we could collect enough data to control for every potential confounding variable and isolate the effect of Medicaid eligibility; however, in reality this is almost always impractical. 
+Failing to control for these factors introduces **omitted variable bias**. In an ideal quasi-experimental setting, we could collect enough data to control for every potential confounding variable and isolate the effect of Medicaid eligibility; in reality, however, this is almost always impractical. 
 
-Thus, a **cross-sectional comparison** (i.e., *between* countries within a single period) produces a *biased* estimate of the causal relationship between eligibility and public insurance take-up. For similar reasons, we should also be concerned about using this strategy to estimate the downstream causal relationship between eligibility and mortality. 
+Thus, a **cross-sectional comparison** (i.e., *between* countries within a single period) likely produces a *biased* estimate of the causal relationship between eligibility and public insurance take-up. For similar reasons, we should also be concerned about using this strategy to estimate the downstream causal relationship between eligibility and mortality. 
 
 
 ## How does panel data help?
@@ -111,10 +111,9 @@ Before we dig into the econometrics underlying our identification strategy, let'
 TS <- coverageDF %>%
   mutate(
     # Calculate time since Medicaid implementation
-    t_mcaid = year - year_mcaid,
-    # Following GB18, let's replace one NA value as NaN
-    public_insurance_child = ifelse(
-      stfips==18 & year == 1969, NaN, public_insurance_child))
+    t_mcaid = year - year_mcaid) %>% 
+    # Following GB18, let's drop 1 obs w/missing value (Indiana in 1969)
+    filter(!is.na(public_insurance_child) == TRUE)
 
 # Let's also plot averages across all states, low & high
 aggTS <- TS %>%
@@ -165,9 +164,9 @@ ggplot(eligTS, aes(x = t_mcaid, y = public_insurance_child, group = grp)) +
 
 The plot shows a dramatic increase in the share of children covered by public insurance for both groups at $t=0$. While there is a clear difference in the level of public insurance coverage between high- and low-eligibility states before Medicaid implementation, the year-over-year change in insurance rates appears to be about the same. In other words, the trends before the policy was implemented are parallel. When treatment occurs, the high eligibility-states experience a larger increase in insurance coverage compared to low-eligibility states. In the econometric specifications laid out below, we will exploit this **difference-in-difference** (i.e., between eligibility groups *and* time) to estimate the causal effect of Medicaid on public insurance rates and mortality. Also note that in this setting the treatment occurs in different years for different states, as states implemented Medicaid at different times between 1966 and 1970; this is why the horizontal axis in the plot above refers to years since implementation instead of the year itself.
 
-Another way to think about the benefits of panel data is through the type of variation we can exploit when we have multiple observations for each unit. Rather than estimating parameters using variation across states of different eligibility status and insurance rates (as in a cross sectional setting), panel data allows us to compare differences in Medicaid treatment over time within states. As we'll see below, this amounts to controlling for all (1) time-invariant state-level differences, and (2) time-varying shocks that affect all states equally. 
+Another way to think about the benefits of panel data is through the type of variation we can exploit when we have multiple observations for each unit. Rather than estimating parameters using variation across states of different eligibility status and insurance rates (as in a cross-sectional setting), panel data allows us to compare differences in Medicaid treatment over time within states. As we'll see below, this amounts to controlling for all (1) time-invariant state-level differences, and (2) time-varying shocks that affect all states equally. 
 
-Thus, a key limitation of the panel data approach is that we still need to be concerned about time-varying omitted variables that correlate with our treatment of interest. For example, if high-eligibility states improved public transportation around the time of Medicaid implementation to the extent that the costs of applying for public insurance and obtaining health care were lowered, then our strategy would not isolate the effects of Medicaid without additional data. 
+Thus, a key limitation of the panel data approach is that we still need to be concerned about time-varying omitted variables that correlate with our treatment of interest. For example, if high-eligibility states improved public transportation around the time of Medicaid implementation to the extent that the costs of applying for public insurance and obtaining health care were lowered, then our strategy would not isolate the causal effects of Medicaid without obtaining additional data to control for this. 
 
 # The econometric model
 
@@ -176,7 +175,7 @@ Thus, a key limitation of the panel data approach is that we still need to be co
 With intuition for the identification strategy in mind, let's tackle the math. Recall that a treated state is defined as one with an AFDC rate above the median rate in the year Medicaid was implemented. The econometric model that implements the above difference-in-differences strategy discussed above is a fixed effects model, where fixed effects are entity- (state) and time- (year) specific variables included alongside explanatory variables that vary across entities and time. For example, consider the model,
 
 $$Y_{st} = \beta D_{st} + X_{st}' \gamma + \mu_s + \tau_t + \varepsilon_{st}$$
-where $Y_{st}$ is the outcome of interest (public insurance rates or mortality) in state $s$ and year $t$, $D_{st}$ is a binary variable that identifies treatment status for a state-year, and $X_{st}$ is a vector of time-varying controls (e.g., income per capita, hospitals per capita, and hospital beds per capita). $\mu_s$ is a state fixed effect, which controls for *time-invariant* unobserved covariates, such as established differences in state-level institutions. $\tau_{t}$ is a year fixed effect, which controls for *time-varying* shocks *common to all states*. Finally, $\varepsilon_{st}$ is an idiosyncratic error term.
+where $Y_{st}$ is the outcome of interest (public insurance rates or the log of age-adjusted mortality for children aged 0-14) in state $s$ and year $t$, $D_{st}$ is a binary variable that identifies treatment status for a state-year, and $X_{st}$ is a vector of time-varying controls (e.g., income per capita, hospitals per capita, and hospital beds per capita). $\mu_s$ is a state fixed effect, which controls for *time-invariant* unobserved covariates, such as established differences in state-level institutions. $\tau_{t}$ is a year fixed effect, which controls for *time-varying* shocks *common to all states*. Finally, $\varepsilon_{st}$ is an idiosyncratic error term.
 
 Though there are several ways to estimate a fixed effects model, an intuitive strategy is to include dummy (or binary) variables for each state and each year (the *Least Squares Dummy Variable Model*), omitting one value of each as a reference case. For complex models, this can be tedious; luckily, there are plenty of reliable packages in R to handle this for us, including `fixest`. 
 
@@ -194,7 +193,7 @@ In this setting, the leap from difference-in-differences to event study is relat
 $$Y_{st} =  1\{\text{High Eligibility}_s\} \left [ \sum_{y=-4}^{-2} \beta_y^{pre} 1\{t - t_s^* = y\} + \sum_{y=0}^{7} \beta_y^{post} 1\{t - t_s^* = y\}\right ]  + X_{st}' \gamma + \mu_s + \tau_t + \varepsilon_{st}$$
 Here, $1\{\text{High Eligibility}\}_s$ is a binary variable identifying high-eligibility states, and $t_s^*$ is the year Medicaid was implemented in state $s$. The $1\{t - t_s^* = y\}$ terms are dummy variables corresponding to an *event year*, i.e., the year relative to the introduction of Medicaid at time $t_s^*$. The coefficients of interest are now $\beta^{pre}_y$ and $\beta^{post}_y$, which measure the relationship between our outcomes of interest and eligibility status in each of the 3 years leading up to Medicaid's introduction and 6 years after. Note that the dummy for the year before Medicaid is omitted ($y = -1$), so that the estimates of $\beta^{pre}_y$ and $\beta^{post}_y$ capture effects relative to just before Medicaid implementation. 
 
-Why are we interested in the $\beta^{pre}_y$? These coefficients are falsification tests that capture the relationship between eligibility status and outcomes before Medicaid existed. Their pattern and statistical significance are a test of the key identifying assumption of parallel trends; statistically significant estimates during the pre-treatment period would be inconsistent with the parallel trends assumpion. The $\beta^{post}_y$ represent the causal effect of Medicaid eligibility on the outcomes for each $y$. 
+Why are we interested in the $\beta^{pre}_y$ parameters? These coefficients are falsification tests that capture the relationship between eligibility status and outcomes before Medicaid existed. Their pattern and statistical significance are a test of the key identifying assumption of parallel trends; statistically significant estimates during the pre-treatment period would be inconsistent with the parallel trends assumption. The $\beta^{post}_y$ parameters represent the causal effect of being in a high-eligibility state for each $y$. 
 
 # The effect of Medicaid implementation on public insurance coverage
 
@@ -227,7 +226,7 @@ mod <- feols(
 coeftest(mod)
 ```
 
-The fixed effects regression suggests that the treatment--increasing Medicaid eligibility by an average of about 1.4 percentage points--increases the share of children covered by public insurance by 3.5 percentage points.
+The fixed effects regression suggests that the treatment—increasing Medicaid eligibility by an average of about 1.4 percentage points—increases the share of children covered by public insurance by 3.5 percentage points.
 
 What about time-varying omitted variables? For example, there is a well-documented convergence in mortality between the South and the rest of the United States due to hospital desegregation, trends in school quality, and differences in private insurance coverage. Since these variables are likely correlated with eligibility status, they may bias the results of our fixed effects regression.
 
@@ -246,7 +245,7 @@ mod <- feols(
 coeftest(mod)
 ```
 
-Adding region-year and medicaid-timing-by-year fixed effects to the model changes the results in two ways. First, our coefficient of interest increases from 3.5 to 4.4. Notice that this estimate is larger than the 3.5% value estimated from cross-sectional regression (though not significantly) with the same time-varying controls, suggesting that the OLS model may underestimate the true effect. Second, the estimate is more precise, now achieving significance at the 1% level. Note that adding fixed effects is equivalent to removing variation from your data, and thus will often (but clearly not always) make your estimates less precise. In other words, there is an important trade-off between *bias* and *variance* when deciding on fixed effect specifications. Going forward we will follow GB18 by including region-by-year and medicaid-timing-by-year fixed effects in our regressions.
+Adding region-year and medicaid-timing-by-year fixed effects to the model changes the results in two ways. First, our coefficient of interest increases from 3.5 to 4.4. Notice that this estimate is larger than the 3.8 percentage point estimate from the cross-sectional regression with the same time-varying controls, suggesting that the OLS model may underestimate the true effect (but this difference is unlikely to be statistically significant). Second, the estimate is more precise, now achieving significance at the 1% level. Note that adding fixed effects is equivalent to removing variation from your data, and thus will often (but clearly not always) make your estimates less precise. In other words, there is an important trade-off between *bias* and *variance* when deciding on fixed effect specifications. Going forward we will follow GB18 by including region-by-year and medicaid-timing-by-year fixed effects in our regressions.
 
 ## Event study
 
@@ -255,7 +254,7 @@ Let's estimate the event study model. `fixest` includes an interaction helper fu
 ```{r}
 # Fit event study model
 mod <- feols(
-  public_insurance_child ~ i(factor(t_mcaid), high_eligibility, ref=-1) 
+  public_insurance_child ~ i(factor(t_mcaid), high_eligibility, ref = -1) 
   + hospitals_pc + beds_pc + income_pc
   | stfips + region^year + year_mcaid^year,
   data = feDF, weight = feDF$child_pop)
@@ -273,19 +272,19 @@ iplot(
   xlab = "Years since Medicaid implementation")
 ```
 
-The plot shows a large and sustained effect of our Medicaid eligibility treatment on public insurance use. Importantly, notice that there is no sign of pre-trends at times -3 and -2, which gives us confidence in our parallel trends assumption. Next, we'll see whether these effects translate to downstream reductions in mortality.
+The plot shows a large and sustained effect of being in a high-eligibility state on public insurance use. Importantly, notice that there is no sign of pre-trends at times -3 and -2, which gives us confidence in our parallel trends assumption. Next, we'll see whether these effects translate to downstream reductions in mortality.
 
 
 # The effect of Medicaid implementation on mortality rates
 
 ## Difference-in-differences
 
-Does increasing Medicaid eligibility impact infant and child mortality? Following GB18, we'll answer this question separately for white and nonwhite households. GB18 argues that since nonwhite children have the highest categorical eligibility rates, the analysis has the most power to identify effects of Medicaid implementation for them. Before fitting our model, let's see if this holds true for our simplified version of the analysis.
+Does increasing Medicaid eligibility impact infant and child mortality? Following GB18, we'll answer this question separately for white and non-white households. GB18 argues that since non-white children have the highest categorical eligibility rates, the analysis has the most power to identify effects of Medicaid implementation for them. Before fitting our model, let's see if this holds true for our simplified version of the analysis.
 
-First, we need to redefine our treatment variable for nonwhite households in the mortality data set. Let's calculate the difference in AFDC rates between low-eligibility and high-eligibility states if we focus on nonwhite households.
+First, we need to redefine our treatment variable for non-white households in the mortality data set. Let's calculate the difference in AFDC rates between high- and low-eligibility states if we focus on non-white households.
 
 ```{R, warning=FALSE}
-# Nonwhite households only
+# Non-white households only
 nonwhiteDF <- mortalityDF %>% filter(white == 0)
 
 # Define relevant variables
@@ -311,10 +310,10 @@ nonwhiteDF %>%
     summarize(nonwhite_afdc_rate = mean(afdc_rate))
 ```
 
-Applying the same treatment definition to our new sample of nonwhite households yields a treatment of a 7.5 percentage point increase in eligibility on average. This is already quite higher than the pooled sample we used for public insurance rates above. What is the gap if we focus on white households instead?
+Applying the same treatment definition to our new sample of non-white households yields a treatment of a 7.5 percentage point increase in eligibility on average. This is already quite higher than the pooled sample we used for public insurance rates above. What is the gap between high- and low-eligibility states if we focus on white households instead?
 
 ```{R, warning=FALSE}
-# Nonwhite households only
+# Non-white households only
 whiteDF <- mortalityDF %>% filter(white == 1)
 
 # Define relevant variables
@@ -340,9 +339,9 @@ whiteDF %>%
     summarize(white_afdc_rate = mean(afdc_rate))
 ```
 
-Consistent with GB18, we see this gap shrink to about 1 percentage point for white households. Therefore, we should expect to see a larger (and therefore more easily detected) effect on mortality for nonwhite households, where the eligibility treatment is about 7 times larger on average.
+Consistent with GB18, we see this gap shrink to about 1 percentage point for white households. Therefore, we should expect to see a larger (and therefore more easily detected) effect on mortality for non-white households, where the gap in AFDC rates between high- and low-eligibility states is about 7 times larger on average than white households.
 
-Using the difference-in-differences strategy, let's see how this translates to treatment effects. First, for nonwhite households.
+Using the difference-in-differences strategy, let's see how this translates to treatment effects. First, for non-white households.
 
 ```{r}
 # Fit fixed effect model
@@ -355,7 +354,7 @@ mod <- feols(
 coeftest(mod)
 ```
 
-The 7 percentage point increase in public insurance eligibility associated with Medicaid results in a 6.7 percent reduction in infant and child mortality in nonwhite American households. The estimate is statistically significant and economically meaningful. What about for white households?
+The 7 percentage point increase in public insurance eligibility associated with Medicaid results in a 6.7 percent reduction in infant and child mortality in non-white American households. The estimate is statistically significant and economically meaningful. What about for white households?
 
 ```{r}
 # Fit fixed effect model
@@ -372,7 +371,7 @@ The result suggests that mortality rates for white children slightly increased i
 
 ## Event study
 
-What about the event study approach? Let's generate event study plots for nonwhite households. 
+What about the event study approach? Let's generate event study plots for non-white households. 
 
 ```{r}
 # Fit fixed effect model
@@ -389,7 +388,7 @@ iplot(
   ci.join = TRUE,
   ci.lwd = 0,
   grid.par = list(vert = FALSE),
-  main = "Medicaid and Nonwhite Mortality",
+  main = "Medicaid and Non-white Mortality",
   ylab = "Log mortality rate",
   xlab = "Years since Medicaid implementation")
 ```
@@ -424,9 +423,9 @@ The effect is quite noisy, and there is no distinguishable effect after treatmen
 
 Throughout this exercise, we've considered a simple binary treatment. This is a simplification of the GB18 analysis, which uses the continuous measure of AFDC rates rather than our admittedly arbitrary high-low eligibility distinction.
 
-Using a continuous treatment variable buys us a couple things. First, our estimates of treatment effects will likely be more precise because we have richer variation in our explanatory variable. Second, our results are more interpretable. That is, a continuous treatment variable allows us to estimate the effect of an additional percentage point of eligibility, rather than looking at discrete jumps in eligibility that underlie our binary treatment indicator.
+Using a continuous treatment variable buys us a couple things. First, our estimates of treatment effects will likely be more precise because we have richer variation in our explanatory variable. Second, our results are more interpretable. That is, a continuous treatment variable allows us to estimate the effect of an additional percentage point of eligibility, rather than looking at a discrete jump in eligibility from one broad category of states (low-eligibility) to another (high-eligibility).
 
-Using nonwhite child mortality as an example, let's consider what our estimation strategy would look like if we used AFDC rates in the year of Medicaid implementation as our treatment variable ($AFDC_s$). The event study estimating equation becomes
+Using non-white child mortality as an example, let's consider what our estimation strategy would look like if we used AFDC rates in the year of Medicaid implementation as our treatment variable ($AFDC_s$). The event study estimating equation becomes
 $$Y_{st} =  AFDC_s \left [ \sum_{y=-4}^{-2} \beta_y^{pre} 1\{t - t_s^* = y\} + \sum_{y=0}^{7} \beta_y^{post} 1\{t - t_s^* = y\}\right ]  + X_{st}' \gamma + \mu_s + \tau_t + \varepsilon_{st}$$
 How do we estimate this population regression function? It's actually quite similar to the binary case; we can simply replace our binary variable `high_eligibility` with the Medicaid-year AFDC rate `afdc_rate`. This gives the following event study plot.
 
@@ -445,9 +444,9 @@ iplot(
   ci.join = TRUE,
   ci.lwd = 0,
   grid.par = list(vert = FALSE),
-  main = "Medicaid and Nonwhite Mortality, Continuous Treatment",
+  main = "Medicaid and Non-white Mortality, Continuous Treatment",
   ylab = "Log mortality rate",
   xlab = "Years since Medicaid implementation")
 ```
 
-You can see that the confidence intervals around the $\hat \beta_y^{post}$ are smaller than those in the binary treatment version. How do we interpret these effects? After Medicaid, nonwhite child mortality fell by about 1.5 percent for each percentage point difference in initial AFDC rates. This is arguably a more useful finding for policy compared to the binary treatment effects, the interpretation of which requires more context about the eligibility status of the low and high groups.
+You can see that the confidence intervals around the $\hat \beta_y^{post}$ are smaller than those in the binary treatment version. How do we interpret these effects? After Medicaid, non-white child mortality fell by about 1.5 percent for each percentage point difference in initial AFDC rates. This is arguably a more useful finding for policy compared to estimated effects from the binary treatment, the interpretation of which requires more context about the eligibility status of low- and high-eligibility groups.
