@@ -64,7 +64,7 @@ coverageDF %>%
     summarize(afdc_rate = mean(afdc_rate))
 ```
 
-Thus, our treatment of interest corresponds to an increase in the AFDC rate by about 1.4% on average.
+Thus, our treatment of interest corresponds to an increase in the AFDC rate by about 1.4 percentage points on average.
 
 # The identification problem
 
