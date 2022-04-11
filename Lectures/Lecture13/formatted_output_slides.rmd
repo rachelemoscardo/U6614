@@ -58,7 +58,7 @@ output:
 # Including output in your slides
 
 
-## Loading packages {.build}
+## Loading packages {.smaller .build}
 
 <div>
 This presentation uses some familiar packages to generate and display results:
