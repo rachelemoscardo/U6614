@@ -384,7 +384,8 @@ ggplot(data = ym_race,
        aes(x = date, y = si_1000, group = black75)) + 
   geom_line(aes(color = black75)) +
   labs(x = "Date", y = "Shutoff rate per 1,000 residents",
-       color = 'Census tract racial composition')
+       color = 'Census tract racial composition') + 
+  ggtitle("Insert your title here", subtitle = "and subtitle... if you want.")
 ```
 
 Make sure to clearly label your axes and legend!
@@ -407,5 +408,5 @@ Descriptive time series plots by groups are often a good way to motivate your an
 </div>
 
 <div>
-- Don't forget to spellcheck and review your knit document!
+- Don't forget to spellcheck and review your knitted document!
 </div> 
