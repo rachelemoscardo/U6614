@@ -1,0 +1,220 @@
+---
+title: "Lecture 2.2 Working with R Markdown"
+author: "SIPA U6614 | Instructor: Harold Stolper"
+date: 
+urlcolor: blue
+output: 
+  html_document:
+    toc: TRUE
+    toc_depth: 3
+    toc_float: TRUE
+    number_sections: TRUE
+    highlight: tango
+    theme: default
+    fig_caption: TRUE
+    #fig_width = 7 #Default width (in inches) for figures
+    #fig_height = 5 #Default height (in inches) for figures
+    #html_preview: TRUE #TRUE to also generate an HTML file for the purpose of locally previewing what the document will look like on GitHub.    
+    df_print: tibble # Method to be used for printing data frames. Valid values include "default", "kable", "tibble", and "paged". The "default" method uses print.data.frame. 
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Introduction to R Markdown
+
+Throughout this course and beyond, you'll be using R Markdown to write-up your work. An R Markdown document is just a text file with the .rmd extension. R Markdown is a _markup syntax_ that you can use within R Studio to generate documents (html, pdf, Word docs) that allows you to easily embed R code and output along with additional write-up.
+
+R Markdown files consist of the following:
+
+1. The YAML header (required)
+1. The body of your document, including: 
+    + Text and section headers 
+    + R Code chunks
+
+The process of generating a document from an .rmd file using RStudio is called **knitting.** In other words, you don't simply run R code, you knit your .rmd file in R Markdown. You can do this by clicking on ![](knitbutton.png) at the top of the RStudio interface or by using the keyboard shortcut **Cmd/Ctrl + Shift + k**. This process will also run any R code you have inside your .rmd file.
+
+
+# The YAML header 
+
+The YAML header is code at the top of your R Markdown file that controls the look and feel of your document. At a minimum, your R Markdown file must contain the following YAML header located in between two sets of - - - :
+
+```{r eval = FALSE}
+---
+title: "Your document title"
+author: "SIPA U6614"
+output:
+  html_document: default
+---
+```
+
+The title and author, and any other fields you specify (e.g. date, subtitle) will display at the top of your document.
+
+Also make sure that the `html_document: default` line is indented at least two spaces or you'll run into an error. Each level requires another two spaces of indentation to execute properly.
+
+Note: apparently YAML stands for "YAML Ain't Markup Language", which I think is an attempt at recursive programming "humor"... if you think humor is the appropriate word `r emo::ji("upside_down_face")`.
+
+
+# Section headings & table of contents
+
+You can add section headings to your document by using one or more hashtags at the beginning of a line of code. Adding hashtags moves the text down one heading level (e.g. `##` specified a second level heading.
+
+```{r eval = FALSE}
+# Heading level 1
+
+Blah.
+
+## Heading level 2
+
+Blah blah.
+
+### Heading level 3
+
+Blah blah blah.
+```
+
+You can also specify options in the YAML header that display a table of contents based on the section headings you use (by adding `toc: TRUE` to the YAML header). There are different options you can play around with in the YAML header to change the formatting of the table of contents.
+
+```{r eval = FALSE}
+---
+title: "Your document title"
+author: "SIPA U6614"
+output:
+  html_document: default
+    toc: TRUE
+    toc_depth: 3
+    toc_float: TRUE
+    number_sections: FALSE
+---
+```
+
+
+# Text formatting
+
+You can freely enter text anywhere below the YAML header, and rely on R Markdown's built in options for text formatting. Some commonly used formatting syntax:
+
+- *Italics*: wrap text in asterisks `*like this*`
+- **Bold**: wrap text in double asterisks `**like this**`
+- Hyperlinks: create [hyperlinked](https://rmarkdown.rstudio.com/) text by using the syntax `[R Markdown website](https://rmarkdown.rstudio.com/)`
+- Bulleted lists like this one: start each item in your list with an asterisk followed by a space, indenting as appropriate:
+```{r eval = FALSE}
+* list item 1
+* list item 2
+```
+Consult the [R Markdown reference guide](https://rstudio.com/wp-content/uploads/2015/03/rmarkdown-reference.pdf?_ga=2.36341096.936527741.1595035327-1635033536.1592156702) for more formatting syntax.
+
+
+# R code chunks 
+
+## Embedded code chunks
+
+R Markdown documents allow you to embed **chunks** of R code and output into your document, so the reader can see your results and how they were generated. Here is the basic syntax for a code chunk.
+
+<pre class="output_example">```{r} 
+# do something
+(100 * 2) / 10 
+```</pre>
+
+Without any options specified, your document will show the code from inside the code chunk followed by any corresponding output.
+```{r}
+# do something
+(100 * 2) / 10 
+```
+
+The handy keyboard shortcut to insert a code chunk is **Ctrl+Alt+I** or	**Cmd+Option+I** for Windows and Macs, respectively.
+
+There are a number of options you can use to specify the handling of each code chunk. Here is a code chunk with `echo = FALSE` so the code chunk will run but only the output will show up in your knitted documented.
+
+<pre class="output_example">```{r echo = FALSE} 
+# nevermind
+```</pre>
+
+`include = FALSE` is another common code chunk option that executes the code chunk but suppresses both the code and output. 
+
+
+## Document wide code chunk options
+
+You can also specify code chunk options that apply to the entire document. It's often a good idea to use the following document-wide code chunk to hide warnings and messages that might show up in the console after running R code, but don't belong in your document. 
+
+<pre class="output_example">```{r include = FALSE}
+knitr::opts_chunk$set(message = FALSE, warning = FALSE)
+```</pre>
+
+## In-line code chunks
+
+Code results can be inserted directly into the text of a .Rmd file by enclosing the code with `r` (backticks). You can use this syntax to refer to objects in R.
+
+It's particularly useful syntax for referring to stored calculations, rather than hard-coding the values in your write-up. Let's suppose we want to make a calculation based on the Gapminder data frame (after loading the Gapminder library).
+
+```{r warning = FALSE}
+library(gapminder)
+gm_india <- subset(gapminder, country == "India")
+mean(gm_india$lifeExp)
+```
+You could reference this calculation explicitly in your text write-up.
+
+<pre class = "output_example">
+The mean life expectancy for India over this period was 53.17.
+</pre>
+
+A better way to do this is to point to the object in R that contains the mean using an in-line code reference to the mean.
+
+<pre class = "output_example">
+The mean life expectancy for India over this period was `r knitr::inline_expr('mean(gm_india$lifeExp)')`.
+</pre>
+
+This approach will generate the following output in your knitted document.
+
+<pre class = "output_out">
+The mean life expectancy for India over this period was `r mean(gm_india$lifeExp)`.
+</pre>
+
+Even better, let's use the `round()` function to improve the display format.
+
+<pre class = "output_example">
+The mean life expectancy for India over this period was `r knitr::inline_expr('round(mean(gm_india$lifeExp), 1)')`.
+</pre>
+
+<pre class = "output_out">
+The mean life expectancy for India over this period was `r round(mean(gm_india$lifeExp),1)`.
+</pre>
+
+
+# Workflow, tips and troubleshooting
+
+
+## Workflow
+
+1. Set up a clear file structure and stick to it. For example, create a Class folder, and then an Assignments folder within Class, and an Assignment 1 folder within Assignment (U6614/Assignments/Assignment 1). 
+
+2. Open a new R Markdown file. Specify the settings you want in the YAML header
+
+3. Save the R Markdown file in the appropriate folder. Make sure any other files you point to (e.g. data, images) are also stored in the same folder.
+
+
+## Tips and troubleshooting
+
+* For the purposes of this class, all submissions should be submitted as pdf documents "knit" from an R Markdown file. 
+
+* Treat R Markdown as its own system object environment from the R console. If you refer to an object in a code chunk you first need to create it in R Markdown, an object created in the R Console won't be recognized by your R Markdown document.
+
+* Remember you only have to `install.packages()` once but you do have to load a package before using it with the `library()` function. You should never include `install.packages()` in your R Markdown script, but you should always load the libraries you need at the beginning of your script. Failing to load the correct libraries is a common source of errors.
+
+* Make sure any files you use are located in your working directory, which should be the same folder as your .rmd file.
+
+* Try knitting early and often. Don't wait until the end, or you're likely to have numerous errors to sort through. Knitting/running code piecewise as you go is a good way to identify errors and coding mistakes before things get too complicated.
+
+* Use section headers and comments to structure your write-up according to assignment questions or other document structure you want to create.
+
+
+# R Markdown resources
+
+Here are some resources to help you unlock more options and functionality with R Markdown:
+
+- [R Markdown reference guide](https://rstudio.com/wp-content/uploads/2015/03/rmarkdown-reference.pdf)
+- [R Markdown: A Definitive Guide](https://bookdown.org/yihui/rmarkdown/)
+- RStudio offers their own R Markdown [tutorial](https://rmarkdown.rstudio.com/lesson-1.html) and a helpful [cheat sheet](https://rstudio.com/wp-content/uploads/2016/03/rmarkdown-cheatsheet-2.0.pdf)
+
+
+
