@@ -37,12 +37,14 @@ Common types of observational data:
 
 A **cross-section** of data is just a set of observations for one period of time. For example, a set of evaluations from students for a particular course in a given semester. You can imagine a second cross-section of data: a second set of evaluations from a different group of students for the same course but in a different semester. 
 
-Multiple cross-sections of data can be combined into a single dataset, but that is different from **panel data** where the *same indidividuals* or entities are observed in each period.
+Multiple cross-sections of data can be combined into a single dataset, but that is different from **panel data** (also called longitudinal data) where the *same individuals* or entities are observed in each period.
 
 
 ## Unit of observation and representative population {.unnumbered}
 
-It might seem obvious if you're working with familiar data, but in many cases it may not be immediately obvious: what is the unit of observation in the dataset you're working with, and what population are observations drawn from? 
+It might seem obvious if you're working with familiar data, but in many cases it may not be immediately obvious: what is the *unit of observation* in the dataset you're working with, and what population are observations drawn from? In other words, what information distinguishes one row from the next: does each row represent a unique person, household, province, country, etc.? Or maybe a household-month or state-year pair, as examples of the unit of observation for hypothetical panel datasets. 
+
+Note that researchers may use the term *unit of analysis* when it comes to data that may have been restructured for analysis, instead of the unit of observation in the raw data, but the underlying concept is the same.
 
 Many large government surveys are based on a sample drawn at random from some broader population (e.g. a sample of working adults). Survey data requires you to apply **sampling weights** in order to obtain a representative population. This is because the likelihood of a subject responding to a survey is not random, but in fact depends on other variables such as age, gender, education, etc. 
 

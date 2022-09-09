@@ -31,7 +31,7 @@ getwd()
 ##
 ##    c. include sex.fac in a new data frame called cps.temp1, 
 ##       also create factors for race and college education,
-##        use a pipe to exclude the columns for serial, ind
+##        use a pipe to exclude the columns for serial and ind
 ##        after creating cps.temp1, print the first 5 observations
 ##
 ##    d. inspect race.fac, sex.fac, and college.fac using the levels() function,
@@ -93,7 +93,7 @@ getwd()
 ## -----------------------------------------------------------------------------
 ## 2. Describe the cps_2020 data frame
 ##
-##    a. what is the unit of observation? 
+##    a. what is the unit of observation (or unit of analysis)? 
 ##
 ##    b. how many individuals are observed? from how many households?
 ##
@@ -104,7 +104,7 @@ getwd()
  
   
   #NOTE: don't include all of your inspection commands in your R Markdown submission
-  #      I've included view() as a reminder, but shouldn't be in your submission
+  #      I've included view() as a reminder, but it should never be in your submission
   #      neither should clunky str() output, be selective about the output you show!
   
   
@@ -207,10 +207,11 @@ getwd()
 ##        name each statistic appropriately (i.e. name each column in the 1-row table of stats)
 ##        what is the gender gap in mean weekly earnings?
 ##
-##    d. what is the wage gap in weekly earnings between white males and Black females?
+##    d. What is the wage gap in weekly earnings ($) between 
+##        white males and Black females?
 ##
-##    e. what is the wage gap between college educated white males and college educated
-##       Black females?
+##    e. What is the wage gap in weekly earnings ($) between 
+##        college educated white males and college educated Black females? 
 ## -----------------------------------------------------------------------------
   
 # 4a. 
