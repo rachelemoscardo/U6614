@@ -30,7 +30,7 @@ getwd()
 ##
 ##    c. include sex.fac in a new data frame called cps.temp1, 
 ##       also create factors for race and college education,
-##        use a pipe to exclude the columns for serial, ind
+##        use a pipe to exclude the columns for serial and ind
 ##        after creating cps.temp1, print the first 5 observations
 ##
 ##    d. inspect race.fac, sex.fac, and college.fac using the levels() function,
@@ -53,7 +53,7 @@ getwd()
   str(cps)
   View(cps)
   #we can also inspect the data frame by double-clicking in the Environment tab
-  #DON'T INCLUDE VIEW() IN YOUR R MARKDOWN SUBMISSION!
+  #DON'T INCLUDE View() IN YOUR R MARKDOWN SUBMISSION!
   
   summary(cps$age)
   summary(cps$sex) #summary is not very useful with character variables
@@ -96,7 +96,7 @@ getwd()
   
   ?levels   
   #note that levels is a base R function
-  #so levels cannot be used with columns using the tidyverse language
+  #so levels cannot be used with columns using tidyverse syntax
   #make sure you understand why this won't work: cps.temp1 %>% levels(sex.fac)
   #Documentation: https://cps.ipums.org/cps-action/variables/sex
   
@@ -118,7 +118,7 @@ getwd()
 ## -----------------------------------------------------------------------------
 ## 2. Describe the cps_2020 data frame
 ##
-##    a. what is the unit of observation? 
+##    a. what is the unit of observation (or unit of analysis)?
 ##
 ##    b. how many individuals are observed? from how many households?
 ##
@@ -234,10 +234,11 @@ getwd()
 ##        name each statistic appropriately (i.e. name each column in the 1-row table of stats)
 ##        what is the gender gap in mean weekly earnings?
 ##
-##    d. what is the wage gap in weekly earnings between white males and Black females?
+##    d. What is the wage gap in weekly earnings ($) between 
+##        white males and Black females?
 ##
-##    e. what is the wage gap between college educated white males and college educated
-##       Black females?
+##    e. What is the wage gap in weekly earnings ($) between 
+##        college educated white males and college educated Black females? 
 ## -----------------------------------------------------------------------------
   
 # 4a. 

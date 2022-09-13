@@ -2,21 +2,21 @@
 title: "Lecture 2.1 Data Object Type and Structure"
 author: "SIPA U6614 | Instructor: Harold Stolper"
 date: 
-urlcolor: blue
-output: 
+output:
   html_document:
-    toc: TRUE
+    toc: yes
     toc_depth: 3
-    toc_float: true
-    number_sections: true
+    toc_float: yes
+    number_sections: yes
     highlight: tango
     theme: default
-    fig_caption: true
-    #fig_width = 7 #Default width (in inches) for figures
-    #fig_height = 5 #Default height (in inches) for figures
-    #html_preview: TRUE #TRUE to also generate an HTML file for the purpose of locally previewing what the document will look like on GitHub.    
-    df_print: tibble # Method to be used for printing data frames. Valid values include "default", "kable", "tibble", and "paged". The "default" method uses print.data.frame. 
-
+    fig_caption: yes
+    df_print: tibble
+  pdf_document:
+    toc: no
+    toc_depth: '3'
+    number_sections: yes
+  urlcolor: blue
 ---
   
 ```{r global options, include = FALSE}
