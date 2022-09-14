@@ -4,6 +4,7 @@ author: "Sample Solutions"
 date: "`r Sys.Date()`"
 output:
   pdf_document:
+    latex_engine: xelatex
     toc: no
     toc_depth: '3'
     number_sections: yes

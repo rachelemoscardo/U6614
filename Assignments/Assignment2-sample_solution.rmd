@@ -27,7 +27,7 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 library(tidyverse)
 ```
 
-##### *Please submit your knitted .pdf file along with the corresponding R markdown (.rmd) via Courseworks by 11:59pm on Monday, January 31st.* {-}
+##### *Please submit your knitted .pdf file along with the corresponding R markdown (.rmd) via Courseworks by 11:59pm on the due date.* {-}
 
 \medspace
 
@@ -59,7 +59,7 @@ summary(cps$college)
 - sex.fac = as.factor(sex),
 - check if it worked by calling the str() function
 
-```{r eval=FALSE}
+```{r results = 'hide'}
 mutate(cps, sex.fac = as.factor(sex)) #output suppressed
 ```
 
@@ -142,7 +142,7 @@ The unit of observation is the individual (individuals surveyed in June, 2020).
 summarise(cps_2020, n_distinct(personid))
 summarise(cps_2020, n_distinct(hhid))
 ```
-```{r eval=FALSE}
+```{r results = 'hide'}
 #Alternative way:
 cps_2020 %>%
   summarise(num_persons = n_distinct(personid),
