@@ -3,7 +3,7 @@
 ## [ PROJ ] Lecture 3: Subway Fare Evasion Arrests in Brooklyn
 ## [ FILE ] Lecture3-startclass.r
 ## [ AUTH ] < YOUR NAME >
-## [ INIT ] < Feb 01, 2022 >
+## [ INIT ] < Sep 20, 2022 >
 ##
 ################################################################################
 
@@ -31,7 +31,7 @@ library(fastDummies)
 #library(forcats) #included with Tidyverse
 
 
-#also confirm correct working directory
+#confirm correct working directory
 getwd()
 
 
@@ -165,14 +165,12 @@ getwd()
   #2. then use factor() to set levels based on the above values    
    
     arrests_bds.clean <- arrests_bds.clean %>% 
-      mutate(hispanic = recode(ethnicity, "0" = "NA",
-                                          "Other" = "Non-Hispanic")) %>% 
-      mutate(hispanic = factor(hispanic, 
-                               levels = c("Hispanic", "Non-Hispanic"))) 
+      mutate(hispanic = FILL IN CODE) %>% 
+      mutate(hispanic = FILL IN CODE) 
     
     #validation: confirm the recode worked as intended
       table(arrests_bds.clean$hispanic, arrests_bds.clean$ethnicity, useNA = "always")
-      summary(arrests_bds.clean$hispanic) #ok but less useful for validation!    
+      summary(arrests_bds.clean$hispanic) #less useful for validation!    
       
   #NOTE: we used separate pipes to clean ethnicity & race, could do in a single pipe
       
@@ -181,17 +179,20 @@ getwd()
       
   #let's investigate a bit
     table(arrests_bds.clean$race_clean, arrests_bds.clean$hispanic, useNA = "always")
-    prop.table(table(arrests_bds.clean$race_clean, arrests_bds.clean$hispanic), 2) %>% round(2)
+    prop.table(table(arrests_bds.clean$race_clean, arrests_bds.clean$hispanic),
+               margin = 2) %>% 
+      round(2)
   
   #recoding with different data types and/or NA values can be tricky 
   #let's start by converting factors to characters using the as.character()
     arrests_bds.clean <- arrests_bds.clean %>% 
-      mutate(race_clean_char = as.character(race_clean)) %>% #work with characters
-      mutate(hispanic_char = as.character(hispanic))     %>% #work with characters
-      mutate(race_eth = ifelse(hispanic_char == "Hispanic", 
+      mutate(race_clean_char = as.character(race_clean),
+             hispanic_char   = as.character(hispanic)) %>% #work with characters
+      mutate(race_eth = ifelse(hispanic_char %in% "Hispanic", #use %in% so that NAs are evaluated
                                hispanic_char, 
                                race_clean_char) ) %>%  
-      mutate(race_eth = as.factor(recode(race_eth, "White" = "Non-Hispanic White")))
+      mutate(race_eth = as.factor(recode(race_eth, "White" = "Non-Hispanic White"))) %>%
+      select(-race_clean_char, -hispanic_char)      
     
   #validate results
     
@@ -216,7 +217,7 @@ getwd()
   FILL IN CODE
 
 
-#4b. validate
+#4b. validate with relevant cross-tabs
   FILL IN CODE
 
 
@@ -231,11 +232,11 @@ getwd()
 ##        - only keep columns for pd, race_eth, age, male, dismissal, st_id, loc2,
 ##          converting to factors for columns w/categorical data as needed
 ##        - inspect race_eth for accuracy/consistency
+##        - store as new data frame arrests_all
 ##
 ##    c. use the nrow function to display the total number of arrests
 ##
-##    d. store new df as arrests_all and save as rds file in a new Assignment4 folder
-##       (we'll use in the coming weeks)
+##    d. Save arrests_all df as an .RData file in a new Lecture4 folder for next week
 ##
 ## -----------------------------------------------------------------------------
 
@@ -250,7 +251,7 @@ getwd()
     mutate(pd = as.factor(pd),
            st_id = as.factor(st_id),
            loc2 = as.factor(loc2)) %>% #station/location info is not continuous
-    select(pd, race_eth, age, male, st_id, loc2) #need to add dismissal column from the LAS data
+    select(pd, race_eth, age, male, st_id, loc2, dismissal) #need to add dismissal column from the LAS data
   summary(arrests.clean)
 
   MAKE SURE TO UPDATE ABOVE CODE TO APPEND arrests_las.clean TO arrests_bds.clean
@@ -261,7 +262,8 @@ getwd()
 
 
 #5d.
-  saveRDS(FILL IN ARGUMENTS)
+  save(FILL IN ARGUMENTS)
+  
 
   
 ## -----------------------------------------------------------------------------
@@ -298,9 +300,9 @@ getwd()
     arrests.clean %>% count(race_eth, sort = TRUE)
  
   #base R with table()
-    table(arrests.clean$race_eth)
-
-  #another way to exclude NAs
+    table(arrests.clean$race_eth, useNA = "always")
+    
+  #another way, if we wanted to exclude NAs (which we don't right now!)
     arrests.clean %>% 
       filter(!is.na(race_eth)) %>% 
       count(race_eth, sort = TRUE)
@@ -324,8 +326,10 @@ getwd()
       rename(race_eth = Var1)
 
   
-#6c. let's store results as a new data frame in case you want to refer to them in your write-up
-  race_eth_stats <- FILL IN CODE
+#6c. 
+  
+  #let's store results as a new data frame in case you want to refer to them in your write-up
+    race_eth_stats <- FILL IN CODE
 
 
 #6d. 
@@ -438,7 +442,7 @@ getwd()
     arrange(desc(st_arrests)) %>% 
     filter(st_arrests > 100)
   arrests_stations_race_top
-  saveRDS(arrests_stations_race_top, "../Lecture5/arrests_stations_race_top.rds")
+  save(list = "arrests_stations_race_top", file = "../Lecture3/arrests_stations_race_top.RData")
   
   ggplot(arrests_stations_race_top, aes(x = reorder(loc2, -st_arrests), y = arrests, fill = race_eth)) + 
     geom_bar(stat = "identity") + 
