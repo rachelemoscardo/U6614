@@ -4,7 +4,6 @@ author: "Sample Solutions"
 date: "`r Sys.Date()`"
 output:
   pdf_document:
-    latex_engine: xelatex
     toc: no
     toc_depth: '3'
     number_sections: yes
@@ -141,7 +140,7 @@ table(arrests_bds.clean$race_clean, arrests_bds.clean$hispanic, useNA = "always"
 arrests_bds.clean <- arrests_bds.clean %>% 
   mutate(race_clean_char = as.character(race_clean)) %>% #work with characters
   mutate(hispanic_char = as.character(hispanic))     %>% #work with characters
-  mutate(race_eth = ifelse(hispanic_char == "Hispanic", 
+  mutate(race_eth = ifelse(hispanic_char %in% "Hispanic", 
                            hispanic_char, 
                            race_clean_char) ) %>%  
   mutate(race_eth = as.factor(recode(race_eth, "White" = "Non-Hispanic White"))) %>%
@@ -172,7 +171,7 @@ arrests_las.clean <- arrests_las %>%
                                          "Unknown" = "NA",
                                          "Latino" = "Hispanic",
                                          "White" = "Non-Hispanic White")) %>% 
-  mutate(race_eth = ifelse(hispanic_flag == "Y", "Hispanic", race_eth) ) %>% 
+  mutate(race_eth = ifelse(hispanic_flag %in% "Y", "Hispanic", race_eth) ) %>% 
   mutate(race_eth = factor(race_eth, 
                            levels = c("Black", 
                                       "Hispanic", 
@@ -211,12 +210,10 @@ summary(arrests_all)
 
 The total number of subway fare evasion arrest records from both BDS and LAS is `r nrow(arrests_all)`.
 
-### 5d) Export `arrests_all` as a .csv file, and save as .rds file, in a folder for next class called Lecture4. {-}
+### 5d) Save `arrests_all` as an .RData file, in a folder for next class called Lecture4. {-}
 
 ```{r}
-write_csv(arrests_all, "arrests_all.csv") 
-saveRDS(arrests_all, "arrests_all.csv") 
-#"../Lecture4/arrests_all.rds" in your directory
+save(list = "arrests_all", file = "../Lecture4/arrests_all.RData") 
 ```
 
 \newpage
@@ -304,9 +301,6 @@ arrests_stations <- arrests_all %>%
 knitr::kable(head(arrests_stations, n = 10)) 
 ```
   
-Note: Liam made a typo here. Answers that followed the original (uncorrected) instructions would be accepted.
-Copy-pasted code from #7b of the in-class code would also be accepted.
-
 ###  7c) Aggregate to station-level observations (group by loc2), and show a table of stations with at least 50 arrests along with the following information: {-}
 
   - station name (loc2)
@@ -353,18 +347,27 @@ arrests_stations_race <- arrests_all %>%
   filter(st_arrests > 100)
 
 arrests_stations_race
+```
 
-ggplot(arrests_stations_race, 
+
+```{r}
+g <- ggplot(arrests_stations_race, 
        aes(x = reorder(loc2, -st_arrests), 
            y = arrests, fill = race_eth)) + 
   geom_bar(stat = "identity") + 
-  theme(axis.title.x=element_blank(),
-        axis.text.x = element_text(angle = 90, 
+  theme(legend.position = "right",
+        axis.title.x=element_blank(),
+        axis.text.x = element_text(angle = 90,
                                    vjust = 0.5, 
-                                   hjust=1))  + 
+                                   hjust = 1))  + 
   scale_fill_discrete(name = "Race/Ethnicity") + 
   ggtitle("Distribution of arrests by race/ethnicity",
     subtitle = "At stations with > 100 arrests")
+
+g
+
+# alternative way, save plot and recall it
+# ggsave(g, filename = "g.png")
+# knitr::include_graphics("g.png")
 ```
 
-**End of assignment.**
