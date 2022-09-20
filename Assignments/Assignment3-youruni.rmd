@@ -81,7 +81,7 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 
 ### 5c) What is the total number of subway fare evasion arrest records? {-}
 
-### 5d) Export `arrests_all` as a .csv file, and save as .rds file, in a folder for next class called Lecture4. {-}
+### 5d) Save `arrests_all` as an .RData file, in a folder for next class called Lecture4. {-}
 
 \medspace
 

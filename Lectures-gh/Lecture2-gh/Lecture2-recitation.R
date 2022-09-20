@@ -240,6 +240,15 @@ getwd()
   
 # 3f.
   
+  cps_2020 %>% 
+    filter(earnweek > 2000) %>%
+    nrow() #602
+  
+  cps_2020 %>% 
+    filter(earnweek == "2000") %>%
+    nrow() #48
+
+  
   #HINT: use the nrow() function to return the number of observations
 
 
@@ -318,3 +327,5 @@ getwd()
     
 
 #NOTE: above exercises are done w/weekly earnings, but can easily be converted to hourly wages
+
+  
