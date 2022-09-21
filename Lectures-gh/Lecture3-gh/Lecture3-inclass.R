@@ -162,7 +162,8 @@ getwd()
   #2. then use factor() to set levels based on the above values
     
     arrests_bds.clean <- arrests_bds.clean %>% 
-      mutate(hispanic = recode(ethnicity, "0" = "NA",
+      mutate(hispanic = recode(ethnicity, 
+                               "0" = "NA",
                                "Other" = "Non-Hispanic")) %>% 
       mutate(hispanic = factor(hispanic, 
                                levels = c("Hispanic", "Non-Hispanic"))) 
