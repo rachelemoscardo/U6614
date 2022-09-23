@@ -172,7 +172,7 @@ getwd()
       #        the omitted category ("NA") is forced into system NA values
     
     #validation: confirm the recode worked as intended
-    table(arrests_bds.clean$hispanic, arrests_bds.clean$ethnicity, useNA = "always")
+    table(arrests_bds.clean$race_clean, arrests_bds.clean$hispanic, useNA = "always")
     summary(arrests_bds.clean$hispanic) #less useful for validation!
       
   #NOTE: we used separate pipes to clean ethnicity & race, could do in a single pipe
@@ -200,11 +200,14 @@ getwd()
   #validate results
     
     #joint distribution of race_eth and hispanic
-      table(arrests_bds.clean$race_eth, arrests_bds.clean$hispanic, useNA = "always")
+      table(arrests_bds.clean$race_eth, arrests_bds.clean$hispanic,useNA = "always")
     
     #distribution of race_eth
       arrests_bds.clean %>% count(race_eth, sort = TRUE)
     
+#before recode:
+      table(arrests_bds.clean$race_eth, arrests_bds.clean$hispanic,useNA = "always")
+      
   
 ## -----------------------------------------------------------------------------
 ## 4a. Repeat step 2 for LAS:
@@ -217,15 +220,28 @@ getwd()
 ## -----------------------------------------------------------------------------
 
 #4a.
-  FILL IN CODE
+      
+      #inspect first
+      table(arrests_las$las_race_key, arrests_las$hispanic_flag, useNA = "always")
+      
+      #recode
+      arrests_las.clean <- arrests_las %>% 
+        mutate(race_eth = recode(las_race_key, "Latino" = "Hispanic",
+                                 "Unknown" = "NA", 
+                                 "Asian or Pacific Islander" = "Asian/Pacific Islander",
+                                 "White" = "Non-Hispanic White")) %>%
+        mutate(race_eth = ifelse(hispanic_flag %in% "Y", "Hispanic", race_eth)) %>%
+        mutate(race_eth = factor(race_eth, levels = c("Hispanic",
+                                                      "Non-Hispanic White",
+                                                      "Asian/Pacific Islander",
+                                                      "Black",
+                                                      "Other")))
 
-     
 #4b. 
   #validate with relevant cross-tabs
+  table(arrests_las.clean$race_eth, arrests_las.clean$hispanic_flag, useNA = "always")
+  table(arrests_las.clean$race_eth, arrests_las.clean$las_race_key, useNA = "always")
   
-  FILL IN CODE
- 
-
 
 ## -----------------------------------------------------------------------------
 ## 5. Append BDS and LAS microdata -- stack rows with rbind
@@ -238,11 +254,11 @@ getwd()
 ##        - only keep columns for pd, race_eth, age, male, dismissal, st_id, loc2,
 ##          converting to factors for columns w/categorical data as needed
 ##        - inspect race_eth for accuracy/consistency
-##        - store as new data frame arrests_all
+##        - store as new data frame arrests.clean
 ##
 ##    c. use the nrow function to display the total number of arrests
 ##
-##    d. Save arrests_all df as an .RData file in a new Lecture4 folder for next week
+##    d. Save arrests.clean df as an .RData file in a new Lecture4 folder for next week
 ##
 ## -----------------------------------------------------------------------------
 
@@ -250,28 +266,35 @@ getwd()
   arrests_bds.clean <- arrests_bds.clean %>% mutate(pd = "bds")
   arrests_las.clean <- arrests_las.clean %>% mutate(pd = "las")
   
-#5b. since we don't have arrests_las.clean yet, for now let's append arrests_bds.clean to itself
+#5b. since we DO have arrests_las.clean NOW, for now let's append the right way
   arrests.clean <- bind_rows(arrests_bds.clean, arrests_las.clean) %>%
     mutate(pd = as.factor(pd),
            st_id = as.factor(st_id),
-           loc2 = as.factor(loc2)) %>% #station/location info is not continuous
-    select(pd, race_eth, age, male, st_id, loc2, dismissal) #added dismissal column from the LAS data
+           loc2 = as.factor(loc2)) %>% #station/location info is categorical
+    select(pd, race_eth, age, male, st_id, loc2, dismissal) #added dismissal column from the LAS data #remove vars .... as not needed
+  
   summary(arrests.clean)
 
-  MAKE SURE TO UPDATE ABOVE CODE TO APPEND arrests_las.clean TO arrests_bds.clean
-  
-  
 #5c. 
   nrow(arrests.clean)
   
 #5d.
-  save(list = FILL IN CODE HERE, file = "arrests_all.RData")
+  
+  save(list = "arrests.clean", file = "../Lecture4/arrests.clean.RData")
+ 
+  #or, whatever folder name you've called it in your directory
+  # save(list = "arrests_all", file = "../myfoldername/arrests.clean.RData")
+  # side note, here's how you load the data back
+  load("../Lecture4/arrests.clean.RData")
+  
+  # and here's how you can save more than one object in an .RData file
+  # save(list = c("arrests_all", "arrests_bds.clean", "arrests_las.clean"),
+  #                file = "arrests_morestuff.RData")
   #?save
 
-  #for future reference, can also write to a csv file:
+  #for future reference you can also write single dataframes to a csv file:
   #write_csv(arrests_all, "arrests_all.csv") 
 
-  
   
 ## -----------------------------------------------------------------------------
 ## 6. Descriptive statistics by race_eth (grouping)
