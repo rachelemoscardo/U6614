@@ -23,7 +23,7 @@ urlcolor: blue
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 ```
 
-##### *Please submit your knitted .pdf file along with the corresponding R markdown (.rmd) via Courseworks by 11:59pm on the due date.* {-}
+##### *Please submit your knitted .pdf file along with the corresponding R markdown (.rmd) via Courseworks by 11:59pm on Monday, October 4th.* {-}
 
 \medspace
 
@@ -191,29 +191,29 @@ table(arrests_las.clean$race_eth, arrests_las.clean$hispanic_flag, useNA = "alwa
 ### 5a) Create a column (`pd`) to identify public defender data source. {-}
 
 ```{r}
-arrests_bds.clean <- arrests_bds.clean %>% mutate(pd = "bds")
-arrests_las.clean <- arrests_las.clean %>% mutate(pd = "las")
+  arrests_bds.clean <- arrests_bds.clean %>% mutate(pd = "bds")
+  arrests_las.clean <- arrests_las.clean %>% mutate(pd = "las")
 ```
 
-### 5b) Append `arrests_bds.clean` and `arrests_las.clean` using `rbind()`. Store as new data frame `arrests_all` and inspect for consistency/accuracy. {-}
+### 5b) Append `arrests_bds.clean` and `arrests_las.clean` using `rbind()`. Store as new data frame `arrests.clean` and inspect for consistency/accuracy. {-}
 
 ```{r}
-arrests_all <- bind_rows(arrests_las.clean, arrests_bds.clean) %>%
-  mutate(pd = as.factor(pd),
-         st_id = as.factor(st_id),
-          loc2 = as.factor(loc2)) %>% #station/location info is not continuous
-  select(pd, race_eth, age, male, dismissal, st_id, loc2)
-summary(arrests_all)
+  arrests.clean <- bind_rows(arrests_las.clean, arrests_bds.clean) %>%
+    mutate(pd = as.factor(pd),
+           st_id = as.factor(st_id),
+           loc2 = as.factor(loc2)) %>% #station/location info is not continuous
+    select(pd, race_eth, age, male, dismissal, st_id, loc2)
+  summary(arrests.clean)
 ```
 
 ### 5c) What is the total number of subway fare evasion arrest records? {-}
 
-The total number of subway fare evasion arrest records from both BDS and LAS is `r nrow(arrests_all)`.
+The total number of subway fare evasion arrest records from both BDS and LAS is `r nrow(arrests.clean)`.
 
-### 5d) Save `arrests_all` as an .RData file, in a folder for next class called Lecture4. {-}
+### 5d) Save `arrests.clean` as an .RData file, in a folder for next class called Lecture4. {-}
 
 ```{r}
-save(list = "arrests_all", file = "../Lecture4/arrests_all.RData") 
+save(list = "arrests.clean", file = "C:/Users/rodri/OneDrive/Escritorio/Columbia/TA - R/R codes/Recitation_3/arrests.clean.RData") 
 ```
 
 \newpage
@@ -224,21 +224,21 @@ save(list = "arrests_all", file = "../Lecture4/arrests_all.RData")
 ### 6a) Print the number of arrests for each race/ethnicity category (a frequency table). {-}
 
 ```{r}
-arrests_all %>% count(race_eth, sort = TRUE)
+arrests.clean %>% count(race_eth, sort = TRUE)
 ```
 
 ### 6b) Print the proportion of total arrests for each race/ethnicity category. How does excluding NAs change the results? {-}
 
 ```{r}
 #including NAs
-prop.table(table(arrests_all$race_eth, useNA = "always")) %>% 
+prop.table(table(arrests.clean$race_eth, useNA = "always")) %>% 
   round(2) %>% 
   as.data.frame() %>% 
   arrange(desc(Freq)) %>% 
   rename(race_eth = Var1)
 
 #excluding NAs
-prop.table(table(arrests_all$race_eth)) %>% 
+prop.table(table(arrests.clean$race_eth)) %>% 
   round(2) %>% 
   as.data.frame() %>% 
   arrange(desc(Freq)) %>% 
@@ -248,12 +248,13 @@ prop.table(table(arrests_all$race_eth)) %>%
 ### 6c) Show the average age, share male, and dimissal rate for each race/ethnicity category. Describe any noteworthy findings. {-}
 
 ```{r}
-arrests_all %>%
-  group_by(race_eth) %>%
-  summarise(n = n(), 
-            mean_age = mean(age, na.rm = TRUE),
-            mean_male = mean(male, na.rm = TRUE),
-            mean_dism = mean(dismissal, na.rm = TRUE))
+  race_eth_stats <- arrests.clean %>%
+    group_by(race_eth) %>%
+    summarise(n = n(), 
+              mean_age = mean(age, na.rm = TRUE),
+              mean_male = mean(male, na.rm = TRUE),
+              mean_dismissal = mean(dismissal, na.rm = TRUE) )
+  race_eth_stats 
 ```
 
 Interestingly, arrested individuals with NA race/ethnicity are 3 to 4 years younger on average, and only 61% male compared to 83 to 94% male for those with race/ethnicity specified in the data.
@@ -267,8 +268,8 @@ The dismissal rate is also noticeably higher for API individuals, and lower for 
 ### 7a) Create dummy variables for each race/ethnicity category and show summary statistics only for these dummy variables. {-}
 
 ```{r}
-arrests_all <- dummy_cols(arrests_all, select_columns = "race_eth")
-arrests_all %>% 
+arrests.clean <- dummy_cols(arrests.clean, select_columns = "race_eth")
+arrests.clean %>% 
   summarise(mean_black = round(mean(race_eth_Black, na.rm = TRUE), 2),
             mean_hisp = round(mean(race_eth_Hispanic, na.rm = TRUE), 2),
             mean_nhw  = round(mean(`race_eth_Non-Hispanic White`, na.rm = TRUE), 2),
@@ -288,7 +289,7 @@ arrests_all %>%
 - use kable() in the knitr package for better formatting
 
 ```{r}
-arrests_stations <- arrests_all %>%  
+arrests_stations <- arrests.clean %>%  
   group_by(loc2) %>%
   summarise(st_id = first(st_id), 
             n = n(),
@@ -311,7 +312,7 @@ knitr::kable(head(arrests_stations, n = 10))
   - use kable() in the knitr package for better formatting
 
 ```{r}
-arrests_stations_top <- arrests_all %>%  
+arrests_stations_top <- arrests.clean %>%  
   group_by(loc2)    %>%
   summarise(st_id = first(st_id), 
             n = n(),
@@ -337,7 +338,7 @@ At every single high-arrest subway station, the majority of arrested individuals
 
 ```{r}
 #get data frame with obs for every station-race_eth pairings on arrest counts
-arrests_stations_race <- arrests_all %>%  
+arrests_stations_race <- arrests.clean %>%  
   group_by(loc2) %>% 
   mutate(st_arrests = n()) %>% 
   ungroup() %>% 
