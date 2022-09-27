@@ -23,11 +23,7 @@ urlcolor: blue
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 ```
 
-##### *Please submit your knitted .pdf file along with the corresponding R markdown (.rmd) via Courseworks by 11:59pm on Friday, February 18th.* {-}
-
-\medspace 
-
-*Remember to answer all parts of all questions. Do not delete question subparts or alter formatting of the questions.*
+##### *Please submit your knitted .pdf file along with the corresponding R markdown (.rmd) via Courseworks by 11:59pm on Friday, October 7th.* {-}
 
 \medspace
 
@@ -40,7 +36,7 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 # Aggregating to subway station-level arrest totals
 
 
-### 2a) Load cleaned/appended arrest microdata (`arrests_all.csv`) w/all strings as factors.{-}
+### 2a) Load full set of cleaned arrest microdata (arrests.clean.rdata).{-}
 
 
 ### 2b) Create new data frame (`st_arrests`) that aggregates microdata to station-level observations including the following information:{-}
@@ -54,10 +50,10 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 
 # Joining subway ridership and neighborhood demographic data
 
-### 3a) Import and inspect poverty and ridership data files (`station_povdataclean_2016.csv` and `Subway Ridership by Station - BK.csv`).{-}
+### 3a) Read in poverty and ridership csv files with strings as factors (`station_povdataclean_2016.csv` and `Subway Ridership by Station - BK.csv`).{-}
   
   
-### 3b) Join ridership and demographic data to `st_arrests` and inspect results (store new data frame as `st_joined`).{-}
+### 3b) Join both data frames from 3a to `st_arrests` and inspect results (store new data frame as `st_joined`).{-}
 
   - Inspect results from joins, drop unnecessary columns from the ridership data, and group `st_joined` by `st_id` and `mta_name`.
   - Only display ungrouped version of `st_joined` for compactness.
@@ -111,32 +107,26 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 
 ### 5b) Show a scatterplot of arrest intensity vs. poverty rates along with the regression line you think best fits this relationship. {-}
 
-
-### 5c) Which regression specification do you prefer: linear or quadratic? Be clear about your logic and if applicable cite statistical evidence to support your decision. {-}
-
-### 5d) Interpret your preferred regression specification (carefully!). {-}
+  - Which regression specification do you prefer: linear or quadratic? Be clear about your logic and if applicable cite statistical evidence to support your decision.
+  - Interpret your preferred regression specification (carefully!).
 
 
 \newpage
 
 # Examine the relationship between arrest intensity and crime 
 
-### 6a) Read in `nypd_criminalcomplaints_2016.csv`. {-}
+### 6a) Load the crime data and join to the existing stations data frame (`nypd_criminalcomplaints_2016.csv`). {-}
 
-### 6b) Join stations dataframe to subway station area crime data {-}
-
-- join on `st_id`
-- exclude the stations with the 4 highest counts of criminal complaints, since they do not face comparable neighbourhood policing conditions
 
 \medspace
 
 *NOTE: For the next two subsections, present your preferred plots to inform the relationships in question, along with any additional data manipulation and evidence to support your decisions/interpretation/conclusions. You'll want to explore the data before arriving at your preferred plots, but don't present everything you tried along the way such as intermediate versions of your preferred plot. Focus on the analysis you eventually settled on to best inform the question at hand, and any critical observations that led you down this path.*
 
 
-### 6c) i. Examine the overall relationship between arrest intensity and crime (without taking neighborhood racial composition or poverty into account) (comparable to Section 4.2).{-}
+### 6b) Examine the overall relationship between arrest intensity and crime (without taking neighborhood racial composition or poverty into account) (comparable to Section 4.2).{-}
 
 
-### 6c) ii. Examine how neighborhood racial composition mediates the relationship between arrest intensity and crime (comparable to Section 5.2).{-}
+### 6c) Examine how neighborhood racial composition mediates the relationship between arrest intensity and crime (comparable to Section 5.2).{-}
 
 
 \newpage
