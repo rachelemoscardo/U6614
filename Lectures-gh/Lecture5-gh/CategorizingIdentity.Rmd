@@ -18,6 +18,8 @@ output:
     df_print: tibble # Method to be used for printing data frames. Valid values include "default", "kable", "tibble", and "paged". The "default" method uses print.data.frame. 
 ---
 
+**Post responses on coursework discussion** [here.](https://courseworks2.columbia.edu/courses/162661/discussion_topics/924335).
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
