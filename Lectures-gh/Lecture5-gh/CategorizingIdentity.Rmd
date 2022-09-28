@@ -18,7 +18,7 @@ output:
     df_print: tibble # Method to be used for printing data frames. Valid values include "default", "kable", "tibble", and "paged". The "default" method uses print.data.frame. 
 ---
 
-**Post responses on coursework discussion** [here.](https://courseworks2.columbia.edu/courses/162661/discussion_topics/924335).
+**Please post your response to the assignment (section 7) as a reply to [this](https://courseworks2.columbia.edu/courses/162661/discussion_topics/924335){target="_blank"} CW Discussion.**
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -151,7 +151,7 @@ Brooklyn community members assert that the pipeline's location, approval and ope
 
 [Here](https://usa.ipums.org/usa-action/variables/group?id=race_eth){target="_blank"} is a list of "race, ethnicity and nativity" variables available in the most recent wave of the US Census Bureau's American Survey (accessible via the [IPUMS](https://usa.ipums.org/usa/about.shtml){target="_blank"} portal), though you may also browse for additional variables to consider in order to respond to the questions below.
 
-[Please reply to this CW post by 11:59pm on Monday, October 3rd, with a response that specifically addresses the following methodological decisions:]{.underline}
+[Please reply to [this](https://courseworks2.columbia.edu/courses/162661/discussion_topics/924335){target="_blank"} CW post by 11:59pm on Monday, October 3rd, with a response that specifically addresses the following methodological decisions:]{.underline}
 
 **How would you go about analyzing and presenting data from the American Community Survey (ACS) to examine the potential for heightened environmental harm against the** ***most vulnerable Latinx community members*** **due to their proximity to the North Brooklyn Pipeline?** In other words, you are tasked with describing how you would go about assessing Dr. Hicks' assertion that Latinx identity might intersect with other aspects of identity in ways that correlate with proximity to the pipeline and associated environmental risks.
 
