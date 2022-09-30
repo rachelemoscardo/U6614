@@ -1,9 +1,9 @@
 ################################################################################
 ##
-## [ PROJ ] Lecture 4: Subway Fare Evasion Arrests and Racial Bias
-## [ FILE ] Lecture4-recitation.r
+## [ PROJ ] Lecture 4: Subway Fare Evasion Arrests and Racial Bias (part 1)
+## [ FILE ] Lecture4-recitation.R
 ## [ AUTH ] < YOUR NAME >
-## [ INIT ] < Feb 11, 2022 >
+## [ INIT ] < Sept. 27, 2022 >
 ##
 ################################################################################
 
@@ -11,12 +11,11 @@
 ## Police can stop and ticket or arrest people for subway fare evasion. 
 ## Is NYPD enforcement of subway fare evasion enforcement in Brooklyn racist?
 
-
 ## --------------------------------------
 ## 1. load libraries and check directory
 ## --------------------------------------
 
-#install.packages("weights")
+#install.packages("weights", dependencies = TRUE)
 #install.packages("lmtest")
 #install.packages("sandwich")
 #install.packages("knitr")
@@ -27,34 +26,39 @@ library(lmtest)
 library(sandwich)
 library(knitr)
 
-getwd()
 
 ## -----------------------------------------------------------------------------
 ## 2. Aggregating to subway station-level arrest totals
 ##
-##  a. load cleaned/appended arrest microdata (arrests_all.csv) w/all strings as factors
+##  a. load full set of cleaned arrest microdata (arrests.clean.rdata)
 ##
 ##  b. aggregate microdata to station-level observations w/the following info:
 ##      - st_id, loc2, arrests_all (=arrest count)
 ##      - store results as new data frame st_arrests
+##      - inspect new data frame (but don't include inspection code in submission)
 ##
 ##  c. plot histogram of arrests and briefly describe distribution of arrests across stations
 ## -----------------------------------------------------------------------------
 
 #2a.
-  arrests_all <- read.csv("arrests_all.csv", 
-                         stringsAsFactors = TRUE,
-                          na.strings = c("")) #specify string values to read in as NA (here blanks)
-#2b.
-  st_arrests <- arrests_all %>% 
+load("arrests.clean.RData")
+
+#2b.        
+  st_arrests <- arrests.clean %>% 
     group_by(st_id, loc2) %>% 
     summarise(arrests_all = n() ) %>% 
-    arrange(desc(arrests_all))
+    arrange(desc(arrests_all)) %>% 
+    ungroup()
 
-  #could use count() in place of group_by() & summarise() - shorter but less flexible
-  arrests_all %>% 
+  #could use count() instead of group_by()+summarise() - shorter but less flexible
+  arrests.clean %>% 
     count(st_id, loc2) %>% 
     arrange(desc(n))
+  
+  #inspect - DO NOT INCLUDE IN RMD SUBMISSION
+  str(st_arrests)  #why is this so long?
+  str(st_arrests, give.attr = FALSE)
+  #can also consider ungrouping the st_arrests dataframe 
   
 #2c.
   ggplot(data = st_arrests, aes(x = arrests_all)) + geom_histogram()
@@ -63,10 +67,10 @@ getwd()
 ## -----------------------------------------------------------------------------
 ## 3. joining ridership and neighborhood demographics to arrest data
 ##
-##  a. import other station-level datasets and inspect
+##  a. read in other station-level csv files (w/strings as factors) and inspect
 ##      - don't include inspection code in your rmd submission
 ##  
-##  b. join both files to st_arrests and inspect results (store new df as st_joined),
+##  b. join both data frames to st_arrests & inspect results (store new df as st_joined)
 ##      - inspect results of join and describe any issues
 ##      - drop unnecessary columns from the ridership data
 ##      - group st_joined by st_id and mta_name
@@ -79,7 +83,7 @@ getwd()
 
 #3a. 
   st_poverty <- read.csv("station_povdataclean_2016.csv", 
-                         stringsAsFactors = TRUE)
+                         stringsAsFactors = TRUE) %>% select(-nblack)
   
   #background on poverty data (from 2016 American Community Survey): 
   #  Source: https://usa.ipums.org/usa/acs.shtml
@@ -100,35 +104,48 @@ getwd()
 
   #make sure to inspect these new df's before we join them in 3b!
 
-  st_ridership$mta_name %>% n_distinct()
-  st_poverty$mta_name %>% n_distinct()
-  c(st_ridership$mta_name, st_poverty$mta_name)
 
 #3b.
-  #a vector of columns we don't need to keep
-    drop_vars <- c("swipes2011", "swipes2012", "swipes2013", "swipes2014", "swipes2015")
+
+  #a vector of columns we don't need to keep, will use in 3b
+  drop_vars <- c("swipes2011", "swipes2012", "swipes2013", "swipes2014", "swipes2015")
   
+  #example: join st_arrests to st_poverty
+  st_joinedtemp <- inner_join(st_arrests, st_poverty, by = c("st_id" = "st_id"))
+  #uh-oh, doesn't work!
+  
+  #what's the problem? st_id is a factor in st_arrests but an integer in st_poverty!
+  #need to join on columns of the same data type
+  st_arrests <- st_arrests %>% 
+    mutate(st_id = as.integer(st_id))
+  st_joinedtemp <- inner_join(st_arrests, st_poverty, by = c("st_id" = "st_id"))
+  
+  rm(st_joinedtemp)
+  
+
   #in-class exercise: join all 3 data frames (in a single pipe if you can):
-    #3 data frames to join: st_poverty, st_ridership, st_arrests   
-  st_joined <- inner_join(st_poverty, st_ridership) %>%
-    inner_join(st_arrests) %>% 
-    select(!drop_vars) %>% 
+    #3 data frames to join: st_arrests, st_poverty, st_ridership
+  st_joined <- st_arrests %>%
+    inner_join(st_poverty, by = c("st_id")) %>%
+    inner_join(st_ridership, by = c("st_id" = "st_id",
+                                    "mta_name" = "mta_name")) %>% 
+    select(-all_of(drop_vars)) %>% 
     group_by(st_id, mta_name) 
   
-  #alternative method, step-by-step pipe
-  st_joined <- st_poverty %>% 
-    inner_join(st_ridership) %>%
-    inner_join(st_arrests) %>% 
-    select(!drop_vars) %>% 
-    group_by(st_id, mta_name) 
+  #why use all_of()? 
+  #https://stackoverflow.com/questions/62397267/why-should-i-use-all-of-to-select-columns
 
   #inspect - DO NOT INCLUDE IN RMD SUBMISSION
-    str(st_joined)  #why is this so long? 
+    #display structure of ungrouped data frame to avoid lengthy output listing every group
+    st_joined %>% ungroup() %>% str(give.attr = FALSE)
     summary(st_joined)
       #Note: 157 obs in joined df w/no NAs (except some missing demographics) 
       #inner join worked as intended!
 
+  #QUESTION: could we have used full_join or left_join here instead of inner_join?
+    #yes! in this case all 3 datasets have been pre-cleaned to have 157 obs.
     
+  
 #3c.
   st_joined %>% 
     arrange(desc(arrests_all)) %>% 
@@ -166,85 +183,75 @@ getwd()
   stations <- st_joined %>%
     mutate(arrperswipe = round(arrests_all / (swipes2016 / 100000), 2),
            highpov = as.numeric(povrt_all_2016 > median(st_joined$povrt_all_2016)),
-           nblack = as.numeric(shareblack > .5), 
-           highpov = factor(highpov, levels = c(0,1), 
-                            labels = c("Not high poverty", "High poverty")),
-           nblack  = factor(nblack, levels = c(0,1), 
-                            labels = c("Majority non-Black", "Majority Black")),
+           nblack = as.numeric(shareblack > .5),
            shareblack = round(shareblack, 2),
            povrt_all_2016 = round(povrt_all_2016, 2)) %>% 
-    filter(st_id != 66) #Coney Island
-  
-  #note we can directly test conditions as a logical comparison
-  #then we convert logical results into numeric (i.e. a dummy variable)
-  #we also continued on and converted to factors
-  
-  #conceptual exercise - the below has the exact same result as above
-  stations <- st_joined %>%
-    filter(st_id != 66) %>%
-    mutate(arrperswipe = round(arrests_all / (swipes2016 / 100000), 2),
-           highpov = povrt_all_2016 > median(st_joined$povrt_all_2016),
-           nblack = shareblack > .5, 
-           highpov = factor(highpov, levels = c(FALSE,TRUE), 
+    mutate(highpov = factor(highpov, levels = c(0,1), 
                             labels = c("Not high poverty", "High poverty")),
-           nblack  = factor(nblack, levels = c(FALSE,TRUE), 
-                            labels = c("Majority non-Black", "Majority Black")),
-           shareblack = round(shareblack, 2),
-           povrt_all_2016 = round(povrt_all_2016, 2))
-
+           nblack  = factor(nblack, levels = c(0,1), 
+                            labels = c("Majority non-Black", "Majority Black"))) %>% 
+    filter(st_id != 66)
+  
+      #note we can directly test conditions as a logical comparison
+      #then we convert logical results into numeric (i.e. a dummy variable)
+      #we also continued on and converted to factors
   
   #some inspection and validation
   
     #check if nblack recoding worked as intended
       stations %>% 
         group_by(nblack) %>% 
-        summarise(min(shareblack), 
-                  mean(shareblack), 
-                  max(shareblack))
+        summarise(min(shareblack), mean(shareblack), max(shareblack))
 
     #examine joint distribution of highpov and black
       table(stations$highpov, stations$nblack)
       
+  
   #display top 10 stations by arrest intensity (show st_id, mta_name, arrests_all and new variables)
   stations %>% 
     arrange(desc(arrperswipe)) %>% 
-    select(st_id, mta_name, arrperswipe, arrests_all, 
-           shareblack, povrt_all_2016, highpov, nblack) %>% 
+    select(st_id, mta_name, arrperswipe, arrests_all, shareblack, povrt_all_2016, highpov, nblack) %>% 
     head(n = 10) %>% 
     kable() #kable offers better table formatting
+  
 
   
 #4b. 
   ggplot(stations, #specify dataframe to use
          aes(x = povrt_all_2016, y = arrperswipe)) + #specify columns to use
     geom_point() + #specify plot geometry
-    ggtitle('Scatterplot of arrest intensity vs. poverty rate') + #add title
-    labs(x = 'poverty rate', y = 'arrests relative to ridership') #change axis labels
+    ggtitle('Scatterplot of arrest rate vs. poverty rate') + #add title
+    labs(x = 'poverty rate', y = 'arrest rate') #change axis labels
 
   #fit linear model with station observations (can also add optional weights argument)
     ols1l <- lm(arrperswipe ~ povrt_all_2016, data = stations)
     summary(ols1l) #get summary of the model
-    
-    #get robust SEs #look up docs for sandwich
-    coeftest(ols1l, vcov = vcovHC(ols1l, type="HC1")) 
-                             
+    coeftest(ols1l, vcov = vcovHC(ols1l, type="HC1")) #get robust SEs
+
   #how to refer to specific regression results
     ?summary.lm
-    ols1l_summary <- summary(ols1l) #store summary as an object
-    ols1l_summary$adj.r.squared  #adj R-square
-    ols1l_summary$coefficients   #coefficients
-    round(ols1l_summary$coefficients[2,1],2) #beta1_hat
+    summary(ols1l)$adj.r.squared  #adj R-square
+    summary(ols1l)$coefficients   #coefficients
+    
+  #the summary itself can also be stored as an object
+    #this makes accessing the statistics of interest a bit easier
+    ols1l_summary <- summary(ols1l)
+    ols1l_summary$fstatistic
+    
+    round(summary(ols1l)$coefficients[2,1],2) #beta1_hat
     coeftest(ols1l, vcov = vcovHC(ols1l, type="HC1"))[2,4] #p-value on beta1_hat
+  
   
   #add linear prediction line to scatter plot
     ggplot(stations, 
            aes(x = povrt_all_2016, y = arrperswipe)) + 
       geom_point() + 
-      ggtitle('Scatterplot of arrest intensity vs. poverty rate') + 
-      labs(x = 'poverty rate', y = 'arrests relative to ridership') + 
+      ggtitle('Scatterplot of arrest rate vs. poverty rate') + 
+      labs(x = 'poverty rate', y = 'arrest rate') + 
       geom_smooth(method = 'lm', formula = y ~ x) #add linear SRF
   
-  #fit quadratic OLS model (arrest intensity vs. poverty rate)
+
+  #fit quadratic OLS model (arrest rate vs. poverty rate)
   #HINT: see quadratic syntax from Lecture4.2 (section 4.1)
     ols1q <- lm(arrperswipe ~ povrt_all_2016 + I(povrt_all_2016^2),
                data = stations) #include quadratic term
@@ -255,40 +262,36 @@ getwd()
     ggplot(stations,
            aes(x = povrt_all_2016, y = arrperswipe)) + 
       geom_point() + 
-      ggtitle('Linear regression - quadratic fit') + 
-      labs(x = 'poverty rate', y = 'arrests relative to ridership') + 
-      geom_smooth(method = 'lm', formula = y ~ x + I(x^2), color="red") 
+      ggtitle('Linear regression fit') + 
+      labs(x = 'poverty rate', y = 'arrest rate') + 
+      geom_smooth(method = 'lm', formula = y ~ x + I(x^2)) 
 
+  
 #4c. calculate and test difference in means between high/low poverty stations
     
-  #summarise with group_by is ok... but doesn't accept weights!
-    stations %>%
-      ungroup() %>% #ungroup so we can group by a new variable
+  #summarise w/group_by is ok... but doesn't accept weights!
+    stations %>% 
+      ungroup() %>%  #note we're ungrouping by station first
       group_by(highpov) %>% 
       summarise(n = n(),
                 mean_pov = mean(povrt_all_2016),
                 mean_arrper = mean(arrperswipe))
 
      #inference with t.test command and unequal variance (doesn't accept weights!)
-     #default t-test setting is unequal variance
-      t.test(arrperswipe ~ highpov, data = stations) #default: unequal variance
-      
-      #we can coerce it to true, to prove a point about the std errors
-      t.test(arrperswipe ~ highpov, data = stations, var.equal=TRUE)$stderr
+    #note, default is unequal variance assumption
+       t.test(arrperswipe ~ highpov, data = stations, var.equal = FALSE)
+
    
-      #i.e. that we get the same std errors as unweighted bivariate regression
-      summary(lm(arrperswipe ~ highpov, data = stations))$coefficients[2,2]
-    
   #instead let's use bivariate regression (accepts weights!) w/robust SEs
     #QUANT II REVIEW: 
-    # equivalence of diff-in-means test & bivariate regression w/dummy regressor
+    # equivalence of diff-in-means test & bivariate regression w/dummmy regressor
     # consult Video Lecture 2.2a on the class website 
     diff1 <- lm(arrperswipe ~ highpov, data = stations, weights = swipes2016)
     summary(diff1) #get summary of the model
     coeftest(diff1, vcov = vcovHC(diff1, type="HC1")) #get robust SEs
     
-  #optional: wtd.t.test function in the weights package accepts weights... 
-  #but not robust SEs
+    
+  #wtd.t.test function in the weights package accepts weights... but not robust SEs
     ?wtd.t.test
     stations_highpov <- stations %>% filter(highpov == "High poverty")
     stations_lowpov  <- stations %>% filter(highpov == "Not high poverty")
@@ -313,28 +316,24 @@ getwd()
 ##    c. which model do you prefer, linear or quadratic?
 ##      - why? be clear about your logic and if applicable cite statistical evidence to support your decision
 ##
-##    d. interpret your preferred regression specification (carefully!)
+##    d. interpret the results from your preferred regression specification (carefully!)
 ## -----------------------------------------------------------------------------
-    
+  
 #5a. HINT: use tapply()
   #unweighted difference in mean arrests
     t1_arrper <- with(stations, 
                       tapply(arrperswipe, 
-                             list("High Poverty" = highpov, 
-                                  "Predominantly Black" = nblack), 
-                             mean))
-    t1_arrper
+                             list("High Poverty" = highpov, "Predominantly Black" = nblack), 
+                             mean) )
   
   #weighted difference in mean arrests
   #formula for the weighted mean = Σxw / Σw
     t1_arrper_wtd <-
       tapply(stations$arrperswipe * stations$swipes2016,
-             list(stations$highpov, 
-                  stations$nblack), 
+             list(stations$highpov, stations$nblack), 
              sum) / 
       tapply(stations$swipes2016,
-             list(stations$highpov, 
-                  stations$nblack), 
+             list(stations$highpov, stations$nblack), 
              sum)  
 
   #ok so arrest intensity is higher in high-pov stations that are majority black
@@ -343,24 +342,34 @@ getwd()
                      tapply(povrt_all_2016, 
                             list("High Poverty" = highpov, 
                                  "Predominantly Black" = nblack), 
-                            mean))    
-    t1_povrt %>% round(2)
-    t1_arrper %>% round(2)
-    t1_arrper_wtd %>% round(2)
+                            mean)) 
+    t1_povrt_wtd <-
+      tapply(stations$povrt_all_2016 * stations$swipes2016,
+             list(stations$highpov, 
+                  stations$nblack), 
+             sum) / 
+      tapply(stations$swipes2016,
+             list(stations$highpov, 
+                  stations$nblack), 
+             sum)
     
+  t1_povrt_wtd
+  t1_arrper_wtd
+  #t1_arrper #note how group means change with weighting
+  
+  
 #5b.
-  #scatter plot by nblack w/linear plots
-    ggplot(stations, aes(x = povrt_all_2016, 
-                         y = arrperswipe, 
-                         color = nblack)) +
+    
+  #scatterplot by nblack w/linear plots
+    ggplot(stations, aes(x = povrt_all_2016, y = arrperswipe, color = nblack)) +
       geom_point()  +
-      #add geom_smooth() with linear fit
+      geom_smooth(method = 'lm', formula = y ~ x) + 
       ylab("Arrests relative to ridership") + 
       xlab("Station area poverty rate") +
-      #ggtitle("...", 
-      #  subtitle = "...") +
+      ggtitle("Fare Evasion Arrest Intensity vs Poverty by Race", 
+              subtitle = "Subway stations in Brooklyn (2016)") +
       scale_color_discrete(name = "Predominantly Black Station",
-                           labels=c("No", "Yes"), #reverse label order
+                           labels=c("No", "Yes"),
                            guide = guide_legend(reverse=TRUE)) +
       theme(legend.position = "bottom", 
             legend.background = element_rect(color = "black", 
@@ -371,13 +380,48 @@ getwd()
             legend.text = element_text(size = 8), 
             legend.title = element_text(size = 8) )
   
-  #scatterplot by nblack w/quadratic plots - as above
-    
+  #w/quadratic plots
+    ggplot(stations, aes(x = povrt_all_2016, y = arrperswipe, color = nblack)) +
+      geom_point()  +
+      geom_smooth(method = 'lm', formula = y ~ x + I(x^2)) + #treat x^2 as a separate regressor
+      ylab("Arrests relative to ridership") + 
+      xlab("Station area poverty rate") +
+      ggtitle("Fare Evasion Arrest Intensity vs Poverty by Race", 
+              subtitle = "Subway stations in Brooklyn (2016)") +
+      scale_color_discrete(name = "Predominantly Black Station",
+                           labels=c("No", "Yes"),
+                           guide = guide_legend(reverse=TRUE)) +
+      theme(legend.position = "bottom", 
+            legend.background = element_rect(color = "black", 
+                                             fill = "grey90", 
+                                             size = .2, 
+                                             linetype = "solid"), 
+            legend.direction = "horizontal",
+            legend.text = element_text(size = 8), 
+            legend.title = element_text(size = 8) )
 
 #5c.  
   
-  
+  #by nblack: get separate data frames
+    stations_black <- stations %>% filter(nblack == "Majority Black")
+    stations_nonblack <- stations %>% filter(nblack == "Majority non-Black")
+    
+  #nblack == 1: linear model with station observations (can also add optional weights argument)
+    ols1lb <- lm(arrperswipe ~ povrt_all_2016, data = stations_black)
+    summary(ols1lb) #get summary of the model, can also use coeftest
+
+  #nblack == 1: quadratic model with station observations
+    olsqlb <- lm(arrperswipe ~ FILL IN CODE)
+
+  #nblack == 0: linear model with station observations (can also add optional weights argument)
+    ols1lnb <- lm(arrperswipe ~ FILL IN CODE)
+    
+  #nblack == 0: quadratic model with station observations
+    ols1qnb <- lm(arrperswipe ~ FILL IN CODE) 
+    
+    
 #5d.
+    
   
     
 ## -----------------------------------------------------------------------------
@@ -407,15 +451,13 @@ getwd()
 ## -----------------------------------------------------------------------------
 
 #6a.  
-    st_crime <- read.csv("nypd_criminalcomplaints_2016.csv")
-
-#6b.
-   
+  st_crime <- read.csv("nypd_criminalcomplaints_2016.csv")
     
+#6b.
+  
+  
 #6c. 
   
-
-
   
 ## -----------------------------------------------------------------------------
 ## 7. interpret your findings with respect to subway fare evasion enforcement bias based on race
