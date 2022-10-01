@@ -57,9 +57,9 @@ wbgender <- read_csv("worldbank-genderstats.csv", na = "..")
     #NOTE: the %in% operator checks if two vectors contain overlapping values 
 
   
-##---------------------------
-## 2. prepare analysis df
-##---------------------------
+##-------------------------------
+## 2. prepare analysis data frame
+##-------------------------------
 
 ## A. create 3 separate df's for each variable
 ##    - stem.fmshstemgrads, stem.dayspaidmatleave, stem.unmetcontr
@@ -91,26 +91,26 @@ wbgender <- read_csv("worldbank-genderstats.csv", na = "..")
   #here's a basic pivot_longer example: 
     #https://statisticsglobe.com/pivot_longer-and-pivot_wider-functions-in-r
    
-  stem.fmshstemgrads <- stem.fmshstemgrads %>% 
+  stem.fmshstemgrads_long <- stem.fmshstemgrads %>% 
     pivot_longer(cols = `2011 [YR2011]`:`2020 [YR2020]`,
                  names_to = "Year",
                  values_to = "value") %>% 
     group_by(`Country Name`,`Country Code`) %>% 
-    summarise(fmshstemgrads = round(mean(value, na.rm=TRUE),2) )
+    summarise(fmshstemgrads = round(mean(value, na.rm = TRUE),2) )
   
-  stem.dayspaidmatleave  <- stem.dayspaidmatleave  %>% 
+  stem.dayspaidmatleave_long  <- stem.dayspaidmatleave  %>% 
     pivot_longer(cols = `2011 [YR2011]`:`2020 [YR2020]`,
                  names_to = "Year",
                  values_to = "value") %>% 
     group_by(`Country Name`,`Country Code`) %>% 
-    summarise(dayspaidmatleave = round(mean(value, na.rm=TRUE), 2) )
+    summarise(dayspaidmatleave = round(mean(value, na.rm = TRUE), 2) )
   
-  stem.unmetcontr <- stem.unmetcontr %>% 
+  stem.unmetcontr_long <- stem.unmetcontr %>% 
     pivot_longer(cols = `2011 [YR2011]`:`2020 [YR2020]`,
                  names_to = "Year",
                  values_to = "value") %>% 
     group_by(`Country Name`,`Country Code`) %>% 
-    summarise(unmetcontr = round(mean(value, na.rm=TRUE), 2) ) 
+    summarise(unmetcontr = round(mean(value, na.rm = TRUE), 2) ) 
   
 
   
@@ -118,13 +118,7 @@ wbgender <- read_csv("worldbank-genderstats.csv", na = "..")
 ## C. join 3 new df's together to get a single "tidy" dataframe
 ##    - include 3 analysis variables and `Country Name` and `Country Code`
 ##    - how many countries have non-missing values for all 3 vars?
-  
-  inner_join(x = stem.fmshstemgrads_long, y=stem.dayspaidmatleave_long, )
 
-  stem.cross <- inner_join(stem.fmshstemgrads_long, 
-                          stem.dayspaidmatleave_long, 
-                          stem.unmetcontr_long)
-  
   stem.cross <- inner_join(stem.fmshstemgrads_long, stem.unmetcontr_long) %>% 
     inner_join(stem.dayspaidmatleave_long) %>% 
     na.omit()
@@ -157,11 +151,11 @@ wbgender <- read_csv("worldbank-genderstats.csv", na = "..")
       theme(legend.position = "right")
   
     
-  #how would you describe the correlation?
-    #what variation are we using? 
+  #how would you describe this relationship?
+    #how would you describe the variation that we're using? 
     
     cor(stem.cross$dayspaidmatleave, stem.cross$fmshstemgrads)
-      #it's is positive (though not linear)
+      #it's is positive (though doesn't appear to be linear)
       #we're using cross-sectional variation across countries
 
     

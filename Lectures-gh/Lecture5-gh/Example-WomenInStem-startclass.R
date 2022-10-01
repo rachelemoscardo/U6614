@@ -11,7 +11,7 @@
 ##  - Do countries with more mandated maternal leave have a greater share of 
 ##    women graduating in STEM fields?
 ##  - A more interesting causal framing of that question:
-##     Does maternal leave increase the women's representation in STEM fields?
+##     Does maternal leave increase women's representation in STEM fields?
 
 ## Data source: World Bank's DataBank Gender Statistics
 ##  (https://databank.worldbank.org/source/gender-statistics)
@@ -35,7 +35,7 @@ getwd()
 ## 1. load & prep input data
 ##---------------------------
 
-wbgender <- read_csv("worldbank-genderstats.csv") #ADD ARGUMENT TO ADDRESS NAs
+wbgender <- read_csv("worldbank-genderstats.csv", na = "..") #ADD ARGUMENT TO ADDRESS NAs
 
 
 #wait this data isn't "tidy"! 
@@ -51,27 +51,28 @@ wbgender <- read_csv("worldbank-genderstats.csv") #ADD ARGUMENT TO ADDRESS NAs
 
 
 #first, let's keep *rows* with information for 3 variables:
-  keepvars <- c(FILL IN CODE)
+  keepvars <- c("SE.TER.GRAD.FE.SI.ZS", "SH.MMR.LEVE", "SP.UWT.TFRT")
   stem <- wbgender %>% filter(`Series Code` %in% keepvars)
     #NOTE: use backticks to refer to `Series Code` bc of space in col name 
     #NOTE: the %in% operator checks if two vectors contain overlapping values 
 
   
-##---------------------------
-## 2. prepare analysis df
-##---------------------------
+##-------------------------------
+## 2. prepare analysis data frame
+##-------------------------------
 
 ## A. create 3 separate df's for each variable
 ##  - stem.fmshstemgrads, stem.dayspaidmatleave, stem.unmetcontr
 ##  - each df should be a subset of rows for each variable 
 ##  - in each df, look at the distribution for each var in each year - any concerns?
 
-  stem.fmshstemgrads <- FILL IN CODE   
-
-  stem.dayspaidmatleave <- FILL IN CODE
+  stem.fmshstemgrads <- wbgender %>% filter(`Series Code` == "SE.TER.GRAD.FE.SI.ZS")
+  stem.dayspaidmatleave <- wbgender %>% filter(`Series Code` == "SH.MMR.LEVE")
+  stem.unmetcontr <- wbgender %>% filter(`Series Code` == "SP.UWT.TFRT")
   
-  stem.unmetcontr <- FILL IN CODE
-  
+  summary(stem.fmshstemgrads)
+  summary(stem.dayspaidmatleave)
+  summary(stem.unmetcontr)
 
 ## B. for each variable, create 'analysis variable' = mean value across all years for each country
 ##  - 1. start by reshaping data from wide to long form in each df using pivot_longer
@@ -82,8 +83,8 @@ wbgender <- read_csv("worldbank-genderstats.csv") #ADD ARGUMENT TO ADDRESS NAs
 ##    - repeat for each input variable to end up with 3 data frames
   
   stem.fmshstemgrads_long <- stem.fmshstemgrads %>% 
-    pivot_longer(cols = FILL IN ARGUMENT FOR COLS TO RESHAPE,
-                 names_to = FILL IN ARGUMENT FOR NEW COL NAME W/TIME INFO,
+    pivot_longer(cols = `2011 [YR2011]`:`2020 [YR2020]`,
+                 names_to = "Years",
                  values_to = "value" ) #ARGUMENT FOR NEW COL NAME W/VARIABLE VALUES
   #here's a basic pivot_longer example: 
   #https://statisticsglobe.com/pivot_longer-and-pivot_wider-functions-in-r
@@ -92,19 +93,26 @@ wbgender <- read_csv("worldbank-genderstats.csv") #ADD ARGUMENT TO ADDRESS NAs
   #once you get the reshape down above, 
   #then extend the pipe w/group_by + summarize to get aggregate observations
   stem.fmshstemgrads_long <- stem.fmshstemgrads %>% 
-    pivot_longer(cols = FILL IN ARGUMENT FOR COLS TO RESHAPE,
-                 names_to = FILL IN ARGUMENT FOR NEW COL NAME W/TIME INFO,
+    pivot_longer(cols = `2011 [YR2011]`:`2020 [YR2020]`,
+                 names_to = "Years",
                  values_to = "value") %>% 
-    group_by(FILL IN ARGS) %>% 
-    summarise(fmshstemgrads = FILL IN CODE TO GET COUNTRY-LEVEL STATISTICS)
+    group_by(`Country Name`,`Country Code`) %>% 
+    summarise(fmshstemgrads = round(mean(value, na.rm = TRUE),2) )
   
+  stem.dayspaidmatleave_long  <- stem.dayspaidmatleave  %>% 
+    pivot_longer(cols = `2011 [YR2011]`:`2020 [YR2020]`,
+                 names_to = "Year",
+                 values_to = "value") %>% 
+    group_by(`Country Name`,`Country Code`) %>% 
+    summarise(dayspaidmatleave = round(mean(value, na.rm = TRUE), 2) )
   
   stem.unmetcontr_long <- stem.unmetcontr %>% 
-    FILL IN CODE
+    pivot_longer(cols = `2011 [YR2011]`:`2020 [YR2020]`,
+                 names_to = "Year",
+                 values_to = "value") %>% 
+    group_by(`Country Name`,`Country Code`) %>% 
+    summarise(unmetcontr = round(mean(value, na.rm = TRUE), 2) ) 
   
-  
-  stem.dayspaidmatleave_long <- stem.dayspaidmatleave %>% 
-    FILL IN CODE
 
   
   
@@ -133,8 +141,8 @@ wbgender <- read_csv("worldbank-genderstats.csv") #ADD ARGUMENT TO ADDRESS NAs
   
 
   
-  #how would you describe the correlation?
-    #what variation are we using? 
+  #how would you describe this relationship?
+    #how would you describe the variation that we're using? 
 
      
      
