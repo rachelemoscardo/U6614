@@ -23,7 +23,7 @@ urlcolor: blue
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 ```
 
-##### *Please submit your knitted .pdf file along with the corresponding R markdown (.rmd) via Courseworks by 11:59pm on Friday, Feb 18 (extension until Saturday, Feb 19).* {-}
+##### *Please submit your knitted .pdf file along with the corresponding R markdown (.rmd) via Courseworks by 11:59pm on Friday, Oct 7 (extension until Sunday, Oct 9).* {-}
 
 \medspace
 
@@ -42,12 +42,10 @@ library(knitr)
 # Aggregating to subway station-level arrest totals
 
 
-### 2a) Load cleaned/appended arrest microdata (`arrests_all.csv`) w/all strings as factors.{-}
+### 2a) Load full set of cleaned arrest microdata (arrests.clean.rdata).{-}
+
 ```{r}
-arrests_all <- read.csv("arrests_all.csv", 
-                        stringsAsFactors = TRUE,
-                        na.strings = c("")) 
-#can specify string values to read in as NA (here blanks)
+load("arrests.clean.RData")
 ```
 
 
@@ -55,7 +53,7 @@ arrests_all <- read.csv("arrests_all.csv",
 
   - *st_id, loc2, total arrests*
 ```{r}
-st_arrests <- arrests_all %>% 
+st_arrests <- arrests.clean %>% 
   group_by(st_id, loc2) %>% 
   summarise(arrests_all = n() ) %>% 
   arrange(desc(arrests_all))
@@ -90,9 +88,11 @@ str(st_ridership)
 ### 3b) Join ridership and demographic data to `st_arrests` and inspect results (store new data frame as `st_joined`).{-}
 
 ```{r}
-st_joined <- st_poverty %>%
-  inner_join(st_ridership) %>%
-  inner_join(st_arrests)
+st_joined <- st_arrests %>%
+    mutate(st_id = as.integer(st_id)) %>% 
+    inner_join(st_poverty, by = c("st_id")) %>%
+    inner_join(st_ridership, by = c("st_id" = "st_id",
+                                    "mta_name" = "mta_name")) 
 ```
 
   - Inspect results from joins, drop unnecessary columns from the ridership data, and group `st_joined` by `st_id` and `mta_name`.
@@ -104,12 +104,14 @@ st_joined <- st_poverty %>%
 ```{r}
 drop_vars <- c("swipes2011", "swipes2012", "swipes2013", "swipes2014", "swipes2015")
 
-st_joined <- st_joined %>%
-  select(!drop_vars) %>% 
+st_joined <- st_joined %>% 
+  select(-all_of(drop_vars)) %>% 
   group_by(st_id, mta_name) 
 
 #display structure of ungrouped data frame to avoid lengthy output listing every group
-st_joined %>% ungroup() %>% str()
+st_joined %>% 
+  ungroup() %>% 
+  str()
 ```
 
 ### 3c) Print the top 10 stations by total arrest counts {-}
