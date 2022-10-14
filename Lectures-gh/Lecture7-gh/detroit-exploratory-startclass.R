@@ -3,7 +3,7 @@
 ## [ PROJ ] Lecture 7: Water shutoffs, race, and health in Detroit (Part 1)
 ## [ FILE ] detroit-exploratory.r
 ## [ AUTH ] < YOUR NAME >
-## [ INIT ] < March 1, 2022 >
+## [ INIT ] <Oct 13, 2022 >
 ##
 ################################################################################
 
@@ -32,9 +32,11 @@ library(weights)
 
 
 ## -----------------------------------------------------------------------------
-## directory paths: make sure all input data is saved in "../Data"
+## directory paths: 
 ## -----------------------------------------------------------------------------
 
+#this time we have a parent folder for the project (DetroitWaterShutoffs),
+#and two subfolders for Data and Code 
 getwd()
 
 
@@ -66,6 +68,8 @@ acs_tract.clean <- input_acs_tract %>%
   #what is the unit of observation? 
   
   #population represented by the sample?
+  
+  #why the NA values?
 
 
     
@@ -99,7 +103,10 @@ si_tract_ym <- FILL IN CODE
 ## -----------------------------------------------------------------------------
 
 #join tract-year demographic data (acs_tract.clean) to tract-month shutoff data (si_tract_ym)
-#want to end up with a tract-month panel
+#only keep tracts that are in the shutoff data (si_tract_ym)
+    #acs_tract.clean includes Detroit tracts (Wayne County), 
+    #but also tracts outside of Detroit across the state of Michigan
+#want to end up with a tract-year-month panel
 #new df should include: all columns from two dfs and a new date column
 #also filter out observation for 2017-11-01
 #HINT: what column(s) do you want to join on?
@@ -145,7 +152,8 @@ tract <- tract_ym %>%
 #NOTE: here "cross-sectional" means 1 obs/tract (w/shutoffs summed over all years)
     
 #scatterplot: % black vs shutoffs
-  ggplot(data = tract, aes(x = blackshare, y = si_1000)) + 
+  ggplot(data = tract, 
+         aes(x = blackshare, y = si_1000)) + 
     geom_point() +
     geom_smooth(method = 'lm', formula = y ~ x) 
     
@@ -171,14 +179,16 @@ FILL IN CODE SIMILAR TO ABOVE BUT USE medianinc RATHER THAN blackshare
   #      then experiment w/different aesthetics to indicate greater shutoff rates
   #      e.g. focus on marker size, color, transparency, etc.
   ggplot(data = tract, 
-         aes(x = blackshare, y = medianinc, FILL IN OTHER AESTHETIC MAPPING ARGUMENTS)) + 
+         aes(x = blackshare, 
+             y = medianinc, 
+             FILL IN OTHER AESTHETIC MAPPING ARGUMENTS)) + 
     geom_point(alpha = 0.1) #alpha adjusts the transparency of points 
   #HINT: try ?scale_size(), this is a function to adjust the size aesthetic
   #HINT: try ?scale_color_gradient() to see how to create a diverging color gradient
 
   
 ## -----------------------------------------------------------------------------------
-## Time series plots of citywide shutoffs (aggregate across all tracts in every month)
+## 2.0 Time series plots of citywide shutoffs (aggregate across all tracts in every month)
 ## -----------------------------------------------------------------------------------
   
 #get total population of Detroit (for simplicity, assume pop doesn't change over time
@@ -222,7 +232,9 @@ FILL IN CODE SIMILAR TO ABOVE BUT USE medianinc RATHER THAN blackshare
   ym_inc <- tract_ym %>% 
     group_by(FILL IN GROUPING VARIABLE TO GET RIGHT UNIT OF ANALYSIS) %>% 
     summarise(si_count = sum(si_count)) %>%
-    mutate(pop = if_else(inc_above_median == 1, detroit_pop_hi_inc, detroit_pop_lo_inc),
+    mutate(pop = if_else(inc_above_median == 1, 
+                         detroit_pop_hi_inc, 
+                         detroit_pop_lo_inc),
            si_1000 = si_count / (pop / 1000)) %>%
     na.omit()
   
@@ -237,14 +249,20 @@ FILL IN CODE SIMILAR TO ABOVE BUT USE medianinc RATHER THAN blackshare
     summarise(si_count = sum(si_count)) %>%
     na.omit() %>% 
     ungroup() %>%
-    complete(date, inc_above_median, fill = list(si_count = 0)) %>% #this fills in a new obs for Feb 2016
-    mutate(pop = if_else(inc_above_median == 1, detroit_pop_hi_inc, detroit_pop_lo_inc),
+    complete(date, 
+             inc_above_median, 
+             fill = list(si_count = 0)) %>% #this fills in a new obs for Feb 2016
+    mutate(pop = if_else(inc_above_median == 1, 
+                         detroit_pop_hi_inc, 
+                         detroit_pop_lo_inc),
            si_1000 = si_count / (pop / 1000)) 
 
 
 #plot time series: separate lines for tracts above/below median income
-  ggplot(ym_inc, aes(x = date, y = si_1000)) + 
-    geom_line(aes(group = inc_above_median, color = inc_above_median))
+  ggplot(ym_inc, 
+         aes(x = date, y = si_1000)) + 
+    geom_line(aes(group = inc_above_median, 
+                  color = inc_above_median))
   #QUESTION: why did we specify both group and color aes() arguments?
 
 
@@ -261,11 +279,13 @@ FILL IN CODE SIMILAR TO ABOVE BUT USE medianinc RATHER THAN blackshare
 
   
 #now plot time series by income group again using a factor for the color argument
-  ggplot(ym_inc, aes(x = date, y = si_1000, color = inc_above_median)) + 
+  ggplot(ym_inc, 
+         aes(x = date, y = si_1000, color = inc_above_median)) + 
     geom_line()
 
 #note that here the color aesthetic can be set in ggplot() or geom_line()
-  ggplot(ym_inc, aes(x = date, y = si_1000)) + 
+  ggplot(ym_inc, 
+         aes(x = date, y = si_1000)) + 
     geom_line(aes(color = inc_above_median))
   
 
@@ -292,8 +312,12 @@ FILL IN CODE SIMILAR TO ABOVE BUT USE medianinc RATHER THAN blackshare
     summarise(si_count = sum(si_count)) %>%
     na.omit() %>% 
     ungroup() %>%
-    complete(date, black75, fill = list(si_count = 0)) %>%
-    mutate(pop = if_else(black75 == 1, detroit_pop_black, detroit_pop_nblack),
+    complete(date, 
+             black75, 
+             fill = list(si_count = 0)) %>%
+    mutate(pop = if_else(black75 == 1, 
+                         detroit_pop_black, 
+                         detroit_pop_nblack),
            si_1000 = si_count / (pop / 1000))
   
   

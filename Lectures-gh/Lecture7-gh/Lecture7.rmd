@@ -120,8 +120,12 @@ dim(gap_wide)
 head(gap_wide)
 
 #reshape back to wide from long (creates a row for every year, we'll drop NA rows later)
-gap_long_temp <- long_panel(gap_wide, prefix = "_", begin = 1952, end = 2007,
-                       id = "country") 
+gap_long_temp <- long_panel(gap_wide, 
+                            prefix = "_", 
+                            begin = 1952, 
+                            end = 2007,
+                            id = "country") %>% 
+  rename(year = wave)
 head(gap_long_temp)
 
 #drop rows with NA values
@@ -180,7 +184,7 @@ The LSDV model can be estimated in R using the `lm()` function. The code example
 
 ```{r}
 #specify LSDV model
-lsdv1 <- lm(lifeExp ~ gdpPercap + factor(country) + factor(wave), data = gap_long)
+lsdv1 <- lm(lifeExp ~ gdpPercap + factor(country) + factor(year), data = gap_long)
 ```
 
 ```{r, collapse= TRUE}
@@ -195,16 +199,6 @@ coeftest(lsdv1)[2,]
 
 #robust SEs (here we're just reporting on the coefficient for gdpPercap)
 coeftest(lsdv1, vcov = vcovHC(lsdv1, type = "HC1"))[2,]
-
-#clustered SEs by country (equivalent to areg in Stata)
-
-  #stats for coefficient of interest is the 2nd element in this object. 
-  lsdv1_vcov <- cluster.vcov(lsdv1, 
-                              gap_long$country,
-                              df_correction = T) #a small sample size adjustment
-    
-  #just report stats for coefficient of interest (the second row from coeftest)
-    coeftest(lsdv1, lsdv1_vcov)[2,] 
 ```
 
 The results are identical to Stata when using the *areg* command (or *regress*, properly specified):
@@ -231,7 +225,7 @@ Here are the identical clustered SEs from Stata using the *areg* command:
 
 <br>
 
-Also note that the estimated slope effect of GDP per capita on life expectancy is negative! (Try running without wave fixed effects and see how the estimated slope effect changes.) In other words, once we control for time-invariant country-specific characteristics and year-specific factors shared by all countries, we estimate a negative association between GDP per capita and life expectancy -- this seems contrary to our expectations!
+Also note that the estimated slope effect of GDP per capita on life expectancy is negative! (Try running without year fixed effects and see how the estimated slope effect changes.) In other words, once we control for time-invariant country-specific characteristics and year-specific factors shared by all countries, we estimate a negative association between GDP per capita and life expectancy -- this seems contrary to our expectations!
 
 
 ## Fixed effects estimation with `feols()` and `plm()`
@@ -240,8 +234,8 @@ Also note that the estimated slope effect of GDP per capita on life expectancy i
 `feols()` in the `fixest` package is another way to estimate fixed effects models, and is particularly good at handling lots of fixed effects terms really fast.
 
 ```{r}
-#specify model with FEs for country and wave, and robust SEs
-feols_robust <- feols(lifeExp ~ gdpPercap | factor(country) + factor(wave), 
+#specify model with FEs for country and year, and robust SEs
+feols_robust <- feols(lifeExp ~ gdpPercap | factor(country) + factor(year), 
                 data = gap_long,
                 vcov = "hetero")
 #obtain results
@@ -251,13 +245,13 @@ tidy(feols_robust) %>% filter(term == "gdpPercap")
 ```
 
 ```{r}
-#specify model with FEs for country and wave, and cluster robust SEs by country
-feols_ccluster <- feols(lifeExp ~ gdpPercap | factor(country) + factor(wave), 
+#specify model with FEs for country and year, and cluster robust SEs by country
+feols_ccluster <- feols(lifeExp ~ gdpPercap | factor(country) + factor(year), 
                 data = gap_long,)
 summary(feols_ccluster, cluster = ~ factor(country)) 
 ```
 
-Note that the clustered SEs differ slightly from the `lm()` approach and Stata with areg, due to a different sample size adjustment when computing SEs.
+Note that here the clustered SEs differ slightly from the `lm()` approach and Stata with *areg*, due to a different sample size adjustment with `feols()`.
 
 [Here](https://evalf21.classes.andrewheiss.com/example/standard-errors/) is a helpful resource for obtaining robust and clustered SEs in R, with comparisons to Stata.
 
@@ -267,7 +261,7 @@ While `feols()` is pretty easy to use, it isn't supported by the `stargazer` pac
 #specify FE model using plm
 fe1 <- plm(lifeExp ~ gdpPercap, 
           data = gap_long,
-          index = c("wave", "country"), 
+          index = c("year", "country"), 
           model = "within", 
           effect = "twoways")
 ```
@@ -305,8 +299,8 @@ With this process in mind, a natural visualization of the FE coefficient estimat
 
 ```{r}
 #obtain residualized lifeExp and gdpPercap (with country and year FEs)
-lifeExp_r <- resid(lm(gap_long$lifeExp ~ factor(gap_long$country) + factor(gap_long$wave)))
-gdpPercap_r <- resid(lm(gap_long$gdpPercap ~ factor(gap_long$country) + factor(gap_long$wave)))
+lifeExp_r <- resid(lm(gap_long$lifeExp ~ factor(gap_long$country) + factor(gap_long$year)))
+gdpPercap_r <- resid(lm(gap_long$gdpPercap ~ factor(gap_long$country) + factor(gap_long$year)))
 
 #add residualized variables to gap_long as new columns (similar to cbind)
 gap_long_fe <- data.frame(gap_long, lifeExp_r, gdpPercap_r)
@@ -330,7 +324,7 @@ Time series plots for different entities (or groups of entities) may be an infor
 
 ```{r}
 #transform data to get continent-year means (bc we observe too many countries to plot separately)
-ggplot(data = gap_long, aes(x = wave, y = lifeExp, color = continent)) +
+ggplot(data = gap_long, aes(x = year, y = lifeExp, color = continent)) +
   stat_summary(fun = mean, geom = "line") + 
   ggtitle("Life expectancy over time by continent")
 ```
