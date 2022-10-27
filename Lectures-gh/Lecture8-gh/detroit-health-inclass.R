@@ -3,7 +3,7 @@
 ## [ PROJ ] Week 8: Water shutoffs, race, and health in Detroit (Part 2)
 ## [ FILE ] detroit-health.r
 ## [ AUTH ] < YOUR NAME >
-## [ INIT ] < TBD >
+## [ INIT ] < Oct. 22, 2022 >
 ##
 ################################################################################
 
@@ -217,9 +217,7 @@ getwd()
            vac_res_p100 = (vac_res / total_res) * 100 )
   
   #sample code if you want to save this as a dataframe or csv
-    save(zip_cross, file="data/zip_cross.rda")
-      #use saveRDS() for saving a single R object
-    write.csv(zip_cross, "data/zip_cross.csv")
+    save(zip_cross, file="data/zip_cross.rdata")
             
   #remove temporary data frames from environment (check the upper right pane)
     rm(joined_temp1, joined_temp2, joined_temp3, joined_temp4)
@@ -353,7 +351,7 @@ getwd()
                             weights = zip_panel$pop2015,
                             vcov = "hetero")
     summary(panel_total_1c, cluster = ~ factor(zip5)) 
-      #note the clustered SE differs every so slightly from above method
+      #note the clustered SE differs ever so slightly from above method
       #why? it seems complicated, but here is one person's attempt to understand:
       #https://www.r-bloggers.com/2021/02/reghdfe-and-r-the-joys-of-standard-error-correction/
     
@@ -408,7 +406,7 @@ getwd()
                   method.args = list(se_type = "stata") )
     
     #QUESTION: why doesn't this plot correspond to our FEs estimates?
-    
+      #HINT: in the above ggplot object, try mapping zip5.fac to the color aesthetic
     
     
   #can also plot binned data
@@ -447,5 +445,5 @@ getwd()
                   formula = y ~ x,
                   method.args = list(se_type = "stata") ) 
     #scale_x_continuous(limits = c(-10, 20)) 
-      #can add this ggplot option to zoom in and investgate main cluster of data
+      #can add this ggplot option to zoom in and investigate main cluster of data
 
