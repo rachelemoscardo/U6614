@@ -1,7 +1,8 @@
 ---
 title: 'Public Insurance and Mortality: Evidence from Medicaid Implementation'
-author: Dylan Hogan & Harold Stolper
-date: March 27, 2022
+subtitle: 'An Illustrative and Cautionary Primer on Two-way Fixed Effects Models'
+author: Harold Stolper & Dylan Hogan
+date: Nov. 19, 2022
 output:
   html_document:
     toc: true
@@ -17,7 +18,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Introduction
 
-This document walks through a simplified replication of [Goodman-Bacon (2018)](https://www.journals.uchicago.edu/doi/abs/10.1086/695528) (GB18), which uses an **event study research design** to estimate the causal effect of means-tested public health insurance on infant and child mortality in the United States. 
+This document walks through a simplified replication of [Goodman-Bacon (2018)](https://www.journals.uchicago.edu/doi/abs/10.1086/695528) (GB18), which uses an **event study research design** to estimate the causal effect of means-tested public health insurance on infant and child mortality in the United States. Estimation generally relies on OLS regression with two-way fixed effects (TWFE), i.e. fixed effects for treatment/control entities and another set of fixed effects for time periods. The idea is that TWFE models can allows us to exploit differential timing in treatment across entities to identify the causal effect of interest.
 
 The public health insurance policy of interest is called **Medicaid**. It was rolled out at the state level between 1966 and 1970, along with a new federal requirement that states cover the medical expenses of all cash welfare recipients. Linking public health insurance eligibility to state-specific welfare payments generated large differences in eligibility between demographic groups and states, based upon long-standing, institutional differences in existing state welfare programs. Said another way, states that already had more generous cash welfare programs in place that reached more people had to offer public health insurance to more people upon implementation.
 
@@ -61,10 +62,10 @@ coverageDF <- coverageDF %>%
 coverageDF %>%
   filter(year == year_mcaid) %>%
   group_by(high_eligibility) %>%
-    summarize(afdc_rate = mean(afdc_rate))
+    summarize(afdc_rate = weighted.mean(afdc_rate, child_pop)) #weight states by child pop
 ```
 
-Thus, our treatment of interest corresponds to an increase in the AFDC rate by about 1.4 percentage points on average.
+Thus, our treatment of interest corresponds to an increase in the AFDC rate by about 1.5 percentage points on average.
 
 # The identification problem
 
@@ -175,7 +176,7 @@ Thus, a key limitation of the panel data approach is that we still need to be co
 With intuition for the identification strategy in mind, let's tackle the math. Recall that a treated state is defined as one with an AFDC rate above the median rate in the year Medicaid was implemented. The econometric model that implements the above difference-in-differences strategy discussed above is a fixed effects model, where fixed effects are entity- (state) and time- (year) specific variables included alongside explanatory variables that vary across entities and time. For example, consider the model,
 
 $$Y_{st} = \beta D_{st} + X_{st}' \gamma + \mu_s + \tau_t + \varepsilon_{st}$$
-where $Y_{st}$ is the outcome of interest (public insurance rates or the log of age-adjusted mortality for children aged 0-14) in state $s$ and year $t$, $D_{st}$ is a binary variable that identifies treatment status for a state-year, and $X_{st}$ is a vector of time-varying controls (e.g., income per capita, hospitals per capita, and hospital beds per capita). $\mu_s$ is a state fixed effect, which controls for *time-invariant* unobserved covariates, such as established differences in state-level institutions. $\tau_{t}$ is a year fixed effect, which controls for *time-varying* shocks *common to all states*. Finally, $\varepsilon_{st}$ is an idiosyncratic error term.
+where $Y_{st}$ is the outcome of interest (public insurance rates or the log of age-adjusted mortality for children aged 0-14) in state $s$ and year $t$, $D_{st}$ is a binary variable that indicates treatment status for a state-year, and $X_{st}$ is a vector of time-varying controls (e.g., income per capita, hospitals per capita, and hospital beds per capita). $\mu_s$ is a state fixed effect, which controls for *time-invariant* unobserved covariates, such as established differences in state-level institutions. $\tau_{t}$ is a year fixed effect, which controls for *time-varying* shocks *common to all states*. Finally, $\varepsilon_{st}$ is an idiosyncratic error term.
 
 Though there are several ways to estimate a fixed effects model, an intuitive strategy is to include dummy (or binary) variables for each state and each year (the *Least Squares Dummy Variable Model*), omitting one value of each as a reference case. For complex models, this can be tedious; luckily, there are plenty of reliable packages in R to handle this for us, including `fixest`. 
 
@@ -307,13 +308,13 @@ nonwhiteDF <- nonwhiteDF %>%
 nonwhiteDF %>%
   filter(year == year_mcaid) %>%
   group_by(high_eligibility) %>%
-    summarize(nonwhite_afdc_rate = mean(afdc_rate))
+    summarize(nonwhite_afdc_rate = weighted.mean(afdc_rate, child_pop))
 ```
 
-Applying the same treatment definition to our new sample of non-white households yields a treatment of a 7.5 percentage point increase in eligibility on average. This is already quite higher than the pooled sample we used for public insurance rates above. What is the gap between high- and low-eligibility states if we focus on white households instead?
+Applying the same treatment definition to our new sample of non-white households yields a treatment of a 6.5 percentage point increase in eligibility on average. This is already quite higher than the pooled sample we used for public insurance rates above. What is the gap between high- and low-eligibility states if we focus on white households instead?
 
 ```{R, warning=FALSE}
-# Non-white households only
+# white households only
 whiteDF <- mortalityDF %>% filter(white == 1)
 
 # Define relevant variables
@@ -336,10 +337,10 @@ whiteDF <- whiteDF %>%
 whiteDF %>%
   filter(year == year_mcaid) %>%
   group_by(high_eligibility) %>%
-    summarize(white_afdc_rate = mean(afdc_rate))
+    summarize(white_afdc_rate = weighted.mean(afdc_rate, child_pop))
 ```
 
-Consistent with GB18, we see this gap shrink to about 1 percentage point for white households. Therefore, we should expect to see a larger (and therefore more easily detected) effect on mortality for non-white households, where the gap in AFDC rates between high- and low-eligibility states is about 7 times larger on average than white households.
+Consistent with GB18, we see this gap shrink to just under 1 percentage point for white households. Therefore, we should expect to see a larger (and therefore more easily detected) effect on mortality for non-white households, where the gap in AFDC rates between high- and low-eligibility states is about 7 times larger on average than white households.
 
 Using the difference-in-differences strategy, let's see how this translates to treatment effects. First, for non-white households.
 
@@ -450,3 +451,16 @@ iplot(
 ```
 
 You can see that the confidence intervals around the $\hat \beta_y^{post}$ are smaller than those in the binary treatment version. How do we interpret these effects? After Medicaid, non-white child mortality fell by about 1.5 percent for each percentage point difference in initial AFDC rates. This is arguably a more useful finding for policy compared to estimated effects from the binary treatment, the interpretation of which requires more context about the eligibility status of low- and high-eligibility groups.
+
+
+# Bias in TWFE Models
+
+Now that we've built-up the utility of a TWFE estimation strategy, in the spirit of difference-in-differences, for identifying the causal effects of Medicaid... it turns out that these models generate estimates of treatment effect dynamics that still suffer from bias in many settings! It remains true that settings where the timing of the treatment varies differentially across entities offer a richer source of variation to identify causal effects. But they also introduces a some serious econometric complications. 
+
+Economist Scott Cunningham summarizes the [key takeaways](https://causalinf.substack.com/p/illustrating-the-bias-of-twfe-in?s=r){target="_blank"} from several recent papers. In short, we need to go beyond the familiar parallel trends assumptions. We really need three assumptions in order to use the standard TWFE estimation strategy for a dynamic event study specification like the one introduced here: (1) parallel trends; (2) no anticipation of the treatment; and (3) homogeneous treatment effect profiles. In many settings the third assumption is not realistic, since units (e.g. states) might select into a treatment (policy change) based on expected differences in the effect of that treatment over time.
+
+So, what can we do when these three assumptions are not realistic? Several recent papers have introduced some pretty complicated solutions to different formulations of the underlying problems, including one from the Medicaid study author, [Andrew Goodman-Baker (2021)](https://www.sciencedirect.com/science/article/abs/pii/S0304407621001445){target="_blank"}. A good place to start is [Callaway and Sant’Anna (CS, 2020)](https://causalinf.substack.com/p/callaway-and-santanna-dd-estimator){target="_blank"} and the `did` package they developed for R. CS develop an estimator that yields an unbiased and consistent estimate of each group’s unique treatment effect in each period.
+
+
+
+
