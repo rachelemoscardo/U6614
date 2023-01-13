@@ -44,8 +44,8 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>", highlight = TRUE)
 
 ### Teaching Assistants
 
-- Rodrigo Eyzaguirre (morning section)
-- Liam Tay Kearney (afternoon section)
+- Neil Ke-Jian Chin (morning section)
+- Tirtha Patel (afternoon section)
 
 
 ### Harold Stolper, instructor
@@ -58,7 +58,7 @@ Recent background:
 
 - This is my 8th year teaching quant courses at SIPA.
 - Previously worked as the economist for a non-profit doing research and advocacy to promote upward mobility for low-income NYers.
- - Recent focus on NYPD subway fare evasion enforcement and overpolicing for communities of color, and other topics related to policing, neighborhood change, and transit access.
+ - Recent focus on NYPD subway fare evasion enforcement and over-policing for communities of color, and other topics related to urban inequality (e.g. policing disparities, neighborhood change, transit, access to education).
 
  
 \medskip
@@ -88,10 +88,10 @@ Transitioned from Stata to R after years of using and teaching Stata.
 
 \medskip
 
-- [R Markdown](https://rmarkdown.rstudio.com/lesson-1.html) files are used in RStudio to "both save and execute code generate high quality reports that can be shared with an audience."
-  - This lecture was created using R Markdown.
+- [R Markdown](https://rmarkdown.rstudio.com/lesson-1.html) files are used in RStudio to "both save and execute code and generate high quality reports that can be shared with an audience."
+  - These lecture slides were created using R Markdown.
   - Beginning with Assignment 2, everything you *submit* for this class will be a document generated with R Markdown.
-  - But you're workflow should always begin with an R script before writing up your work using R Markdown
+  - But your workflow should always begin with an R script before writing up your work using R Markdown.
 
 
 ### Base R vs. user-defined R packages
@@ -104,7 +104,7 @@ There are default [base packages](https://stat.ethz.ch/R-manual/R-devel/library/
 - `stats`  
 - `utils`
 
-And there are [R packages](http://r-pkgs.had.co.nz/intro.html) developed and shared by others. Some R packages include:  
+Then there are [R packages](http://r-pkgs.had.co.nz/intro.html) developed and shared by others. Some popular R packages include:  
 
 - `tidyverse`  
 - `ggplot2` 
@@ -123,6 +123,8 @@ But you need to load a package every time you open R using the `library()` funct
 ```{r}
 library(tidyverse)
 ```
+
+*- Base packages don't need to be installed or loaded.*
 
 
 ###  What can you do with R+RStudio+RMarkdown?
@@ -216,9 +218,9 @@ You can see all files located in your working directory in the "Files/Plots/Pack
 
 ### So what is the working directory?
 
-When you run code from the **R Console** or an **R Script**, or from __code chunks__ in an R Markdown file (.rmd), the working directory is...
+When you run code from the **R Console** or an **R Script**, or from __code chunks__ in an R Markdown file (.rmd), the working directory is:
 
-- the folder your file is saved in, or ...
+- the folder your file is saved in, or...
 - if you are working within an **R Project**, the working directory is the main directory for the project (more on that shortly!)
 
 
@@ -234,7 +236,7 @@ getwd()
 What is an "R project"?
 
 - A file that keeps all "project" files organized together:
-   – input data, R scripts, analytical results, and figures.
+   - e.g. input data, R scripts, saved output, figures.
 - When you open an R project, your working directory is automatically set to the directory where your R project (and related files) lives.
 
 Why will we be asking you to create and work with R projects? 
@@ -249,13 +251,13 @@ Why will we be asking you to create and work with R projects?
 **Absolute file path**:  a complete list of directories needed to locate a file or folder. 
 
 \smallskip
-`setwd("C:/Users/Harold Stolper/Google Drive/SIPA/R - Data Analysis/Fall 2020/Lectures/Lecture 1")`
+`setwd("I:/My Drive/Teaching/U6614-drive/Lectures-drive/Lecture1")`
 
 \medskip
 
 **Relative file path**: a way of indicating a given file location relative to your working directory (note that they might be the same!)
 
-- Assuming your current working directory is in the "lecture2" folder and you want to go up 2 levels to the "Fall 2021" folder, your relative file path would look something like this:  
+- Assuming your current working directory is in the "lecture1" folder and you want to go up 2 levels to the "U6614-drive" folder, your relative file path would look something like this:  
 
 `setwd("../../")`  
 
@@ -265,7 +267,7 @@ Why will we be asking you to create and work with R projects?
 
 | **Key** | **Description** |
 | ------ | -------- |
-| ~    | tilde is a shortcut for user's home directory (mine is my name pm)   |
+| ~    | tilde is a shortcut for user's home directory   |
 | ../    | moves up a level   |
 | ../../    | moves up two level   |
 
@@ -391,9 +393,9 @@ Create an R script called assignment1.r that includes code and answers (as comme
 
 - Use blank spaces liberally, code is hard to read and spaces help!
 - Use comments liberally throughout your R script to describe your steps.
-- Troubleshooting is a skill! Here are some tips and resources:
+- Troubleshooting is a skill that will take time to develop! Here are some tips and resources:
    - Consult the R script from class for examples.
-   - Get used to using R's built in documentation by using ?
+   - Get used to using R's built in documentation by using `?`
    - Use Google liberally for examples that work.
    - When you're stuck, focus on finding examples to get your own code to work, even if you don't feel comfortable with all the syntax just yet.
    - Execute your code line by line as you go, this will help you isolate the source of any errors.
@@ -405,8 +407,8 @@ Create an R script called assignment1.r that includes code and answers (as comme
 
 - If you need help troubleshooting errors, posting to [Ed Discussion](https://edstem.org/us/courses/18438/discussion/) is usually a great place to start (in addition to office hours).
 - Your post should provide a [reproducible example](https://stackoverflow.com/help/minimal-reproducible-example), including code and a screenshot of the output/error message if applicable.
-- Don't hesitate to post for help troubleshooting code or setup issues... if you're running intro trouble, odds are somebody else is too!
-- A teaching team member will reply soon, and you are also encouraged to reply to each others' posts if you have insight about how to resolve the issue.
+- Don't be bashful about posting for help troubleshooting code or setup issues... if you're running intro trouble, odds are somebody else is too!
+- A teaching team member will reply soon, and you are also encouraged to reply to each others' posts if you have insight about how to resolve the issue (also an easy way to boost your participation).
    
 
 ### Quizzes on pre-class lessons
@@ -415,20 +417,28 @@ Starting next class, every class will begin with a short Courseworks quiz coveri
 
 - Typically 10 multiple choice questions in total, ~5 minutes to complete
 - Will include 1 question on the Data Primer covering the data to be used next class
+- Academic integrity: quizzes are closed-note (and Courseworks Quizzes shows a log of your quiz activity)
+- I try not to emphasize detailed memorization for the quizzes but inevitably there is some
+  - As long as you are thoughtfully engaging with the pre-class material in advance then you're on the right track. Don't be discouraged if, as a new R user, it takes a bit of time to see your quiz scores improve.
 
 
 ### Attendance and participation
 
 **Recitation**
 
-- You must be able to attend one of the Thursday recitation times
+- **You must be able to attend one of the Thursday recitation times**
   - Early in the semester recitation will be used to review code from class and prep for assignments
   - Later in the semester this time will be used for extra office hours and project meetings
+  - Email me right away if you want to attend a different recitation time than the one for the section you are registered for
+  
+
+### Attendance and participation
 
 **Zoom**
 
-- After in-person instruction resumes, whenever possible Zoom links will be shared w/students who are feeling unwell or dealing with COVID related disruptions
-  - To request a Zoom link, please email the instructor as soon as possible and briefly explain your circumstances
+- If you are feeling unwell or facing unexpected challenges outside of school, please email me right away to briefly explain your situation and request a Zoom link for class if necessary. 
+- Whenever feasible, Zoom links and/or recordings will be provided for students with excused absences. We will try to record at least one of the two weekly class meetings (and recitations)--not necessarily both--so you will either have the opportunity to attend remotely in real-time, or view the recording after.
+
 
 **Participation**
 
