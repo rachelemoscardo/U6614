@@ -39,7 +39,7 @@
 ## -----------------------------------------------------------------------------
 
 #let's assign the gapminder data frame to a new data frame called gap
-gap <- gapminder
+  gap <- gapminder
 
 #let's use some functions to inspect the structure of the gap object
   str(gap) #str (structure) is the function, gap is the argument
