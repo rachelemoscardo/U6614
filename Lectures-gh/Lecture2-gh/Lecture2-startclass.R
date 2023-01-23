@@ -2,7 +2,7 @@
 ##
 ## [ PROJ ] < Assessing gender wage gaps using the Current Population Survey >
 ## [ FILE ] < Lecture2-startclass.R >
-## [ INIT ] < Jan 25, 2022 >
+## [ INIT ] < Jan 24, 2023 >
 ##
 ################################################################################
 
@@ -47,7 +47,9 @@ getwd()
 
 # load the CPS data frame and store as an object 'cps'
   cps <- read.csv("cps_june_20-21.csv")
-# should we explore why there are so many NA values?
+  
+# this time we will remove NA values from the outset in the interest of time
+# general rule: need to understand why NA values arise before deciding what to do 
   cps <- na.omit(cps) #remove all observations with NA values
   
   
