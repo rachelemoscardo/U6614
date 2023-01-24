@@ -2,7 +2,7 @@
 ##
 ## [ PROJ ] < Assessing gender wage gaps using the Current Population Survey >
 ## [ FILE ] < Lecture2-inclass.R >
-## [ INIT ] < Jan 25, 2022 >
+## [ INIT ] < Jan 24, 2023 >
 ##
 ################################################################################
 
@@ -46,14 +46,16 @@ getwd()
 
 # load the CPS data frame and store as an object 'cps'
   cps <- read.csv("cps_june_20-21.csv")
-# should we explore why there are so many NA values?
+
+# this time we will remove NA values from the outset in the interest of time
+# general rule: need to understand why NA values arise before deciding what to do 
   cps <- na.omit(cps) #remove all observations with NA values
-  
+
 # 1a. 
   str(cps)
   View(cps)
   #we can also inspect the data frame by double-clicking in the Environment tab
-  #DON'T INCLUDE View() IN YOUR R MARKDOWN SUBMISSION!
+  #NOTE: DON'T INCLUDE View() IN YOUR R MARKDOWN SUBMISSION!
   
   summary(cps$age)
   summary(cps$sex) #summary is not very useful with character variables
@@ -62,8 +64,11 @@ getwd()
   
   
 # 1b.
-  mutate(cps, sex.fac = as.factor(sex)) #note: here we're not storing this result in memory
-  str(mutate(cps, sex.fac = as.factor(sex))) #you can put the entire operation within str()
+  mutate(cps, sex.fac = as.factor(sex)) 
+    #note: here we're not storing this result in memory
+  
+  str(mutate(cps, sex.fac = as.factor(sex))) 
+    #you can put the entire operation within str() to inspect the output
   
   
 # 1c. best way (using a pipe)
@@ -73,8 +78,8 @@ getwd()
            college.fac = as.factor(college)) %>% 
     select(-serial, -ind) 
   
-  #alternatively:
-  cps.temp1 <- mutate(cps, 
+  #alternatively, you can initialize without a pipe
+  cps.temp1 <- mutate(cps,
                       sex.fac = as.factor(sex), 
                       race.fac = as.factor(race),
                       college.fac = as.factor(college)) %>%
