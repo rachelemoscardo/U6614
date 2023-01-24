@@ -3,6 +3,10 @@ title: 'U6614: Assignment 2'
 author: "Your Name (your-uni)"
 date: "`r Sys.Date()`"
 output:
+  pdf_document:
+    toc: no
+    toc_depth: '3'
+    number_sections: yes
   html_document:
     toc: yes
     toc_depth: 3
@@ -12,10 +16,6 @@ output:
     theme: default
     fig_caption: yes
     df_print: tibble
-  pdf_document:
-    toc: no
-    toc_depth: '3'
-    number_sections: yes
 urlcolor: blue
 ---
 
