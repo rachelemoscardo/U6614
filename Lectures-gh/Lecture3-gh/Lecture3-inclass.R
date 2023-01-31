@@ -3,7 +3,7 @@
 ## [ PROJ ] Lecture 3: Subway Fare Evasion Arrests in Brooklyn
 ## [ FILE ] Lecture3-inclass.r
 ## [ AUTH ] < YOUR NAME >
-## [ INIT ] < Sep 20, 2022 >
+## [ INIT ] < Jan 31, 2023 >
 ##
 ################################################################################
 
@@ -19,9 +19,9 @@
 ## https://hreplots.github.io/U6614/Lectures/Lecture3/lecture_3-6_data_primer.pdf
 
 
-## ---------------------------
-## 1. load libraries
-## ---------------------------
+## ----------------------------------------------
+## 1. load libraries and check working directory
+## ----------------------------------------------
 
 #install.packages("fastDummies")
 
@@ -55,7 +55,7 @@ getwd()
 ##
 ##  c. inspect and describe the coding of race/ethnicity information in each dataset
 ##
-##  d. from the outset, are there any data limitations you think are important to note? 
+##  d. are there any data limitations you think are important to note from the outset? 
 
 ## -----------------------------------------------------------------------------
 
@@ -64,8 +64,8 @@ getwd()
   arrests_bds <- read_csv("microdata_BDS_inclass.csv", na = "")
   arrests_las <- read_csv("microdata_LAS_inclass.csv", na = "")
   
-  str(arrests_bds)
-  str(arrests_las)
+  str(arrests_bds, give.attr = FALSE) 
+  str(arrests_las, give.attr = FALSE)
 
 
 #note that string variables are imported as characters by default (not factors)
@@ -234,15 +234,15 @@ getwd()
 ##
 ##    b. Append arrests_bds.clean and arrests_las.clean
 ##        - use bind_rows from the dplyr package
-##        - store combined data as new data frame called arrests_all
+##        - store combined data as new data frame called arrests.clean
 ##        - only keep columns for pd, race_eth, age, male, dismissal, st_id, loc2,
 ##          converting to factors for columns w/categorical data as needed
 ##        - inspect race_eth for accuracy/consistency
-##        - store as new data frame arrests_all
+##        - store as new data frame arrests.clean
 ##
 ##    c. use the nrow function to display the total number of arrests
 ##
-##    d. Save arrests_all df as an .RData file in a new Lecture4 folder for next week
+##    d. Save arrests.clean df as an .RData file in a new Lecture4 folder for next week
 ##
 ## -----------------------------------------------------------------------------
 
@@ -254,9 +254,7 @@ getwd()
   arrests.clean <- bind_rows(arrests_bds.clean, arrests_las.clean) %>%
     mutate(pd = as.factor(pd),
            st_id = as.factor(st_id), #station/location info is not continuous
-           loc2 = as.factor(loc2),
-           male = as.factor(male),
-           dismissal = as.factor(dismissal)) %>% 
+           loc2 = as.factor(loc2)) %>% 
     select(pd, race_eth, age, male, st_id, loc2, dismissal) #added dismissal column from the LAS data
   summary(arrests.clean)
 
@@ -267,8 +265,8 @@ getwd()
   nrow(arrests.clean)
   
 #5d.
-  save(list = FILL IN CODE HERE, file = "../Lecture4/arrests.clean.RData")
-  #?save
+  save(LIST DATA OBJECTS TO SAVE HERE SEPARATED BY COMMAS,
+       file = "../Lecture4/arrests.clean.RData")  
 
   #for future reference, can also write to a csv file:
   #write_csv(arrests_all, "arrests_all.csv") 
@@ -292,7 +290,7 @@ getwd()
 ##
 ##    d. what, if anything, do you think is interesting to note about the
 ##       distribution of:
-##        - age conditional on race
+##        - age by race (conditional distribution of age)
 ##        - male share by race
 ##        - dismissal by race
 ## -----------------------------------------------------------------------------
@@ -317,6 +315,7 @@ getwd()
       filter(!is.na(race_eth)) %>% 
       count(race_eth, sort = TRUE)
 
+    
 #6b.
   prop.table(table(arrests.clean$race_eth)) %>% round(2)
   prop.table(table(arrests.clean$race_eth, useNA = "always")) %>% round(2)
@@ -409,7 +408,7 @@ getwd()
 
 
 #7c. 
-  arrests_stations_top <- FILL IN CODE
+  arrests_stations_top <-  FILL IN CODE
   
   
 #7d.
