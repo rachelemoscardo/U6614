@@ -1,9 +1,9 @@
 ################################################################################
 ##
 ## [ PROJ ] Lecture 3: Subway Fare Evasion Arrests in Brooklyn
-## [ FILE ] Lecture3-inclass.r
+## [ FILE ] Lecture3-recitation.r
 ## [ AUTH ] < YOUR NAME >
-## [ INIT ] < Sep 20, 2022 >
+## [ INIT ] < Feb 3, 2023 >
 ##
 ################################################################################
 
