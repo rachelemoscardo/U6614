@@ -128,7 +128,8 @@ load("arrests.clean.RData")
   st_joined <- st_arrests %>%
     inner_join(st_poverty, by = c("st_id")) %>%
     inner_join(st_ridership, by = c("st_id" = "st_id",
-                                    "mta_name" = "mta_name")) %>% 
+                                    "mta_name" = "mta_name"
+                                    )) %>% 
     select(-all_of(drop_vars)) %>% 
     group_by(st_id, mta_name) 
   
@@ -136,9 +137,11 @@ load("arrests.clean.RData")
   #https://stackoverflow.com/questions/62397267/why-should-i-use-all-of-to-select-columns
 
   #inspect - DO NOT INCLUDE IN RMD SUBMISSION
+  summary(st_joined)
+  
     #display structure of ungrouped data frame to avoid lengthy output listing every group
     st_joined %>% ungroup() %>% str(give.attr = FALSE)
-    summary(st_joined)
+    
       #Note: 157 obs in joined df w/no NAs (except some missing demographics) 
       #inner join worked as intended!
 
@@ -250,7 +253,8 @@ load("arrests.clean.RData")
       labs(x = 'poverty rate', y = 'arrest rate') + 
       geom_smooth(method = 'lm', formula = y ~ x) #add linear SRF
   
-
+#anova(linear, quadratic) --> F-statistic (partial F stat)
+    
   #fit quadratic OLS model (arrest rate vs. poverty rate)
   #HINT: see quadratic syntax from Lecture4.2 (section 4.1)
     ols1q <- lm(arrperswipe ~ povrt_all_2016 + I(povrt_all_2016^2),
@@ -319,9 +323,17 @@ load("arrests.clean.RData")
 ##    d. interpret the results from your preferred regression specification (carefully!)
 ## -----------------------------------------------------------------------------
   
-#5a. HINT: use tapply()
+    library(gapminder)
+    gap <- gapminder
+    tapply(gap$lifeExp, list(gap$continent, gap$year), mean)
+    
+    gap %>%
+      group_by(continent, year) %>% 
+      summarise(mean_lifeexp = mean(lifeExp))
+
+    #5a. HINT: use tapply()
   #unweighted difference in mean arrests
-    t1_arrper <- with(stations, 
+    t1_arrper <- with(stations,  #stations %>%
                       tapply(arrperswipe, 
                              list("High Poverty" = highpov, "Predominantly Black" = nblack), 
                              mean) )
@@ -353,7 +365,7 @@ load("arrests.clean.RData")
                   stations$nblack), 
              sum)
     
-  t1_povrt_wtd
+  t1_povrt_wtd,
   t1_arrper_wtd
   #t1_arrper #note how group means change with weighting
   
@@ -381,7 +393,9 @@ load("arrests.clean.RData")
             legend.title = element_text(size = 8) )
   
   #w/quadratic plots
-    ggplot(stations, aes(x = povrt_all_2016, y = arrperswipe, color = nblack)) +
+    ggplot(stations, aes(x = povrt_all_2016, 
+                         y = arrperswipe, 
+                         color = nblack)) +
       geom_point()  +
       geom_smooth(method = 'lm', formula = y ~ x + I(x^2)) + #treat x^2 as a separate regressor
       ylab("Arrests relative to ridership") + 
@@ -407,17 +421,20 @@ load("arrests.clean.RData")
     stations_nonblack <- stations %>% filter(nblack == "Majority non-Black")
     
   #nblack == 1: linear model with station observations (can also add optional weights argument)
-    ols1lb <- lm(arrperswipe ~ povrt_all_2016, data = stations_black)
+    ols1lb <- lm(arrperswipe ~ povrt_all_2016, data = stations_black, 
+                 weights = swipes2016)
     summary(ols1lb) #get summary of the model, can also use coeftest
 
   #nblack == 1: quadratic model with station observations
-    olsqlb <- lm(arrperswipe ~ FILL IN CODE)
+    olsqlb <- lm(arrperswipe ~ povrt_all_2016 + I(povrt_all_2016^2), data = stations_black)
 
   #nblack == 0: linear model with station observations (can also add optional weights argument)
     ols1lnb <- lm(arrperswipe ~ FILL IN CODE)
     
   #nblack == 0: quadratic model with station observations
     ols1qnb <- lm(arrperswipe ~ FILL IN CODE) 
+    
+    anova(m1, m2)
     
     
 #5d.
@@ -441,6 +458,13 @@ load("arrests.clean.RData")
 ##  c. examine relationship between arrest intensity & criminal complaints 
 ##      i. First, look at over all relationship (don't take nblack into account)
 ##      ii. Then, allow relationship to vary by nblack
+    
+    #do regression w/ full sample
+    #split sample into two (or use interaction term)
+    #run regression for both linear and quadratic, choose your favourite
+    #interpret it.
+    
+    #for plot, just show your favourite one.
 ##
 ##  NOTE: you don't need to follow *all* the same steps in questions 3-5.
 ##    for 6.c.i. and 6.c.ii:
@@ -452,6 +476,10 @@ load("arrests.clean.RData")
 
 #6a.  
   st_crime <- read.csv("nypd_criminalcomplaints_2016.csv")
+    
+    st_crime_clean <- st_crime %>% 
+      arrange(desc(crimes)) %>% 
+      tail(-4)
     
 #6b.
   
@@ -468,4 +496,9 @@ load("arrests.clean.RData")
 ##    - for this question, try to be specific and avoid vaguely worded concerns
 ## -----------------------------------------------------------------------------
   
-  
+    #bias
+    #significant
+    #accurate
+    #reliable 
+    #representative 
+    

@@ -3,13 +3,17 @@
 ## [ PROJ ] Lecture 4: Subway Fare Evasion Arrests and Racial Bias (part 1)
 ## [ FILE ] Lecture4-inclass.R
 ## [ AUTH ] < YOUR NAME >
-## [ INIT ] < Sep 29, 2022 >
+## [ INIT ] < Feb 7th, 2023 >
 ##
 ################################################################################
 
 ## POLICY QUESTION FOR THIS WEEK & NEXT:
 ## Police can stop and ticket or arrest people for subway fare evasion. 
 ## Is NYPD enforcement of subway fare evasion enforcement in Brooklyn racist?
+
+## Lecture3/A3 examined this question using variation among arrested individuals.
+
+## Lecture4/A4 examines this question using variation between subway stations
 
 
 ## --------------------------------------
@@ -122,8 +126,7 @@ load("arrests.clean.RData")
   
   #what's the problem? st_id is a factor in st_arrests but an integer in st_poverty!
   #need to join on columns of the same data type
-  st_arrests <- st_arrests %>% 
-    mutate(st_id = as.integer(st_id))
+  st_arrests <- st_arrests %>% mutate(st_id = as.integer(st_id))
   st_joinedtemp <- inner_join(st_arrests, st_poverty, by = c("st_id" = "st_id"))
   
   rm(st_joinedtemp)
@@ -187,7 +190,7 @@ load("arrests.clean.RData")
 
 #4a.
   stations <- st_joined %>%
-    mutate(arrperswipe = round(arrests_all / (swipes2016 / 100000), 2), #arrest intensity
+    mutate(arrperswipe = round(arrests_all / (swipes2016/100000), 2), #arrest intensity
            highpov = as.numeric(povrt_all_2016 > median(st_joined$povrt_all_2016)),
            nblack = as.numeric(shareblack > .5),
            shareblack = round(shareblack, 2),
@@ -217,9 +220,8 @@ load("arrests.clean.RData")
    stations %>% 
      arrange(desc(arrperswipe)) %>% 
      select(st_id, mta_name, arrperswipe, arrests_all, shareblack, povrt_all_2016, highpov, nblack) %>% 
-     head(n = 10) %>% view() 
-     #kable() #kable offers better table formatting
-  
+     head(n = 10)  %>% 
+     kable() #kable offers better table formatting
 
   
 #4b. 
@@ -236,12 +238,6 @@ load("arrests.clean.RData")
     coeftest(ols1l, vcov = vcovHC(ols1l, type="HC1")) #get robust SEs
   
   #how to refer to specific regression results
-    summary_ols1l <- summary(ols1l)
-    summary_ols1l$adj.r.squared
-    
-    summary_ols1l$residuals
-   
-    
     ?summary.lm
     summary(ols1l)$adj.r.squared  #adj R-square
     summary(ols1l)$coefficients   #coefficients
@@ -260,7 +256,7 @@ load("arrests.clean.RData")
   #fit quadratic OLS model (arrest rate vs. poverty rate)
     #HINT: see quadratic syntax from Lecture4.2 (section 4.1)
     ols1q <- lm(arrperswipe ~ povrt_all_2016 + I(povrt_all_2016^2),
-                data = stations) #include quadratic term
+                data = stations) 
     summary(ols1q) 
     coeftest(ols1q, vcov = vcovHC(ols1q, type="HC1"))
     
@@ -274,17 +270,36 @@ load("arrests.clean.RData")
 
   
 #4c. calculate and test difference in means between high/low poverty stations
+    
+  #summarise w/group_by is ok... but doesn't accept weights!
     stations %>% 
-      ungroup() %>% 
+      ungroup() %>%  #note we're ungrouping by station first
       group_by(highpov) %>% 
       summarise(n = n(),
                 mean_pov = mean(povrt_all_2016),
                 mean_arrper = mean(arrperswipe))
-
-t.test(arrperswipe ~ highpov, data = stations)
-
-diff_in_means <- lm(arrperswipe ~ highpov, data = stations, weights = swipes2016)
- summary(diff_in_means)
+    
+  #inference with t.test command and unequal variance (doesn't accept weights!)
+    t.test(arrperswipe ~ highpov, data = stations, var.equal = FALSE)
+    
+    
+  #instead let's use bivariate regression (accepts weights!) w/robust SEs
+  #QUANT II REVIEW: 
+  # equivalence of diff-in-means test & bivariate regression w/dummmy regressor
+  # consult Video Lecture 2.2a on the class website  
+    diff1 <- lm(arrperswipe ~ highpov, data = stations, weight = swipes2016)
+    summary(diff1) #get summary of the model
+    coeftest(diff1, vcov = vcovHC(diff1, type="HC1")) #get robust SEs
+    
+    
+  #wtd.t.test function in the weights package accepts weights... but not robust SEs
+    ?wtd.t.test
+    stations_highpov <- stations %>% filter(highpov == "High poverty")
+    stations_lowpov  <- stations %>% filter(highpov == "Not high poverty")
+    wtd.t.test(stations_highpov$arrperswipe, stations_lowpov$arrperswipe, 
+               weight = stations_highpov$swipes2016, 
+               weighty = stations_lowpov$swipes2016)
+      #compare difference and SE of difference to previous approach
 
  
 ## -----------------------------------------------------------------------------
@@ -324,13 +339,21 @@ diff_in_means <- lm(arrperswipe ~ highpov, data = stations, weights = swipes2016
 
   #ok so arrest intensity is higher in high-pov stations that are majority black
   #are there differences in poverty rates that could in part explain this association?
+    t1_arrper %>% round(2)
+    t1_arrper_wtd %>% round(2)
+    
     t1_povrt <- with(stations, 
                      tapply(povrt_all_2016, 
                             list("High Poverty" = highpov, "Predominantly Black" = nblack), 
                             mean) )    
-    t1_arrper %>% round(2)
-    t1_arrper_wtd %>% round(2)
-    t1_povrt %>% round(2)
+    t1_povrt_wtd <-
+      tapply(stations$povrt_all_2016 * stations$swipes2016,
+             list(stations$highpov, stations$nblack), 
+             sum) / 
+      tapply(stations$swipes2016,
+             list(stations$highpov, stations$nblack), 
+             sum)
+    t1_povrt_wtd %>% round(2)
   
   
 #5b.

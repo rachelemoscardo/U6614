@@ -3,13 +3,17 @@
 ## [ PROJ ] Lecture 4: Subway Fare Evasion Arrests and Racial Bias
 ## [ FILE ] Lecture4-startclass.r
 ## [ AUTH ] < YOUR NAME >
-## [ INIT ] < Feb 08, 2022 >
+## [ INIT ] < Feb 7th, 2023 >
 ##
 ################################################################################
 
 ## POLICY QUESTION FOR THIS WEEK & NEXT:
 ## Police can stop and ticket or arrest people for subway fare evasion. 
-## Is NYPD enforcement of subway fare evasion enforcement in Brooklyn racist?
+## Is NYPD enforcement of subway fare evasion enforcement in Brooklyn discriminatory?
+
+## Lecture3/A3 examined this question using variation among arrested individuals.
+
+## Lecture4/A4 examines this question using variation between subway stations
 
 
 ## --------------------------------------
@@ -58,10 +62,10 @@ getwd()
   #can also consider ungrouping the st_arrests dataframe 
   
 #2c.
-  ggplot(data = st_arrests, aes(x = arrests_all)) + geom_histogram()
+  ggplot(FILL IN CODE)
   
   #remember ggplot is in the tidyverse, so we can also start by passing the data into a pipe
-    st_arrests %>% ggplot(aes(x = arrests_all)) + geom_histogram()
+    st_arrests %>% FILL IN CODE
 
     
 ## -----------------------------------------------------------------------------
@@ -177,7 +181,7 @@ getwd()
 
 #4a.
   stations <- st_joined %>%
-    mutate(arrperswipe = round(arrests_all / (swipes2016 / 100000), 2),
+    mutate(arrperswipe = round(arrests_all / (swipes2016/100000), 2),
            highpov = as.numeric(povrt_all_2016 > median(st_joined$povrt_all_2016)),
            nblack = as.numeric(shareblack > .5),
            shareblack = round(shareblack, 2),
@@ -238,8 +242,8 @@ getwd()
     
   #fit quadratic OLS model (arrest rate vs. poverty rate)
   #HINT: see quadratic syntax from Lecture4.2 (section 4.1)
-    ols1q <- lm(FILL IN FORMULA FOR QUADRATIC SYNTAX,
-                data = stations) #include quadratic term
+    ols1q <- lm(FILL IN FORMULA FOR QUADRATIC SYNTAX, #include quadratic term
+                data = stations) 
     summary(ols1q) 
     coeftest(ols1q, vcov = vcovHC(ols1q, type="HC1"))
     
@@ -322,13 +326,21 @@ getwd()
   
   #ok so arrest intensity is higher in high-pov stations that are majority black
   #are there differences in poverty rates that could in part explain this association?
+    t1_arrper %>% round(2)
+    t1_arrper_wtd %>% round(2)
+    
     t1_povrt <- with(stations, 
                      tapply(povrt_all_2016, 
                             list("High Poverty" = highpov, "Predominantly Black" = nblack), 
                             mean) )    
-    t1_arrper %>% round(2)
-    t1_arrper_wtd %>% round(2)
-    t1_povrt %>% round(2)
+    t1_povrt_wtd <-
+      tapply(stations$povrt_all_2016 * stations$swipes2016,
+             list(stations$highpov, stations$nblack), 
+             sum) / 
+      tapply(stations$swipes2016,
+             list(stations$highpov, stations$nblack), 
+             sum)
+    t1_povrt_wtd %>% round(2)
   
   
 #5b.
