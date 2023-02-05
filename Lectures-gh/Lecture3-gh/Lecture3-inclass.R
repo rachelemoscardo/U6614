@@ -228,7 +228,7 @@ getwd()
 
 
 ## -----------------------------------------------------------------------------
-## 5. Append BDS and LAS microdata -- stack rows with rbind
+## 5. Append BDS and LAS microdata -- stack rows with bind_rows()
 ##
 ##    a. create a column (pd) to identify PD data source (= "las" or "bds")
 ##

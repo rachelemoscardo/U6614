@@ -23,7 +23,7 @@ urlcolor: blue
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 ```
 
-##### *Please submit your knitted .pdf file along with the corresponding R markdown (.rmd) via Courseworks by 11:59pm on Monday, October 4th.* {-}
+##### *Please submit your knitted .pdf file along with the corresponding R markdown (.rmd) via Courseworks by 11:59pm on the due date.* {-}
 
 \medspace
 
@@ -195,7 +195,7 @@ table(arrests_las.clean$race_eth, arrests_las.clean$hispanic_flag, useNA = "alwa
   arrests_las.clean <- arrests_las.clean %>% mutate(pd = "las")
 ```
 
-### 5b) Append `arrests_bds.clean` and `arrests_las.clean` using `rbind()`. Store as new data frame `arrests.clean` and inspect for consistency/accuracy. {-}
+### 5b) Append `arrests_bds.clean` and `arrests_las.clean` using `bind_rows()`. Store as new data frame `arrests.clean` and inspect for consistency/accuracy. {-}
 
 ```{r}
   arrests.clean <- bind_rows(arrests_las.clean, arrests_bds.clean) %>%
@@ -213,7 +213,8 @@ The total number of subway fare evasion arrest records from both BDS and LAS is 
 ### 5d) Save `arrests.clean` as an .RData file, in a folder for next class called Lecture4. {-}
 
 ```{r}
-save(list = "arrests.clean", file = "C:/Users/rodri/OneDrive/Escritorio/Columbia/TA - R/R codes/Recitation_3/arrests.clean.RData") 
+save(list = "arrests.clean", 
+     file = "I:/My Drive/Teaching/U6614-drive/Lectures-drive/Lecture3/arrests.clean.RData") 
 ```
 
 \newpage

@@ -23,7 +23,7 @@ urlcolor: blue
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 ```
 
-##### *Please submit your knitted .pdf file along with the corresponding R markdown (.rmd) via Courseworks by 11:59pm by the due date.* {-}
+##### *Please submit your knitted .pdf file along with the corresponding R markdown (.rmd) via Courseworks by 11:59pm on the due date.* {-}
 
 \medspace
 
@@ -77,7 +77,7 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 
 ### 5a) Create a column (`pd`) to identify public defender data source. {-}
 
-### 5b) Append `arrests_bds.clean` and `arrests_las.clean` using `rbind()`. Store as new data frame `arrests.clean` and inspect for consistency/accuracy. {-}
+### 5b) Append `arrests_bds.clean` and `arrests_las.clean` using `bind_rows()`. Store as new data frame `arrests.clean` and inspect for consistency/accuracy. {-}
 
 ### 5c) What is the total number of subway fare evasion arrest records? {-}
 
