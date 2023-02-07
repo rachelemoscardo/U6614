@@ -18,7 +18,7 @@ output:
     df_print: tibble # Method to be used for printing data frames. Valid values include "default", "kable", "tibble", and "paged". The "default" method uses print.data.frame. 
 ---
 
-**Please post your response to the assignment (section 7) as a reply to [this](https://courseworks2.columbia.edu/courses/162661/discussion_topics/924335){target="_blank"} CW Discussion.**
+***Please post your response to the assignment (section 7) as a reply to [this](https://courseworks2.columbia.edu/courses/164523/discussion_topics/1002464){target="_blank"} CW Discussion.***
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -139,7 +139,7 @@ Advocates countered that existing data gaps pose a bigger threat:
 > But the unintended consequences of inaccurate data to meet the needs of AAPI and immigrant communities pose a greater threat, Carlyn Cowen, CPC’s chief policy and public affairs officer said.
 
 
-# Assignment: post your response in a reply to the relevant Ed post by Monday, October 3rd.
+# Assignment: due by 11:59pm on Monday, February 13th 
 
 The US has a long history of environmental racism that continues to disproportionately impact communities of color through heightened proximity to highways, toxic waste sites, and industry. This means people of color tend to [breath more polluted air](https://www.theatlantic.com/politics/archive/2018/02/the-trump-administration-finds-that-environmental-racism-is-real/554315/){target="_blank"} and [drink more polluted water](https://link.springer.com/article/10.1007/s12111-020-09511-5){target="_blank"}, both of which are linked to serious adverse health effects. They also tend to live in [greater proximity to oil and gas pipelines](https://eos.org/research-spotlights/americas-natural-gas-pipeline-routes-and-environmental-justice){target="_blank"} that further degrade the surrounding environment and increase exposure to hazards and disasters such as leaks and explosions. 
 
@@ -151,7 +151,7 @@ Brooklyn community members assert that the pipeline's location, approval and ope
 
 [Here](https://usa.ipums.org/usa-action/variables/group?id=race_eth){target="_blank"} is a list of "race, ethnicity and nativity" variables available in the most recent wave of the US Census Bureau's American Survey (accessible via the [IPUMS](https://usa.ipums.org/usa/about.shtml){target="_blank"} portal), though you may also browse for additional variables to consider in order to respond to the questions below.
 
-[Please reply to [this](https://courseworks2.columbia.edu/courses/162661/discussion_topics/924335){target="_blank"} CW post by 11:59pm on Monday, October 3rd, with a response that specifically addresses the following methodological decisions:]{.underline}
+[Please reply to [this](https://courseworks2.columbia.edu/courses/164523/discussion_topics/1002464){target="_blank"} CW post by 11:59pm on Monday, February 13th, with a response that specifically addresses the following methodological decisions:]{.underline}
 
 **How would you go about analyzing and presenting data from the American Community Survey (ACS) to examine the potential for heightened environmental harm against the** ***most vulnerable Latinx community members*** **due to their proximity to the North Brooklyn Pipeline?** In other words, you are tasked with describing how you would go about assessing Dr. Hicks' assertion that Latinx identity might intersect with other aspects of identity in ways that correlate with proximity to the pipeline and associated environmental risks.
 
