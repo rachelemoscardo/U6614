@@ -225,51 +225,78 @@ load("arrests.clean.RData")
     geom_point() + #specify plot geometry
     ggtitle('Scatterplot of arrest rate vs. poverty rate') + #add title
     labs(x = 'poverty rate', y = 'arrest rate') #change axis labels
-
+  
   #fit linear model with station observations (can also add optional weights argument)
-    ols1l <- lm(arrperswipe ~ povrt_all_2016, data = stations)
-    summary(ols1l) #get summary of the model
-    coeftest(ols1l, vcov = vcovHC(ols1l, type="HC1")) #get robust SEs
-
+  ols1l <- lm(arrperswipe ~ povrt_all_2016, data = stations)
+  summary(ols1l) #get summary of the model
+  coeftest(ols1l, vcov = vcovHC(ols1l, type="HC1")) #get robust SEs
+  
   #how to refer to specific regression results
-    ?summary.lm
-    summary(ols1l)$adj.r.squared  #adj R-square
-    summary(ols1l)$coefficients   #coefficients
-    
+  ?summary.lm
+  summary(ols1l)$adj.r.squared  #adj R-square
+  summary(ols1l)$coefficients   #coefficients
+  
   #the summary itself can also be stored as an object
-    #this makes accessing the statistics of interest a bit easier
-    ols1l_summary <- summary(ols1l)
-    ols1l_summary$fstatistic
-    
-    round(summary(ols1l)$coefficients[2,1],2) #beta1_hat
-    coeftest(ols1l, vcov = vcovHC(ols1l, type="HC1"))[2,4] #p-value on beta1_hat
+  #this makes accessing the statistics of interest a bit easier
+  ols1l_summary <- summary(ols1l)
+  ols1l_summary$fstatistic
   
+  round(summary(ols1l)$coefficients[2,1],2) #beta1_hat
+  coeftest(ols1l, vcov = vcovHC(ols1l, type="HC1"))[2,4] #p-value on beta1_hat
   
-  #add linear prediction line to scatter plot
-    ggplot(stations, 
-           aes(x = povrt_all_2016, y = arrperswipe)) + 
-      geom_point() + 
-      ggtitle('Scatterplot of arrest rate vs. poverty rate') + 
-      labs(x = 'poverty rate', y = 'arrest rate') + 
-      geom_smooth(method = 'lm', formula = y ~ x) #add linear SRF
+  # linear scatter plot (no weights)
+  ggplot(stations, 
+         aes(x = povrt_all_2016, y = arrperswipe)) + 
+    geom_point() + 
+    ggtitle('Scatterplot of arrest rate vs. poverty rate') + 
+    labs(x = 'poverty rate', y = 'arrest rate') + 
+    geom_smooth(method = 'lm', formula = y ~ x) #add linear SRF
   
-#anova(linear, quadratic) --> F-statistic (partial F stat)
-    
-  #fit quadratic OLS model (arrest rate vs. poverty rate)
-  #HINT: see quadratic syntax from Lecture4.2 (section 4.1)
-    ols1q <- lm(arrperswipe ~ povrt_all_2016 + I(povrt_all_2016^2),
-               data = stations) #include quadratic term
-    summary(ols1q) 
-    coeftest(ols1q, vcov = vcovHC(ols1q, type="HC1"))
+  # linear regression (no weights)
+  ols1l_nw <- lm(arrperswipe ~ povrt_all_2016, data = stations)
+  summary(ols1l_nw) #get summary of the model
+  coeftest(ols1l_nw, vcov = vcovHC(ols1l_nw, type="HC1")) #get robust SEs
+  
+  # linear scatter plot (weights)
+  ggplot(stations, 
+         aes(x = povrt_all_2016, y = arrperswipe, weight = swipes2016)) + 
+    geom_point() + 
+    ggtitle('Scatterplot of arrest rate vs. poverty rate') + 
+    labs(x = 'poverty rate', y = 'arrest rate') + 
+    geom_smooth(method = 'lm', formula = y ~ x) #add linear SRF
+  
+  # linear regression (weights)
+  ols1l_w <- lm(arrperswipe ~ povrt_all_2016, data = stations, weights = swipes2016)
+  summary(ols1l_w) #get summary of the model
+  coeftest(ols1l_w, vcov = vcovHC(ols1l_w, type="HC1")) #get robust SEs
 
-  #add quadratic prediction line to scatter plot
-    ggplot(stations,
-           aes(x = povrt_all_2016, y = arrperswipe)) + 
-      geom_point() + 
-      ggtitle('Linear regression fit') + 
-      labs(x = 'poverty rate', y = 'arrest rate') + 
-      geom_smooth(method = 'lm', formula = y ~ x + I(x^2)) 
-
+  # quadratic scatter plot (no weights)
+  ggplot(stations,
+         aes(x = povrt_all_2016, y = arrperswipe)) + 
+    geom_point() + 
+    ggtitle('Linear regression fit') + 
+    labs(x = 'poverty rate', y = 'arrest rate') + 
+    geom_smooth(method = 'lm', formula = y ~ x + I(x^2)) 
+  
+  # quadratic regression (no weights)
+  ols1q_nw <- lm(arrperswipe ~ povrt_all_2016 + I(povrt_all_2016^2),
+              data = stations) #include quadratic term
+  summary(ols1q_nw) 
+  coeftest(ols1q_nw, vcov = vcovHC(ols1q_nw, type="HC1"))
+  
+  # quadratic scatter plot (weights)
+  ggplot(stations,
+         aes(x = povrt_all_2016, y = arrperswipe, weight = swipes2016)) + 
+    geom_point() + 
+    ggtitle('Linear regression fit') + 
+    labs(x = 'poverty rate', y = 'arrest rate') + 
+    geom_smooth(method = 'lm', formula = y ~ x + I(x^2)) 
+  
+  # quadratic regression (weights)
+  ols1q_w <- lm(arrperswipe ~ povrt_all_2016 + I(povrt_all_2016^2),
+                 data = stations, weights = swipes2016) #include quadratic term
+  summary(ols1q_w) 
+  coeftest(ols1q_w, vcov = vcovHC(ols1q_w, type="HC1"))
   
 #4c. calculate and test difference in means between high/low poverty stations
     
@@ -373,7 +400,7 @@ load("arrests.clean.RData")
 #5b.
     
   #scatterplot by nblack w/linear plots
-    ggplot(stations, aes(x = povrt_all_2016, y = arrperswipe, color = nblack)) +
+    ggplot(stations, aes(x = povrt_all_2016, y = arrperswipe, color = nblack, weight = swipes2016)) +
       geom_point()  +
       geom_smooth(method = 'lm', formula = y ~ x) + 
       ylab("Arrests relative to ridership") + 
@@ -395,7 +422,8 @@ load("arrests.clean.RData")
   #w/quadratic plots
     ggplot(stations, aes(x = povrt_all_2016, 
                          y = arrperswipe, 
-                         color = nblack)) +
+                         color = nblack,
+                         weight = swipes2016)) +
       geom_point()  +
       geom_smooth(method = 'lm', formula = y ~ x + I(x^2)) + #treat x^2 as a separate regressor
       ylab("Arrests relative to ridership") + 
