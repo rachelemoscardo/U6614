@@ -1,9 +1,9 @@
 ################################################################################
 ##
-## [ PROJ ] Lecture 4: Subway Fare Evasion Arrests and Racial Bias (part 1)
+## [ PROJ ] Lecture 4: Subway Fare Evasion Arrests and Racial Bias
 ## [ FILE ] Lecture4-recitation.R
 ## [ AUTH ] < YOUR NAME >
-## [ INIT ] < Sept. 27, 2022 >
+## [ INIT ] < Feb 14, 2023 >
 ##
 ################################################################################
 
@@ -111,7 +111,7 @@ load("arrests.clean.RData")
   drop_vars <- c("swipes2011", "swipes2012", "swipes2013", "swipes2014", "swipes2015")
   
   #example: join st_arrests to st_poverty
-  st_joinedtemp <- inner_join(st_arrests, st_poverty, by = c("st_id" = "st_id"))
+  #st_joinedtemp <- inner_join(st_arrests, st_poverty, by = c("st_id" = "st_id"))
   #uh-oh, doesn't work!
   
   #what's the problem? st_id is a factor in st_arrests but an integer in st_poverty!
@@ -251,7 +251,9 @@ load("arrests.clean.RData")
       geom_point() + 
       ggtitle('Scatterplot of arrest rate vs. poverty rate') + 
       labs(x = 'poverty rate', y = 'arrest rate') + 
-      geom_smooth(method = 'lm', formula = y ~ x) #add linear SRF
+      geom_smooth(method = 'lm', formula = y ~ x) + #add linear SRF
+      geom_smooth(aes(weight = swipes2016), 
+                  method = 'lm', formula = y ~ x) #compare to weighted OLS
   
 #anova(linear, quadratic) --> F-statistic (partial F stat)
     
@@ -365,7 +367,7 @@ load("arrests.clean.RData")
                   stations$nblack), 
              sum)
     
-  t1_povrt_wtd,
+  t1_povrt_wtd
   t1_arrper_wtd
   #t1_arrper #note how group means change with weighting
   
