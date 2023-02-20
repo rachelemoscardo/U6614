@@ -21,6 +21,7 @@ getwd()
 ## 2. load and inspect NYPD enforcement data
 ## -----------------------------------------
 
+
 df1 <- read_excel("fare evasion - citywide.xlsx", sheet = "Sheet1")
 df1.r <- df1 %>% filter(action == "arrests")
 
