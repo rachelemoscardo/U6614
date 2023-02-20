@@ -7,7 +7,6 @@ output:
     toc: no
     toc_depth: '3'
     number_sections: yes
-    fig_crop: no
   html_document:
     toc: yes
     toc_depth: 3
@@ -24,9 +23,10 @@ urlcolor: blue
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 ```
 
-##### *Please submit your knitted .pdf file along with the corresponding R markdown (.rmd) via Courseworks by 11:59pm on Friday, Oct 7 (extension until Sunday, Oct 9).* {-}
+##### *Please submit your knitted .pdf file along with the corresponding R markdown (.rmd) via Courseworks by 11:59pm on Friday, February 17th.* {-}
 
 \medspace
+
 
 # Load libraries
 ```{r}
@@ -35,6 +35,7 @@ library(weights)
 library(lmtest)
 library(sandwich)
 library(knitr)
+
 ```
 
 
@@ -44,7 +45,6 @@ library(knitr)
 
 
 ### 2a) Load full set of cleaned arrest microdata (arrests.clean.rdata).{-}
-
 ```{r}
 load("arrests.clean.RData")
 ```
@@ -73,7 +73,7 @@ This histogram shows that the majority of subway stations had a relatively small
 
 # Joining subway ridership and neighborhood demographic data
 
-### 3a) Import and inspect poverty and ridership data files (`station_povdataclean_2016.csv` and `Subway Ridership by Station - BK.csv`).{-}
+### 3a) Read in poverty and ridership csv files with strings as factors (`station_povdataclean_2016.csv` and `Subway Ridership by Station - BK.csv`).{-}
 
 ```{r}
 st_poverty <- read.csv("station_povdataclean_2016.csv", 
@@ -82,38 +82,35 @@ st_poverty <- read.csv("station_povdataclean_2016.csv",
 st_ridership <- read.csv("Subway Ridership by Station - BK.csv", 
                            stringsAsFactors = TRUE)
 
-str(st_poverty)
-str(st_ridership)
+#str(st_poverty)
+#str(st_ridership)
 ```
   
-### 3b) Join ridership and demographic data to `st_arrests` and inspect results (store new data frame as `st_joined`).{-}
-
-```{r}
-st_joined <- st_arrests %>%
-    mutate(st_id = as.integer(st_id)) %>% 
-    inner_join(st_poverty, by = c("st_id")) %>%
-    inner_join(st_ridership, by = c("st_id" = "st_id",
-                                    "mta_name" = "mta_name")) 
-```
+  
+### 3b) Join both data frames from 3a to `st_arrests` and inspect results (store new data frame as `st_joined`).{-}
 
   - Inspect results from joins, drop unnecessary columns from the ridership data, and group `st_joined` by `st_id` and `mta_name`.
   - Only display ungrouped version of `st_joined` for compactness.
 
-
-\medspace
-
 ```{r}
 drop_vars <- c("swipes2011", "swipes2012", "swipes2013", "swipes2014", "swipes2015")
 
-st_joined <- st_joined %>% 
+st_arrests <- st_arrests %>% 
+  mutate(st_id = as.integer(st_id))
+
+st_joined <- st_arrests %>%
+  inner_join(st_poverty, by = c("st_id")) %>%
+  inner_join(st_ridership, by = c("st_id" = "st_id",
+                                  "mta_name" = "mta_name")) %>% 
   select(-all_of(drop_vars)) %>% 
   group_by(st_id, mta_name) 
 
 #display structure of ungrouped data frame to avoid lengthy output listing every group
-st_joined %>% 
-  ungroup() %>% 
-  str()
+st_joined %>% ungroup() %>% str()
 ```
+
+\medspace
+
 
 ### 3c) Print the top 10 stations by total arrest counts {-}
 
@@ -127,7 +124,8 @@ st_joined %>%
   select(st_id, mta_name, arrests_all, shareblack, povrt_all_2016) %>% 
   mutate(shareblack = round(shareblack, 2),
          povrt_all_2016 = round(povrt_all_2016, 2)) %>% 
-  head(n = 10)
+  head(n = 10) %>% 
+  kable()
 ```
 
 
@@ -151,7 +149,7 @@ st_joined %>%
 
 ```{r}
 stations <- st_joined %>%
-  filter(st_id != 66) %>% #Coney Island
+  filter(st_id != 66) %>%
   mutate(arrperswipe = round(arrests_all / (swipes2016 / 100000), 2),
          highpov = as.numeric(povrt_all_2016 > median(st_joined$povrt_all_2016)),
          nblack = as.numeric(shareblack > .5),
@@ -162,18 +160,13 @@ stations <- st_joined %>%
          shareblack = round(shareblack, 2),
          povrt_all_2016 = round(povrt_all_2016, 2)) 
 
-#display top 10 stations by arrest intensity
-#show st_id, mta_name, arrests_all and new variables
+#display top 10 stations by arrest intensity (show st_id, mta_name, arrests_all and new variables)
   stations_top10 <- stations %>% 
     arrange(desc(arrperswipe)) %>% 
     select(st_id, mta_name, arrperswipe, arrests_all, shareblack, 
            povrt_all_2016, highpov, nblack) %>% 
     head(n = 10)
-  
-  kable(stations_top10, 
-        booktabs=TRUE, 
-        caption = "Top 10 Stations by Arrest Intensity") %>% 
-    kableExtra::kable_styling(latex_options="scale_down") #scale to fit
+  kable(stations_top10)
 ```
 
 ### 4b) Examine the relationship between arrest intensity and poverty rates {-}
@@ -187,7 +180,7 @@ stations <- st_joined %>%
 ```{r}
 #quadratic
 ggplot(stations, #specify data frame to use
-       aes(x = povrt_all_2016, y = arrperswipe)) + #specify columns to use
+       aes(x = povrt_all_2016, y = arrperswipe, weight = swipes2016)) + #specify columns to use
   geom_point() + #specify plot geometry
   ggtitle('Fare evasion arrest intensity vs. poverty rate') + #add title
   labs(x = 'poverty rate', 
@@ -199,20 +192,23 @@ ggplot(stations, #specify data frame to use
 
 ```{r results = 'hide'}
 #linear model (all stations)
-ols1l <- lm(arrperswipe ~ povrt_all_2016, data = stations)
+ols1l <- lm(arrperswipe ~ povrt_all_2016, weights = swipes2016, data = stations)
 summary(ols1l)
 coeftest(ols1l, vcov = vcovHC(ols1l, type="HC1")) #get robust SEs
 
 #quadratic model(all stations)
-ols1q <- lm(arrperswipe ~ povrt_all_2016 + I(povrt_all_2016^2), 
+ols1q <- lm(arrperswipe ~ povrt_all_2016 + I(povrt_all_2016^2), weights = swipes2016,
             data = stations)
 summary(ols1q) 
 coeftest(ols1q, vcov = vcovHC(ols1q, type="HC1"))
 ```
 
-Based on visual inspection, both the linear and quadratic models appear to fit the relationship between fare evasion arrest intensity and poverty rates across all stations fairly well. We prefer the quadratic model because it explains more of the variation in arrest intensity than the linear model; the quadratic model has an adjusted R-squared of `r round(summary(ols1q)$adj.r.squared, 2)` compared to `r round(summary(ols1l)$adj.r.squared, 2)` for the linear model. Here we choose not to weight station observations by the number of MetroCard swipes, so that each station area iq equally weighted in the regression analysis. When computing statistics for groups of stations in the next section, we do weight by swipes so that statistics are representative of ridership in each group.
+Based on visual inspection, both the linear and quadratic models appear to fit the relationship between fare evasion arrest intensity and poverty rates across all stations fairly well. We prefer the quadratic model because it explains more of the variation in arrest intensity than the linear model; the quadratic model has an adjusted R-squared of `r round(summary(ols1q)$adj.r.squared, 2)` compared to `r round(summary(ols1l)$adj.r.squared, 2)` for the linear model. 
 
 If you prefer the linear specification because it is a bit simpler to interpret without changing the substantive conclusions, that is a reasonable justification.
+
+We opt to weight observations by ridership at each subway station when estimating regressions, to account for busier stations. When computing statistics for groups of stations in the next section, we also weight by swipes so that statistics are representative of ridership in each group.
+
 
 \medskip
 
@@ -285,10 +281,13 @@ The above tables show that mean arrests per 100,000 MetroCard swipes are more th
 \medskip
 
 ### 5b) Show a scatterplot of arrest intensity vs. poverty rates along with the regression line you think best fits this relationship. {-}
+
+  - Which regression specification do you prefer: linear or quadratic? Be clear about your logic and if applicable cite statistical evidence to support your decision.
+  - Interpret your preferred regression specification (caerfully)!
   
 ```{r}
 #quadratic
-ggplot(stations, aes(x = povrt_all_2016, y = arrperswipe, color = nblack)) +
+ggplot(stations, aes(x = povrt_all_2016, y = arrperswipe, weight = swipes2016, color = nblack)) +
     geom_point()  +
     geom_smooth(method = 'lm', formula = y ~ x + I(x^2)) + 
     ylab("arrests per 100,000 MetroCard swipes") + xlab("poverty rate") +
@@ -311,31 +310,27 @@ stations_black <- stations %>% filter(nblack == "Majority Black")
 stations_nonblack <- stations %>% filter(nblack == "Majority non-Black")
 
 #nblack == 1: linear model with station observations
-ols_b_l <- lm(arrperswipe ~ povrt_all_2016, 
+ols_b_l <- lm(arrperswipe ~ povrt_all_2016, weights = swipes2016,
               data = stations_black)
 
 #nblack == 1: quadratic model with station observations
-ols_b_q <- lm(arrperswipe ~ povrt_all_2016 + I(povrt_all_2016^2), 
+ols_b_q <- lm(arrperswipe ~ povrt_all_2016 + I(povrt_all_2016^2), weights = swipes2016,
               data = stations_black)
 
 #nblack == 0: linear model with station observations
-ols_nb_l <- lm(arrperswipe ~ povrt_all_2016, 
+ols_nb_l <- lm(arrperswipe ~ povrt_all_2016, weights = swipes2016,
                data = stations_nonblack)
 
 #nblack == 0: quadratic model with station observations
-ols_nb_q <- lm(arrperswipe ~ povrt_all_2016 + I(povrt_all_2016^2), 
+ols_nb_q <- lm(arrperswipe ~ povrt_all_2016 + I(povrt_all_2016^2), weights = swipes2016,
                data = stations_nonblack)
 ```
-
-### 5c) Which regression specification do you prefer: linear or quadratic? Be clear about your logic and if applicable cite statistical evidence to support your decision. {-}
-
-Quadratic results are shown here because it explains a greater share of the variation in fare evasion arrest intensity for predominantly Black station areas than the linear model (`r round(summary(ols_b_q)$adj.r.squared, 2)` compared to `r round(summary(ols_b_l)$adj.r.squared, 2)`), but the same substantive conclusion holds regardless of functional form.
 
 Visual inspection of the fitted regression lines reveal a clear pattern for both the linear and quadratic specifications: fare evasion arrest intensity increases (at an increasing rate) along with poverty rates at subway stations in predominantly Black areas, but not at other stations. Said another way, the result suggest that a predominantly Black station area tends to experience significantly higher arrest intensity than a non-Black station with a similarly high poverty rate. 
 
 Note that the above interpretation is qualitative in nature: it's a bit more straightforward to provide a numerical interpretation of coefficient estimates with a linear model. Alternatively, it would be informative to compare predicted fare evasion arrest intensity for a predominantly Black station area with a specified poverty rate (say, 40%) compared to a non-Black station area with the same poverty rate. If you prefer the linear specification because it is a bit simpler to interpret without changing the substantive conclusions, that is a reasonable justification.
 
-### 5d) Interpret your preferred regression specification (caerfully)! {-}
+Quadratic results are shown here because it explains a greater share of the variation in fare evasion arrest intensity for predominantly Black station areas than the linear model (`r round(summary(ols_b_q)$adj.r.squared, 2)` compared to `r round(summary(ols_b_l)$adj.r.squared, 2)`), but the same substantive conclusion holds regardless of functional form.
 
 For both quadratic and linear models, poverty rates explain very little of the variation in arrest intensity among non-Black station areas in Brooklyn (`r round(summary(ols_nb_q)$adj.r.squared, 2)` and `r round(summary(ols_nb_l)$adj.r.squared, 2)`, respectively).
 
@@ -346,39 +341,24 @@ Regardless of functional form, poverty is only a statistically significant deter
 
 # Examine the relationship between arrest intensity and crime 
 
-### 6a) Read in `nypd_criminalcomplaints_2016.csv`. {-}
+### 6a) Load the crime data and join to the existing stations data frame (`nypd_criminalcomplaints_2016.csv`). {-}
 
 ```{r}
 st_crime <- read.csv("nypd_criminalcomplaints_2016.csv")
-```
 
-### 6b) Join stations dataframe to subway station area crime data {-}
-
-- join on st_id
-- exclude the stations with the 4 highest counts of criminal complaints, since they do not face comparable
-neighbourhood policing conditions
-
-
-```{r}
 stations_wcrime <- stations %>%
   inner_join(st_crime) %>%
-  arrange(desc(crimes))
-
-cutoffs <- stations_wcrime %>% 
-  select(crimes)
- 
-#exclude the stations with the 4 highest counts of criminal complaints
-stations_wcrime <- stations_wcrime %>% 
-  filter(crimes < cutoffs$crimes[4]) 
+  arrange(desc(crimes)) %>% 
+  filter(crimes < 2367) #exclude the stations with the 4 highest counts of criminal complaints
 ```
 
 \medspace
 
-### 6c) i. Examine the overall relationship between arrest intensity and crime (without taking neighborhood racial composition or poverty into account) (comparable to Section 4.2).{-}
+### 6b) Examine the overall relationship between arrest intensity and crime (without taking neighborhood racial composition or poverty into account) (comparable to Section 4.2).{-}
 
 ```{r}
 #linear
-ggplot(stations_wcrime, aes(x = crimes, y = arrperswipe)) +
+ggplot(stations_wcrime, aes(x = crimes, y = arrperswipe, weight = swipes2016,)) +
     geom_point()  +
     geom_smooth(method = 'lm', formula = y ~ x) + 
     ylab("arrests per 100,000 MetroCard swipes") + xlab("criminal complaints") +
@@ -397,7 +377,7 @@ ggplot(stations_wcrime, aes(x = crimes, y = arrperswipe)) +
 
 ```{r}
 #quadratic
-ggplot(stations_wcrime, aes(x = crimes, y = arrperswipe)) +
+ggplot(stations_wcrime, aes(x = crimes, y = arrperswipe, weight = swipes2016,)) +
     geom_point()  +
     geom_smooth(method = 'lm', formula = y ~ x + I(x^2)) + 
     ylab("arrests per 100,000 MetroCard swipes") + xlab("criminal complaints") +
@@ -415,10 +395,10 @@ ggplot(stations_wcrime, aes(x = crimes, y = arrperswipe)) +
 ```
 
 ```{r results = 'hide'}
-ols_c_l <- lm(arrperswipe ~ crimes, data = stations_wcrime)
+ols_c_l <- lm(arrperswipe ~ crimes, weights = swipes2016, data = stations_wcrime)
 ols_c_l_robSE <- coeftest(ols_c_l, vcov = vcovHC(ols_c_l, type="HC1")) #get robust SEs
 
-ols_c_q <- lm(arrperswipe ~ crimes + I(crimes^2), data = stations_wcrime)
+ols_c_q <- lm(arrperswipe ~ crimes + I(crimes^2), weights = swipes2016, data = stations_wcrime)
 ols_c_q_robSE <- coeftest(ols_c_q, vcov = vcovHC(ols_c_q, type="HC1")) #get robust SEs
 ```
 
@@ -429,11 +409,11 @@ From the linear model, we can see that the effect of criminal complaints on arre
 \medskip
 
 
-### 6c) ii. Examine how neighborhood racial composition mediates the relationship between arrest intensity and crime (comparable to Section 5.2).{-}
+### 6c) Examine how neighborhood racial composition mediates the relationship between arrest intensity and crime (comparable to Section 5.2).{-}
 
 ```{r}
 #linear
-ggplot(stations_wcrime, aes(x = crimes, y = arrperswipe, color = nblack)) +
+ggplot(stations_wcrime, aes(x = crimes, y = arrperswipe, weight = swipes2016, color = nblack)) +
     geom_point()  +
     geom_smooth(method = 'lm', formula = y ~ x) + 
     ylab("arrests per 100,000 MetroCard swipes") + xlab("criminal complaints") +
@@ -459,19 +439,19 @@ stations_wcrime_nonblack <- stations_wcrime %>%
   filter(nblack == "Majority non-Black")
 
 #nblack == 1: linear model with station observations
-ols_c_b_l <- lm(arrperswipe ~ crimes, data = stations_wcrime_black)
+ols_c_b_l <- lm(arrperswipe ~ crimes, weights = swipes2016, data = stations_wcrime_black)
 ols_c_b_l_robSE <- coeftest(ols_c_b_l, vcov = vcovHC(ols_c_b_l, type="HC1")) 
 
 #nblack == 1: quadratic model with station observations
-ols_c_b_q <- lm(arrperswipe ~ crimes + I(crimes^2), 
+ols_c_b_q <- lm(arrperswipe ~ crimes + I(crimes^2), weights = swipes2016,
                 data = stations_wcrime_black)
 
 #nblack == 0: linear model with station observations
-ols_c_nb_l <- lm(arrperswipe ~ crimes, data = stations_wcrime_nonblack)
+ols_c_nb_l <- lm(arrperswipe ~ crimes, weights = swipes2016, data = stations_wcrime_nonblack)
 ols_c_nb_l_robSE <- coeftest(ols_c_nb_l, vcov = vcovHC(ols_c_nb_l, type="HC1")) 
 
 #nblack == 0: quadratic model with station observations
-ols_c_nb_q <- lm(arrperswipe ~ crimes + I(crimes^2), 
+ols_c_nb_q <- lm(arrperswipe ~ crimes + I(crimes^2), weights = swipes2016,
                  data = stations_wcrime_nonblack)
 ```
 
