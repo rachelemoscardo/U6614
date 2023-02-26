@@ -3,7 +3,7 @@
 ## [ PROJ ] Lecture 7: Water shutoffs, race, and health in Detroit (Part 1)
 ## [ FILE ] detroit-exploratory.r
 ## [ AUTH ] < YOUR NAME >
-## [ INIT ] <Oct 13, 2022 >
+## [ INIT ] <Feb 28, 2022 >
 ##
 ################################################################################
 
@@ -41,35 +41,83 @@ getwd()
 
 
 ## -----------------------------------------------------------------------------
-## Get demographic data
+## Get demographic data from the American Community Survey (via tidycensus)
 ## -----------------------------------------------------------------------------
 
-#get census tract level demographic data from ACS 
-input_acs_tract <- read.dta13("data/ACS_10_17_5YR_CensusTract.dta")
+# we can download data from the US Census Bureau using the tidycensus package
 
-  #unit of observation?
-  
-  
-#clean, rename/construct key variables, prep for merge on a tractid
-acs_tract.clean <- input_acs_tract %>% 
-  select(census_tract_long, year, num_pop_total, num_income_median, 
-         per_race_black_alone_or_combo, geodisplaylabel) %>% 
-  rename(tractid = census_tract_long, 
-         pop = num_pop_total,
-         medianinc = num_income_median,
-         blackshare = per_race_black_alone_or_combo) %>% 
-  mutate(black75 = as.numeric(blackshare >= 75),
-         inc_above_median = as.numeric(medianinc > 26884.59)) %>%
-  arrange(tractid, year)
-  
-  #inspect
-  summary(acs_tract.clean)
-  
-  #what is the unit of observation? 
-  
-  #population represented by the sample?
-  
-  #why the NA values?
+# tidycensus is an R package that allows users to interface US Census Bureau data
+# https://walker-data.com/tidycensus/
+
+# data requests are made through the Census API
+# an API is just a way of accessing data from within an app (e.g. RStudio)
+# need to sign up for a free Census API Key: http://api.census.gov/data/key_signup.html
+
+
+# ## THE FOLLOWING CODE IS COMMENTED OUT AS SAMPLE CODE FOR REFERENCE
+# 
+# # census_api_key("ENTER YOUR API KEY HERE")
+# 
+# # initialize new data frame to store ACS data from API requests
+# MI_acs_tract_10_17 <- data_frame()
+# 
+# # set up a for loop for each year of data to access
+# for (i in 2010:2017) {
+# 
+#   # query ACS data from the census API for each year 2010-2017
+#   acs <- get_acs(geography = "tract",
+#                  state = "MI",
+#                  variables = c(pop = "B01001_001",
+#                                white_pop = "B01001H_001",
+#                                hisp_pop = "B01001I_001",
+#                                asian_pop = "B02001_005",
+#                                black_pop = "B02001_003",
+#                                male_pop = "B01001_002",
+#                                medianinc = "B19013_001",
+#                                med_age = "B01002_001",
+#                                pov = "B17025_002"),
+#                  year = i)
+# 
+#   # transform data for later analysis and prep for join
+#   acs <- acs %>%
+#     select(-moe, -NAME) %>%
+#     pivot_wider(names_from = variable, values_from = estimate) %>%
+#     mutate(year = i,
+#            whiteshare = 100 * (white_pop/pop),
+#            hispshare = 100 * (hisp_pop/pop),
+#            asianshare = 100 * (asian_pop/pop),
+#            blackshare = 100 * (black_pop/pop),
+#            maleshare = 100 * (male_pop/pop),
+#            poverty_rate = 100 * (pov/pop),
+#            black75 = as.numeric(blackshare >= 75),
+#            inc_above_median = as.numeric(medianinc > 26884.59),
+#            tractid = as.numeric(GEOID)) %>%
+#     select(-GEOID)
+#   print(i)
+# 
+#   # append each year of data to a combined dataset
+#   MI_acs_tract_10_17 <- MI_acs_tract_10_17 %>%
+#     bind_rows(acs)
+# }
+# 
+# # save data frame
+# saveRDS(MI_acs_tract_10_17, file = "Data/MI_acs_tract_10_17.rds")
+
+
+### START HERE IN CLASS
+
+#load ACS data
+MI_acs_tract_10_17 <- readRDS("Data/MI_acs_tract_10_17.rds")
+
+#inspect
+summary(MI_acs_tract_10_17)
+
+
+#what is the unit of observation? 
+
+#population represented by the sample?
+
+#why the NA values?
 
 
     
@@ -102,13 +150,14 @@ si_tract_ym <- FILL IN CODE
 ## Join shutoff & demographic data: construct tract-year/month panel w tract-level totals
 ## -----------------------------------------------------------------------------
 
-#join tract-year demographic data (acs_tract.clean) to tract-month shutoff data (si_tract_ym)
+#join tract-year demographic data (MI_acs_tract_10_17) to tract-month shutoff data (si_tract_ym)
 #only keep tracts that are in the shutoff data (si_tract_ym)
-    #acs_tract.clean includes Detroit tracts (Wayne County), 
-    #but also tracts outside of Detroit across the state of Michigan
+  #acs_tract.clean includes Detroit tracts (Wayne County), 
+  #but also tracts outside of Detroit across the state of Michigan
 #want to end up with a tract-year-month panel
 #new df should include: all columns from two dfs and a new date column
 #also filter out observation for 2017-11-01
+    
 #HINT: what column(s) do you want to join on?
 #HINT: what kind of join would work here?
     
@@ -119,8 +168,10 @@ tract_ym <- FILL IN CODE
     
   #do we have a balanced panel? 
   table(tract_ym$month, tract_ym$year)
-  tract_ym %>% group_by(geodisplaylabel) %>% count(geodisplaylabel)
-    #nope. if a tract had 0 shutoffs one month, there's no row for that county-month
+  tract_ym %>% 
+    group_by(tractid) %>%
+    count(tractid)
+    #nope. if a tract had 0 shutoffs one month -> no row for that tract-month
     
 
 #collapse to tract-level totals (summed over all year-months)
@@ -158,13 +209,11 @@ tract <- tract_ym %>%
     geom_smooth(method = 'lm', formula = y ~ x) 
     
 #QUESTION: how can we improve the above plot?
-#do you want to consider weighting observations?
-#how can we use aesthetic mappings to incorporate weighting in our visualization?
   IMPROVE ggplot() FUNCTION CALL ABOVE
 
   #compute correlation for assessing model fit (in addition to visual inspection)
     cor(tract$blackshare, tract$si_1000, use = "pairwise.complete.obs")
-    wtd.cors(tract$blackshare, tract$si_1000, weight = tract$pop)
+    wtd.cor(tract$blackshare, tract$si_1000, weight = tract$pop)
   
   
 #scatterplot: median income vs shutoffs
@@ -204,9 +253,10 @@ FILL IN CODE SIMILAR TO ABOVE BUT USE medianinc RATHER THAN blackshare
     mutate(si_1000 = si_count / (detroit_pop / 1000) )
   
   #use the transformed (aggregated) data 
-  ggplot(ym, aes(x = date, y = si_1000)) + geom_line() 
+  ggplot(ym, aes(x = date, y = si_1000)) + 
+    geom_line() 
   
-  #get raw shutoff counts (NOT PER CAP) without transforming data first
+  #plot raw shutoff counts by manually specifying ggplot transformation
   ggplot(tract_ym, aes(x = date, y = si_count)) +
     stat_summary(fun = sum, geom = "line")   
 
@@ -230,7 +280,7 @@ FILL IN CODE SIMILAR TO ABOVE BUT USE medianinc RATHER THAN blackshare
 #time series of shutoffs per capita for tracts above/below citywide median income
   #what should the unit of observation be for this new data frame?
   ym_inc <- tract_ym %>% 
-    group_by(FILL IN GROUPING VARIABLE TO GET RIGHT UNIT OF ANALYSIS) %>% 
+    group_by(FILL IN GROUPING VARIABLE(S) TO GET RIGHT UNIT OF ANALYSIS) %>% 
     summarise(si_count = sum(si_count)) %>%
     mutate(pop = if_else(inc_above_median == 1, 
                          detroit_pop_hi_inc, 
@@ -238,6 +288,8 @@ FILL IN CODE SIMILAR TO ABOVE BUT USE medianinc RATHER THAN blackshare
            si_1000 = si_count / (pop / 1000)) %>%
     na.omit()
   
+  #validation
+
 
 #note that we are missing 1 row (we only have 187 instead of 2 * 94 = 188 rows)
 #the reason is that in Feb 2016 there is only 1 tract with shutoffs (w/income below the median)
@@ -278,7 +330,7 @@ FILL IN CODE SIMILAR TO ABOVE BUT USE medianinc RATHER THAN blackshare
                                     labels = c("Below median income", "Above median income"))
 
   
-#now plot time series by income group again using a factor for the color argument
+#now plot time series by income group again using a factor variable for the color argument
   ggplot(ym_inc, 
          aes(x = date, y = si_1000, color = inc_above_median)) + 
     geom_line()
