@@ -1,0 +1,86 @@
+---
+title: "U6614: Github Tutorial"
+author: "Neil Chin & Tirtha Patel"
+date: "`r Sys.Date()`"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+```
+
+```{r load_packages, include = FALSE}
+library(fontawesome)
+```
+
+
+## What is GitHub?
+
+GitHub `r fa("github")` is a developer platform that allows "developers" to build and store "software."
+
+While GitHub is most commonly used to develop web applications, it can also be leveraged in academic settings to store and analyze data, as well as to create web infrastructure for teaching. 
+
+For example, our class site is hosted on GitHub!
+
+More technically, however, GitHub is an internet hosting service for **Git**, a command-line tool for version control.
+
+## What is Git?
+
+Git is a "distributed version control system that tracks changes in any set of computer files, usually used for coordinating work among programmers..." [Wikipedia](https://en.wikipedia.org/wiki/Git)
+
+In more simple terms, Git is a software that maintains copies of your files, similar to Google Drive!
+
+What this means is: "...every Git directory on every computer is a full-fledged **repository** with complete history and full version-tracking abilities, independent of network access or a central server."
+
+## How to use GitHub
+
+There are two primary ways of using GitHub:
+
+- Git command-line 
+- GitHub Desktop
+
+In either method, basic execution is simple: 
+
+- You "pull" file versions out of the GitHub repository (or "repo") to receive the latest changes made by collaborators.
+- You "push" your updated versions back into the GitHub repo to include your changes.
+
+For the purposes of this tutorial, and for your projects, we recommend using **GitHub Desktop** due to its user-friendly interface.
+
+## Creating and Cloning a GitHub Repo
+
+First, you need a GitHub account. Once you've signed up, there are essentially two options:
+
+- Creating a new repo (allowing you to start a whole new project)
+- Cloning an existing repo (allowing you to make changes to an existing project)
+
+Finally, repos can also be "forked" i.e., copying an existing repo on to your computer, but your changes **will not** be reflected in the original repo. Essentially this creates a "new" version.
+
+**In all cases, repos appear as folders within your computer's internal file directory.**
+
+## Further GitHub Tips
+
+- For more precise version control, GitHub allows for "branching" which essentially creates separate version tracks. 
+
+- GitHub also allows you to assign tasks in the "Issues" tab and also to accept/reject "pull" and "push" requests.
+
+Given that our projects for this class are not extremely complex from a data/software standpoint, these additional steps probably aren't necessary.
+
+- Using a ".gitignore" file will designate certain files that are not meant to be subject to version control (i.e., will not push or pull changes) and are only stored as local copies.
+
+Simply add the file name/path to the .gitignore to prevent inclusion in the repo. Useful for storing API keys and other secure files.
+
+## Demonstration
+
+Let's take a selfie, and add it to this presentation!
+
+## Resources
+
+- [Link](https://docs.github.com/en/get-started/signing-up-for-github/signing-up-for-a-new-github-account) to GitHub sign up instructions.
+- [Link](https://desktop.github.com/) to download GitHub Desktop.
+- [Link](https://docs.github.com/en/desktop/installing-and-configuring-github-desktop/overview/getting-started-with-github-desktop) to Github Desktop user guide.
+- [Link](https://docs.github.com/en/get-started/quickstart/set-up-git) to user guide for Git (command-line method).
+
+
+
+
+
