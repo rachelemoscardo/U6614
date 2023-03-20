@@ -73,7 +73,7 @@ Simply add the file name/path to the .gitignore to prevent inclusion in the repo
 
 Let's take a selfie, and add it to this presentation!
 
-![Neil Selfie](pics/selfie.jpg)
+![selfie](~/Github_Tutorial/selfie.jpg)
 
 ## Resources
 
