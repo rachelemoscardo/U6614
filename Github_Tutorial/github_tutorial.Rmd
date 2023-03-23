@@ -76,7 +76,7 @@ Simply add the file name/path to the .gitignore to prevent inclusion in the repo
 Let's take a selfie, and add it to this presentation!
 
 ```{r, out.width = "300px"}
-knitr::include_graphics("pics/selfie.png")
+knitr::include_graphics("pics/morning_selfie.png")
 ```
 
 
