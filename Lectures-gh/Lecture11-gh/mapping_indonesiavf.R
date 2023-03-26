@@ -3,7 +3,7 @@
 ## [ PROJ ] Mapping Lesson: Basic maps using tmap 
 ## [ FILE ] mapping_indonesiavf.r
 ## [ AUTH ] < YOUR NAME >
-## [ INIT ] < March 22, 2022 >
+## [ INIT ] < March 28, 2023 >
 ##
 ################################################################################
 
@@ -25,7 +25,6 @@
 #Do this in advance of class!
 
 library(sf)
-library(ggplot2)
 library(tidyverse)
 library(tmap)
 
@@ -44,7 +43,7 @@ getwd()
 #a shapefile is format for storing geospatial information for GIS applications
 #shapefiles contain geometry for maps (points and polygons that represent geographic features)
 
-indonesia <- st_read(dsn = 'indonesia.shp')
+indonesia <- st_read(dsn = 'indonesia/indonesia.shp')
   #shape file can also be downloaded from https://gadm.org/download_country_v3.html
 
 
@@ -142,6 +141,12 @@ t1
             'Kabupaten Pakpak Barat', 'Kabupaten Gunungsitoli', 'Kabupaten Padangsidimpuan')
 
   indonesia$name <- plyr::mapvalues(indonesia$name, from = from, to = to)
+  
+  #dplyr version
+  indonesia <- indonesia %>%
+    mutate(name2 = to[match(indonesia$name, from)])
+
+  setdiff(indonesia$name, indonesia$name2)
 
   
 #let's do the join once again
