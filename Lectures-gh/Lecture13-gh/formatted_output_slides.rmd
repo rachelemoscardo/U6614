@@ -168,7 +168,7 @@ kable(vf_diff,
 ## Difference-in-means tables {.smaller .build}
 
 <div>
-Here is another example using the `datasummary_balance()` function in the `modelsummary` package.
+Here is another example using the `datasummary_balance()` [function](https://vincentarelbundock.github.io/modelsummary/articles/datasummary.html) in the `modelsummary` [package](https://vincentarelbundock.github.io/modelsummary/index.html).
 
 ```{r datasummary}
 #only look at year of Medicaid implementation for this example
@@ -383,20 +383,21 @@ stargazer(mdls, align = TRUE, type = "html",
 ggplot(data = ym_race, 
        aes(x = date, y = si_1000, group = black75)) + 
   geom_line(aes(color = black75)) +
-  labs(x = "Date", y = "Shutoff rate per 1,000 residents",
+  labs(x = "", y = "Shutoff rate per 1,000 residents",
        color = 'Census tract racial composition') + 
   ggtitle("Insert your title here", subtitle = "and subtitle... if you want.")
 ```
 
-Make sure to clearly label your axes and legend!
+Make sure to clearly label your axes and legend! 
 
-Descriptive time series plots by groups are often a good way to motivate your analysis.
+Note that when you're working with panel data, descriptive time series plots <br>
+by group can help motivate your analysis.
 
 
 ## Tips for your presentation {.build}
 
 <div>
-- Remember to do all of your work in R script(s) and only load the objects you need into your .rmd file (use .RData and .rds files and call `load`)
+- Remember to do all of your work in R script(s) and only load the objects you need into your .rmd file (use .RData and .rds files)
 </div>
 
 <div>
