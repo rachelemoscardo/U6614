@@ -3,7 +3,6 @@ title: Data Analysis for Policy Research Using R
 subtitle:  Introduction and R Basics
 author: Harold Stolper
 date: 
-
 classoption: dvipsnames  # for colors
 fontsize: 8pt
 urlcolor: blue
@@ -40,12 +39,7 @@ knitr::opts_chunk$set(collapse = TRUE, comment = "#>", highlight = TRUE)
     - What's something you would eventually like to learn how to do in R?
     - What's something that you have observed or think is important that people in your field aren't paying attention to?
 1. (optional) One piece of culture you are excited about right now
-    - e.g. music, writing, fashion, a meme, other art, sports, etc.
-
-### Teaching Assistants
-
-- Neil Ke-Jian Chin (morning section)
-- Tirtha Patel (afternoon section)
+    - e.g. music, writing, TV or movies, fashion, a meme, other art, sports, etc.
 
 
 ### Harold Stolper, instructor
@@ -56,7 +50,7 @@ Graduated from SIPA many moons ago, returned to Columbia for my PhD in economics
 
 Recent background: 
 
-- This is my 8th year teaching quant courses at SIPA.
+- This is my 9th year teaching quant courses at SIPA.
 - Previously worked as the economist for a non-profit doing research and advocacy to promote upward mobility for low-income NYers.
  - Recent focus on NYPD subway fare evasion enforcement and over-policing for communities of color, and other topics related to urban inequality (e.g. policing disparities, neighborhood change, transit, access to education).
 
@@ -65,6 +59,12 @@ Recent background:
 
 Transitioned from Stata to R after years of using and teaching Stata.
 
+
+
+### Teaching Assistants
+
+- Javier Baranda Alonso (morning section)
+- Jack Shanley (afternoon section)
 
 
 
@@ -114,13 +114,17 @@ More about these in later weeks...
 
 ### Installing and loading R packages
 
-You only need to install a package once. To install an R package use `install.package()` function.
+You only need to install a package once. To install an R package use the `install.package()` function.
+
+\smallskip
+
 ```{r eval = FALSE, warning=FALSE, message=FALSE}
 install.packages("tidyverse")
 ```
 
-But you need to load a package every time you open R using the `library()` function. 
-```{r}
+You also need to load a package every time you open R using the `library()` function.
+
+```{r eval = FALSE}
 library(tidyverse)
 ```
 
@@ -143,6 +147,7 @@ Things you generally can't do in Stata:
   - Maps
   - Graphs
   - Dashboards
+
 
 ### What will we be doing in this class?
 
@@ -228,7 +233,7 @@ When you run code from the **R Console** or an **R Script**, or from __code chun
 getwd()
 ```
 
-- For this class we'll be using R projects to keep organized.
+- For this class we'll *always* be using R projects to keep organized.
 
 
 ### What is an R project? Why are we using them?
@@ -276,23 +281,23 @@ Why will we be asking you to create and work with R projects?
 
 # R Basics
 
-### Executing code in R
+### Executing code in RStudio
 
-Three ways to execute commands in R
+Three ways to execute R code
 
-1. **Console:** type/paste commands to run "on the fly"
+1. **Console:** type/paste code to run "on the fly"
 1. **R scripts** (.r files)
-    - Just a text file full of R commands
-    - Can execute one command at a time, several commands at a time, or the entire script
+    - Just a text file full of R code
+    - Can execute one line of code at a time, several lines, or the entire script
 1. **Code chunks** in R Markdown (.rmd files)
-    - Can execute one command at a time, one chunk at a time, or "knit" the entire file into a document (e.g. html or pdf)
+    - Can execute "chunks" of R code, or "knit" the entire file into a document (e.g. html or pdf) that also executes R code along the way 
     
 
-### Shortcuts for executing commands
+### Shortcuts for executing code
 
-Three ways to execute commands in R
+Three ways to execute R code
 
-1. Type/paste commands directly into the "console" (and press ENTER)
+1. Type/paste code directly into the "console" (and press ENTER)
 1. R scripts (.R files)
     - __Cmd/Ctrl + Enter__: execute highlighted line(s)
     - __Cmd/Ctrl + Shift + Enter__ (without highlighting any lines): run entire script
@@ -434,10 +439,11 @@ Starting next class, every class will begin with a short Courseworks quiz coveri
 
 ### Attendance and participation
 
-**Zoom**
+**Attendance**
 
-- If you are feeling unwell or facing unexpected challenges outside of school, please email me right away to briefly explain your situation and request a Zoom link for class if necessary. 
-- Whenever feasible, Zoom links and/or recordings will be provided for students with excused absences. We will try to record at least one of the two weekly class meetings (and recitations)--not necessarily both--so you will either have the opportunity to attend remotely in real-time, or view the recording after.
+- Lecture attendance is required, multiple unexcused absences will drive your participation grade down towards zero. 
+- If you are feeling unwell, please email the instructor in advance of class and/or any looming deadlines. We will do our best to help you catch up on any material you miss and/or come up with a plan to help you meet any upcoming deadlines. 
+
 
 
 **Participation**
