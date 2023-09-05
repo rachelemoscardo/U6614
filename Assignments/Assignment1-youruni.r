@@ -2,8 +2,8 @@
 ##
 ## [ PROJ ] Assignment1
 ## [ FILE ] Assignment1-YOURUNI.r
-## [ AUTH ] < YOUR NAME >
-## [ DATE ] < SUBMISSION DATE >
+## [ AUTH ] <YOUR NAME>
+## [ DATE ] <SUBMISSION DATE>
 ##
 ################################################################################
 
