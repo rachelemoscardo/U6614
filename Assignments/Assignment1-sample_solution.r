@@ -1,8 +1,8 @@
 ################################################################################
 ##
 ## [ PROJ ] Assignment1
-## [ FILE ] Assignment1-YOURUNI.r
-## [ AUTH ] < YOUR NAME >
+## [ FILE ] Assignment1-sample_solution.R
+## [ AUTH ] < INSTRUCTOR >
 ## [ DATE ] < SUBMISSION DATE >
 ##
 ################################################################################
