@@ -2,7 +2,7 @@
 ##
 ## [ PROJ ] < Assessing gender wage gaps using the Current Population Survey >
 ## [ FILE ] < Lecture2-inclass.R >
-## [ INIT ] < Jan 24, 2023 >
+## [ INIT ] < Sept 12, 2023 >
 ##
 ################################################################################
 
@@ -36,16 +36,16 @@ getwd()
 ##    d. inspect race.fac, sex.fac, and college.fac using the levels() function,
 ##        what package is the levels() function located in?
 ##
-##    e. use filter() to only include rows only for June 2020,
-##        store as a new object cps_2020,
+##    e. use filter() to only include rows only for June 2022,
+##        store as a new object cps_2022,
 ##        print the first 5 observations,
-##        confirm your data only includes observations for 2020
+##        confirm your data only includes observations for 2022
 ##
 ##    f. remove the cps.temp1 object from memory using the rm() function
 ## -----------------------------------------------------------------------------
 
 # load the CPS data frame and store as an object 'cps'
-  cps <- read.csv("cps_june_20-21.csv")
+  cps <- read.csv("cps_june_22-23.csv")
 
 # this time we will remove NA values from the outset in the interest of time
 # general rule: need to understand why NA values arise before deciding what to do 
@@ -107,13 +107,13 @@ getwd()
   
   
 # 1e.
-  cps_2020 <- cps.temp1 %>% 
-    filter(year==2020)
+  cps_2022 <- cps.temp1 %>% 
+    filter(year==2022)
   
-  head(cps_2020, n = 5)
+  head(cps_2022, n = 5)
   
-  summary(cps_2020$year)
-  summary(cps_2020$month)
+  summary(cps_2022$year)
+  summary(cps_2022$month)
   
   
 # 1f.
@@ -121,7 +121,7 @@ getwd()
 
   
 ## -----------------------------------------------------------------------------
-## 2. Describe the cps_2020 data frame
+## 2. Describe the cps_2022 data frame
 ##
 ##    a. what is the unit of observation (or unit of analysis)?
 ##
@@ -139,31 +139,31 @@ getwd()
   
 # 2b. HINT: we need to calculate a statistic for a given column of data
   ?summarise
-  summarise(cps_2020, n_distinct(personid))
-  summarise(cps_2020, n_distinct(hhid))
+  summarise(cps_2022, n_distinct(personid))
+  summarise(cps_2022, n_distinct(hhid))
   
   #summarise is in the dplyr package which is part of the tidyverse
-  cps_2020 %>% 
+  cps_2022 %>% 
     summarise(num_persons = n_distinct(personid),
               num_households = n_distinct(hhid))
   
   #short way: use in your .rmd file to reference code to answer questions
-  n_distinct(cps_2020$personid)
-  n_distinct(cps_2020$hhid)
+  n_distinct(cps_2022$personid)
+  n_distinct(cps_2022$hhid)
   
   
 # 2c. 
   #use summarise with multiple arguments, one for each statistic
   #try ?summarise to find the syntax for different summary statistics
   
-  cps_2020 %>% 
+  cps_2022 %>% 
     summarise(avg_age = mean(age),
               min_age = min(age),
               max_age = max(age))
 
   
 ## -----------------------------------------------------------------------------
-## 3. Let's now look at earnings per week for different groups in June 2020
+## 3. Let's now look at earnings per week for different groups in June 2022
 ##
 ##    a. find the observation for the top weekly earnings using the summarise() function, 
 ##        assign this to a new object called max_earnings
@@ -183,7 +183,7 @@ getwd()
 ## -----------------------------------------------------------------------------
   
 # 3a. 
-  cps_2020 %>% FILL IN CODE HERE
+  cps_2022 %>% FILL IN CODE HERE
   #Documentation: https://cps.ipums.org/cps-action/variables/EARNWEEK#codes_section
   
   #assign to object
@@ -191,7 +191,7 @@ getwd()
 
     
 # 3b. 
-  cps_2020 %>% FILL IN CODE HERE
+  cps_2022 %>% FILL IN CODE HERE
   
   
 # 3c. 
@@ -229,11 +229,11 @@ getwd()
 ## 4. Let's look at wage gaps between males and females:
 ##
 ##    a. use the filter function to subset observations for males, 
-##        assign to new data frame, cps_2020_male,
+##        assign to new data frame, cps_2022_male,
 ##        sort in descending order of weekly earnings
 ##        check if it worked
 ##
-##    b. repeat part a for females and create a new data frame, cps_2020_female
+##    b. repeat part a for females and create a new data frame, cps_2022_female
 ##
 ##    c. use summarise to find mean, min & max for males and females, separately
 ##        name each statistic appropriately (i.e. name each column in the 1-row table of stats)
@@ -248,13 +248,13 @@ getwd()
   
 # 4a. 
   
-  #HINT: try levels(cps_2020$sex.fac) function to get the factor labels to filter on
+  #HINT: try levels(cps_2022$sex.fac) function to get the factor labels to filter on
   
-  cps_2020_male <- FILL IN CODE HERE
+  cps_2022_male <- FILL IN CODE HERE
 
   
 # 4b.
-  cps_2020_female <- FILL IN CODE HERE
+  cps_2022_female <- FILL IN CODE HERE
 
   
 # 4c.
@@ -273,11 +273,11 @@ getwd()
   #HINT: use levels() again to get the factor labels
   
   #create object w/observations for white males
-  cps_2020_wh_male <-  FILL IN CODE HERE
+  cps_2022_wh_male <-  FILL IN CODE HERE
   
   
   #create object w/observations for Black females
-  cps_2020_bl_female <-  FILL IN CODE HERE 
+  cps_2022_bl_female <-  FILL IN CODE HERE 
   
   
   #calculate wage gap between white males and Black females
@@ -290,10 +290,10 @@ getwd()
 # 4e. 
   
   #create object w/observations for white college educated males
-  cps_2020_wh_male_college <- FILL IN CODE HERE
+  cps_2022_wh_male_college <- FILL IN CODE HERE
   
   #create object w/observations for Black college educated females
-  cps_2020_bl_female_college <- FILL IN CODE HERE
+  cps_2022_bl_female_college <- FILL IN CODE HERE
   
   #calculate wage gap
 

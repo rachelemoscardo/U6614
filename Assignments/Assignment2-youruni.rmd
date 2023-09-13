@@ -3,6 +3,10 @@ title: 'U6614: Assignment 2'
 author: "Your Name (your-uni)"
 date: "`r Sys.Date()`"
 output:
+  pdf_document:
+    toc: no
+    toc_depth: '3'
+    number_sections: yes
   html_document:
     toc: yes
     toc_depth: 3
@@ -12,10 +16,6 @@ output:
     theme: default
     fig_caption: yes
     df_print: tibble
-  pdf_document:
-    toc: no
-    toc_depth: '3'
-    number_sections: yes
 urlcolor: blue
 ---
 
@@ -23,7 +23,7 @@ urlcolor: blue
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 ```
 
-##### *Please submit your knitted .pdf file along with the corresponding R markdown (.rmd) via Courseworks by 11:59pm on Monday, January 31st.* {-}
+##### *Please submit your knitted .pdf file along with the corresponding R markdown (.rmd) via Courseworks by 11:59pm on the due date.* {-}
 
 \medspace
 
@@ -53,16 +53,16 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 ### 1d) Inspect race.fac, sex.fac, and college.fac using the levels() function {-}
 - what package is the levels() function located in?
 
-### 1e) Use filter() to only include rows only for June 2020 {-}
-- store as a new object cps_2020,
+### 1e) Use filter() to only include rows only for June 2022 {-}
+- store as a new object cps_2022,
 - print the first 5 observations,
-- confirm your data only includes observations for 2020
+- confirm your data only includes observations for 2022
 
 ### 1f) Remove the cps.temp1 object from memory using the rm() function {-}
 
 \medspace
 
-# Describe the cps_2020 data frame
+# Describe the cps_2022 data frame
 
 ### 2a) What is the unit of observation? {-}
 
@@ -72,7 +72,7 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 
 \medspace
 
-# Earnings per week for different groups in June 2020
+# Earnings per week for different groups in June 2022
 
 ### 3a) Find the observation for the top weekly earnings using the summarise() function {-}
 - assign this to a new object called max_earnings
@@ -95,11 +95,11 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 # Wage gaps between males and females:
 
 ### 4a) Use the filter function to subset observations for males {-}
-- assign to new data frame, cps_2020_male,
+- assign to new data frame, cps_2022_male,
 - sort in descending order of weekly earnings
 - check if it worked
 
-### 4b) Repeat part a for females and create a new data frame, cps_2020_female {-}
+### 4b) Repeat part a for females and create a new data frame, cps_2022_female {-}
 
 ### 4c) Use summarise to find mean, min & max for males and females, separately {-}
 - name each statistic appropriately (i.e. name each column in the 1-row table of stats)
