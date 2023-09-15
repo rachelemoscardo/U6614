@@ -3,7 +3,7 @@
 ## [ PROJ ] Lecture 3: Subway Fare Evasion Arrests in Brooklyn
 ## [ FILE ] Lecture3-startclass.r
 ## [ AUTH ] < YOUR NAME >
-## [ INIT ] < Jan 31, 2023 >
+## [ INIT ] < Sept 19, 2023 >
 ##
 ################################################################################
 
@@ -263,7 +263,7 @@ getwd()
 
 #5d.
   save(LIST DATA OBJECTS TO SAVE HERE SEPARATED BY COMMAS,
-       file = "../Lecture4/arrests.clean.RData")
+       file = "arrests.clean.RData")
   #?save
 
   

@@ -1,22 +1,21 @@
 ---
 title: 'Lecture 3.1: Data Analysis Tools'
-#subtitle: "Importing, Exporting, Appending, Cleaning, and Summarizing Data"
-author: "SIPA U6614 | Instructor: Harold Stolper"
-date: 
-urlcolor: blue
-output: 
+author: 'SIPA U6614 | Instructor: Harold Stolper'
+date: "null"
+output:
   html_document:
-    toc: TRUE
+    toc: yes
     toc_depth: 3
-    toc_float: TRUE
-    number_sections: TRUE
+    toc_float: yes
+    number_sections: yes
     highlight: tango
     theme: default
-    fig_caption: TRUE
-    #fig_width = 7 #Default width (in inches) for figures
-    #fig_height = 5 #Default height (in inches) for figures
-    #html_preview: TRUE #TRUE to also generate an HTML file for the purpose of locally previewing what the document will look like on GitHub.    
-    df_print: tibble # Method to be used for printing data frames. Valid values include "default", "kable", "tibble", and "paged". The "default" method uses print.data.frame. 
+    fig_caption: yes
+    df_print: tibble
+  pdf_document:
+    toc: yes
+    toc_depth: '3'
+urlcolor: blue
 ---
 
 ```{r setup, include=FALSE}
@@ -76,9 +75,10 @@ df2 <- read_excel("yourworkbook.xlsx", sheet = 2)
 
 ## R data files
 
-R also has its own data file format, .rds, that you can easily read in using the `readRDS()` function in base R.
+R also has its own data file formats: an .rdata file can include one or more data objects, an .rds file includes just one data object. You can easily read in files in these formats using the `load()` and `readRDS()` functions in base R.
 ```{r eval = FALSE}
-df3 <- readRDS("yourrdatafile.rds")
+df3 <- load("yourrdatafile1.rdata") #load an .rdata file
+df3 <- readRDS("yourrdatafile2.rds") #load an .rds file
 ```
 
 
@@ -87,7 +87,19 @@ df3 <- readRDS("yourrdatafile.rds")
 A fixed width file is a text file where each column has a maximum number of characters (i.e. a "fixed width"). There are no delimiters used within rows to separate values for each column. This means you have tell R, or any statistical software package, which characters should be assigned to which variables. `read_fwf()` is a `readr` package that makes it relatively easy to read in fixed width files.
 
 
-# Exporting data
+# Saving and exporting data
+
+You can save one or more objects in your environment as an .rdata file that can be loaded at another time.
+```{r eval = FALSE}
+# Saving one object in an rdata file
+save(dataobject1, file = "data.RData")
+
+# Save multiple objects
+save(dataobject1, dataobject2, file = "data.RData")
+
+# To load the data again
+load("data.RData")
+```
 
 There may be instances where you want to export data for use in other applications, such as mapping software or web-based applications. Also included in the `readr` package, the `write_csv()` function is an easy wrapper function for exporting .csv files.
 ```{r eval = FALSE}
