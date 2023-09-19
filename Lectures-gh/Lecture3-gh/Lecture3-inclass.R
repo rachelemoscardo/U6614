@@ -108,7 +108,7 @@ getwd()
 ##    a. race_clean
 ##    b. ethnicity_clean
 ##    c. create a single factor variable w/mutually exclusive groups (race_eth)
-##       - Black, Non-Hispanic White, Hispanic, Asian/Pacific Islander, Other, NA
+##       - Non-Hispanic Black, Non-Hispanic White, Hispanic, Asian/Pacific Islander, Other, NA
 ##    
 ##  before we do this...
 ##    
@@ -194,7 +194,9 @@ getwd()
         mutate(race_eth = ifelse(hispanic_char %in% "Hispanic", #use %in% so that NAs are evaluated
                                  hispanic_char, 
                                  race_clean_char) ) %>%  
-        mutate(race_eth = as.factor(recode(race_eth, "White" = "Non-Hispanic White"))) %>%
+        mutate(race_eth = as.factor(recode(race_eth, 
+                                           "White" = "Non-Hispanic White",
+                                           "Black" = "Non-Hispanic Black"))) %>%
         select(-race_clean_char, -hispanic_char)      
     
   #validate results
@@ -398,7 +400,7 @@ getwd()
     group_by(loc2) %>%
     summarise(st_id = first(st_id), 
               n = n(),
-              n_black = sum(race_eth_Black, na.rm = TRUE), 
+              n_black = sum(`race_eth_Non-Hispanic Black`, na.rm = TRUE), 
               n_hisp  = sum(race_eth_Hispanic, na.rm = TRUE),
               n_api   = sum(`race_eth_Asian/Pacific Islander`, na.rm = TRUE),
               n_nhw   = sum(`race_eth_Non-Hispanic White`, na.rm = TRUE), 

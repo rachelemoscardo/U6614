@@ -16,6 +16,9 @@ output:
     theme: default
     fig_caption: yes
     df_print: tibble
+  word_document:
+    toc: yes
+    toc_depth: '3'
 urlcolor: blue
 ---
 
@@ -143,7 +146,9 @@ arrests_bds.clean <- arrests_bds.clean %>%
   mutate(race_eth = ifelse(hispanic_char %in% "Hispanic", 
                            hispanic_char, 
                            race_clean_char) ) %>%  
-  mutate(race_eth = as.factor(recode(race_eth, "White" = "Non-Hispanic White"))) %>%
+  mutate(race_eth = as.factor(recode(race_eth, 
+                                     "White" = "Non-Hispanic White",
+                                     "Black" = "Non-Hispanic Black"))) %>%
   select(-race_clean_char, -hispanic_char)
 
 #validate results: joint distribution of race_eth and hispanic
@@ -170,10 +175,11 @@ arrests_las.clean <- arrests_las %>%
   mutate(race_eth = recode(las_race_key, "Asian or Pacific Islander" = "Asian/Pacific Islander",
                                          "Unknown" = "NA",
                                          "Latino" = "Hispanic",
-                                         "White" = "Non-Hispanic White")) %>% 
+                                         "White" = "Non-Hispanic White",
+                                         "Black" = "Non-Hispanic Black")) %>% 
   mutate(race_eth = ifelse(hispanic_flag %in% "Y", "Hispanic", race_eth) ) %>% 
   mutate(race_eth = factor(race_eth, 
-                           levels = c("Black", 
+                           levels = c("Non-Hispanic Black", 
                                       "Hispanic", 
                                       "Non-Hispanic White", 
                                       "Asian/Pacific Islander", 
@@ -214,7 +220,7 @@ The total number of subway fare evasion arrest records from both BDS and LAS is 
 
 ```{r}
 save(list = "arrests.clean", 
-     file = "I:/My Drive/Teaching/U6614-drive/Lectures-drive/Lecture3/arrests.clean.RData") 
+     file = "arrests.clean.RData") 
 ```
 
 \newpage
@@ -271,7 +277,7 @@ The dismissal rate is also noticeably higher for API individuals, and lower for 
 ```{r}
 arrests.clean <- dummy_cols(arrests.clean, select_columns = "race_eth")
 arrests.clean %>% 
-  summarise(mean_black = round(mean(race_eth_Black, na.rm = TRUE), 2),
+  summarise(mean_black = round(mean(`race_eth_Non-Hispanic Black`, na.rm = TRUE), 2),
             mean_hisp = round(mean(race_eth_Hispanic, na.rm = TRUE), 2),
             mean_nhw  = round(mean(`race_eth_Non-Hispanic White`, na.rm = TRUE), 2),
             mean_api  = round(mean(`race_eth_Asian/Pacific Islander`, na.rm = TRUE), 2),
@@ -294,7 +300,7 @@ arrests_stations <- arrests.clean %>%
   group_by(loc2) %>%
   summarise(st_id = first(st_id), 
             n = n(),
-            n_black = sum(race_eth_Black, na.rm = TRUE), 
+            n_black = sum(`race_eth_Non-Hispanic Black`, na.rm = TRUE), 
             n_hisp  = sum(race_eth_Hispanic, na.rm = TRUE),
             n_api   = sum(`race_eth_Asian/Pacific Islander`, na.rm = TRUE),
             n_nhw   = sum(`race_eth_Non-Hispanic White`, na.rm = TRUE), 
@@ -317,9 +323,9 @@ arrests_stations_top <- arrests.clean %>%
   group_by(loc2)    %>%
   summarise(st_id = first(st_id), 
             n = n(),
-            n_black = sum(race_eth_Black, na.rm = TRUE), 
+            n_black = sum(`race_eth_Non-Hispanic Black`, na.rm = TRUE), 
             n_hisp  = sum(race_eth_Hispanic, na.rm = TRUE),
-            n_bh    = sum(race_eth_Black, race_eth_Hispanic, na.rm = TRUE),
+            n_bh    = sum(`race_eth_Non-Hispanic Black`, race_eth_Hispanic, na.rm = TRUE),
             n_na    = sum(race_eth_NA),
             sh_bh   = round(n_bh / (n - n_na), 2)) %>% 
   select(loc2, n, n_bh, n_na, sh_bh) %>% 
