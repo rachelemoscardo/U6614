@@ -302,7 +302,7 @@ getwd()
 ##        - your plot should include your preferred regression estimates: linear or quadratic (not both)
 ##        - carefully explain which regression specification you prefer and why (linear or quadratic)
 ##        - if applicable, cite statistical evidence to support your decision.
-##        - Interpret your preferred regression specification (caerfully)!
+##        - Interpret your preferred regression specification (carefully)!
 ##    
 ##    c. Next let's let's think about how measurement error might impact results from 5b.
 ##       Do you think measurement error could bias your estimates of neighborhood racial gaps
