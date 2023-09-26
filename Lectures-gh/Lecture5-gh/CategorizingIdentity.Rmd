@@ -18,7 +18,8 @@ output:
     df_print: tibble # Method to be used for printing data frames. Valid values include "default", "kable", "tibble", and "paged". The "default" method uses print.data.frame. 
 ---
 
-***Please post your response to the assignment (section 7) as a reply to [this](https://courseworks2.columbia.edu/courses/164523/discussion_topics/1002464){target="_blank"} CW Discussion.***
+***Please post your response to the assignment (section 7) as a reply to [this](https://courseworks2.columbia.edu/courses/185934/discussion_topics/1068387){target="_blank"} CW Discussion.
+Your response is worth up to 3 points towards the participation component of your overall course grade.***
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -28,7 +29,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 Race and ethnicity are two related dimensions of personal identity that we'll be examining data on in different policy contexts. Race generally refers to physical characteristics that have taken on social significance, even though it is [not an accurate representation of human biological variation](https://onlinelibrary-wiley-com.ezproxy.cul.columbia.edu/doi/full/10.1002/ajpa.23882){target="_blank"}. Ethnicity refers to shared cultural characteristics. This document is a collection of observations drawing from other articles and resources that can help us think about what to make of the data we encounter on race, ethnicity, and other aspects of personal identity: what voices are represented/missing, why this matters, and what to do about it when processing and analyzing data to explore connections between identity and public policy.
 
-**What do we hope to achieve by analyzing data on different aspects of personal identity? What should we avoid doing?** Data on personal identity can help [empower communities and counter bias](https://d4bl.org/){target="_blank"}, motivate policy change and movements for social change, improve transparency from our institutions, and [disrupt algorithmic bias](https://www.jstor.org/stable/10.5325/jinfopoli.8.2018.0078#metadata_info_tab_contents){target="_blank"}. Data can amplify personal stories and lived experience. But it can also be [reductive](https://twitter.com/BlackDisability/status/1297996682232246274){target="_blank"}, misrepresent individual and communal experiences, and enable or reinforce oppression and inequality.
+**What do we hope to achieve by analyzing data on different aspects of personal identity? What should we avoid doing?** Data on personal identity can help [empower communities and counter bias](https://d4bl.org/){target="_blank"}, motivate policy change and movements for social change, improve transparency from our institutions, and [disrupt algorithmic bias](https://scholarlypublishingcollective.org/psup/information-policy/article/doi/10.5325/jinfopoli.8.2018.0078/314474/How-Algorithms-Discriminate-Based-on-Data-They){target="_blank"}. Data can amplify personal stories and lived experience. But it can also be [reductive](https://twitter.com/BlackDisability/status/1297996682232246274){target="_blank"}, misrepresent individual and communal experiences, and enable or reinforce oppression and inequality.
 
 **What would "better" data look like, and what could we do with it?** Richer and more nuanced data on personal identity can help us better understand the ways that systems of oppression interact with identity to limit opportunity. It can help inform more equitable policies and notions of distributive/restorative justice.
 
@@ -139,7 +140,7 @@ Advocates countered that existing data gaps pose a bigger threat:
 > But the unintended consequences of inaccurate data to meet the needs of AAPI and immigrant communities pose a greater threat, Carlyn Cowen, CPC’s chief policy and public affairs officer said.
 
 
-# Assignment: due by 11:59pm on Monday, February 13th 
+# Assignment: due by 11:59pm on Monday, Oct. 3rd, 2023 
 
 The US has a long history of environmental racism that continues to disproportionately impact communities of color through heightened proximity to highways, toxic waste sites, and industry. This means people of color tend to [breath more polluted air](https://www.theatlantic.com/politics/archive/2018/02/the-trump-administration-finds-that-environmental-racism-is-real/554315/){target="_blank"} and [drink more polluted water](https://link.springer.com/article/10.1007/s12111-020-09511-5){target="_blank"}, both of which are linked to serious adverse health effects. They also tend to live in [greater proximity to oil and gas pipelines](https://eos.org/research-spotlights/americas-natural-gas-pipeline-routes-and-environmental-justice){target="_blank"} that further degrade the surrounding environment and increase exposure to hazards and disasters such as leaks and explosions. 
 
@@ -151,7 +152,7 @@ Brooklyn community members assert that the pipeline's location, approval and ope
 
 [Here](https://usa.ipums.org/usa-action/variables/group?id=race_eth){target="_blank"} is a list of "race, ethnicity and nativity" variables available in the most recent wave of the US Census Bureau's American Survey (accessible via the [IPUMS](https://usa.ipums.org/usa/about.shtml){target="_blank"} portal), though you may also browse for additional variables to consider in order to respond to the questions below.
 
-[Please reply to [this](https://courseworks2.columbia.edu/courses/164523/discussion_topics/1002464){target="_blank"} CW post by 11:59pm on Monday, February 13th, with a response that specifically addresses the following methodological decisions:]{.underline}
+[Please reply to [this](https://courseworks2.columbia.edu/courses/185934/discussion_topics/1068387){target="_blank"} CW post by 11:59pm on Monday, October 2nd, with a response that specifically addresses the following methodological decisions:]{.underline}
 
 **How would you go about analyzing and presenting data from the American Community Survey (ACS) to examine the potential for heightened environmental harm against the** ***most vulnerable Latinx community members*** **due to their proximity to the North Brooklyn Pipeline?** In other words, you are tasked with describing how you would go about assessing Dr. Hicks' assertion that Latinx identity might intersect with other aspects of identity in ways that correlate with proximity to the pipeline and associated environmental risks.
 
