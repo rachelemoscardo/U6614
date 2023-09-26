@@ -157,7 +157,7 @@ str(gap_joined_semi)
 
 ### `anti_join`
 
-`semi_join(df1, df2, by = col_to_join_by)` will only retain observations from `df1` **with no matching values** in `df2`. This is useful for inspecting unmatched observations. Let's start by filtering out gapminder observations for all years besides 2002 and 2007.
+`anti_join(df1, df2, by = col_to_join_by)` will only retain observations from `df1` **with no matching values** in `df2`. This is useful for inspecting unmatched observations. Let's start by filtering out gapminder observations for all years besides 2002 and 2007.
 ```{r}
 # anti join by country-year with gap on the left, healthexp on the right
 gap_joined_anti <- anti_join(gap, healthexp, by = c("country", "year")) %>% 
