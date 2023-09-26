@@ -3,7 +3,7 @@
 ## [ PROJ ] Lecture 4: Subway Fare Evasion Arrests and Racial Bias (part 1)
 ## [ FILE ] Lecture4-inclass.R
 ## [ AUTH ] < YOUR NAME >
-## [ INIT ] < Feb 7th, 2023 >
+## [ INIT ] < Sept 26, 2023 >
 ##
 ################################################################################
 
@@ -201,9 +201,9 @@ load("arrests.clean.RData")
                             labels = c("Majority non-Black", "Majority Black"))) %>% 
     filter(st_id != 66)
   
-      #note we can directly test conditions as a logical comparison
+      #in the above code we directly test conditions as a logical comparison
       #then we convert logical results into numeric (i.e. a dummy variable)
-      #we also continued on and converted to factors
+      #lastly we continued on to convert to factors
   
   #some inspection and validation
   
@@ -251,7 +251,6 @@ load("arrests.clean.RData")
       ggtitle('Scatterplot of arrest rate vs. poverty rate') + 
       labs(x = 'poverty rate', y = 'arrest rate') + 
       geom_smooth(method = "lm", formula = y~x) + #add linear SRF
-      geom_smooth(method = "lm", formula = y~x  + I(x^2), color="red")
 
   #fit quadratic OLS model (arrest rate vs. poverty rate)
     #HINT: see quadratic syntax from Lecture4.2 (section 4.1)
@@ -310,14 +309,21 @@ load("arrests.clean.RData")
 ##        - weighted by station swipes
 ##        - could difference in arrest intensity be explained by differences in povrt?
 ##
-##    b. scatterplot of arrperswipe vs povrt_all by nblack
-##       - add linear fit
-##       - add quadratic regression fit
+##    b. show and interpret a scatterplot of arrest intensity vs. pov rates by nblack w/your preferred regression lines
+##        - use separate aesthetics to plot Black and non-Black station areas
+##        - your plot should include your preferred regression estimates: linear or quadratic (not both)
+##        - carefully explain which regression specification you prefer and why (linear or quadratic)
+##        - if applicable, cite statistical evidence to support your decision.
+##        - Interpret your preferred regression specification (carefully)!
 ##
-##    c. which model do you prefer, linear or quadratic?
-##      - why? be clear about your logic and if applicable cite statistical evidence to support your decision
+##    c. Next let's let's think about how measurement error might impact results from 5b.
+##       Do you think measurement error could bias your estimates of neighborhood racial gaps
+##       in the effect of poverty on enforcement intensity from 5b? 
+##       Explain, carefully. 
+##       Do you have any creative ideas to address concerns about potential bias from measurement error?
+##    
+##       (This is tricky!)  
 ##
-##    d. interpret your preferred regression specification (carefully!)
 ## -----------------------------------------------------------------------------
   
 #5a. HINT: use tapply()
@@ -388,29 +394,34 @@ load("arrests.clean.RData")
 ## -----------------------------------------------------------------------------
 ## 6. Similar to analysis above, examine relationship between arrest intensity & criminal complaints
 ##  
-##  a. read in "nypd_criminalcomplaints_2016.csv"
-##      - this csv file shows # of criminal complaints for each subway station area
-##      - source: https://data.cityofnewyork.us/Public-Safety/NYPD-Complaint-Data-Historic/qgea-i56i
-##
-##  b. join stations data frame to subway station area crime data
+##  a. read in crime data (nypd_criminalcomplaints_2016.csv) and join to existing stations df
+##      - nypd_criminalcomplaints_2016.csv: 
+##        - shows # of criminal complaints for each subway station area
+##        - https://data.cityofnewyork.us/Public-Safety/NYPD-Complaint-Data-Historic/qgea-i56i
 ##      - join on st_id
 ##      - exclude the stations with the 4 highest counts of criminal complaints
 ##        - why? bc they are in very close proximity to Brooklyn transit policing HQ,
 ##          and to Brooklyn criminal courts, so they don't face comparable
 ##          neighborhood policing conditions
 ##
-##  c. examine relationship between arrest intensity & criminal complaints 
-##      i. First, look at over all relationship (don't take nblack into account)
-##      ii. Then, allow relationship to vary by nblack
 ##
-##  NOTE: you don't need to follow *all* the same steps in questions 3-5.
-##    for 6.c.i. and 6.c.ii:
-##     - focus on showing your preferred plots to inform the relationship, 
-##       along w/any additional data manipulation & evidence to support your decisions/interpretation/conclusions
-##     - you'll want to explore the data before arriving at your preferred plots, 
-##       DON'T show us everything you tried, just the analysis you settled on to support your answers
+## 6b. Examine the overall relationship between arrest intensity and crime 
+##     without taking neighborhood racial composition or poverty into account 
+##     (comparable to Section 4b)
+##
+##
+## 6c. Examine how neighborhood racial composition mediates the relationship 
+##     between arrest intensity and crime (comparable to Section 5b)
+##  
+##
+##  NOTE: for 6b and 6c, you don't need to follow *all* the same steps in questions 3-5.
+##  - focus on showing your preferred plots to inform the relationship, along with
+##    any additional data manipulation & evidence to support your decisions/interpretation/conclusions
+##  - explore the data before arriving at your preferred plots, don't show us everything
+##    you tried, just the analysis you settled on as most relevant to this question
+##
 ## -----------------------------------------------------------------------------
-
+    
 #6a.  
 
     

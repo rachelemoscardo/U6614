@@ -35,7 +35,6 @@ library(weights)
 library(lmtest)
 library(sandwich)
 library(knitr)
-
 ```
 
 
@@ -69,7 +68,7 @@ ggplot(data = st_arrests, aes(x = arrests_all)) +
 This histogram shows that the majority of subway stations had a relatively small number of fare evasion arrests. The median station arrest total is `r median(st_arrests$arrests_all)` compared to a mean of `r round(mean(st_arrests$arrests_all), 2)`, with 8 stations home to more than 100 arrests.  
 
 
-\medspace
+\newpage
 
 # Joining subway ridership and neighborhood demographic data
 
@@ -128,8 +127,8 @@ st_joined %>%
   kable()
 ```
 
+\newpage
 
-\medspace
 
 # Explore relationship between arrest intensity and poverty rates across subway station (areas)
 
@@ -180,7 +179,7 @@ stations <- st_joined %>%
 ```{r}
 #quadratic
 ggplot(stations, #specify data frame to use
-       aes(x = povrt_all_2016, y = arrperswipe, weight = swipes2016)) + #specify columns to use
+       aes(x = povrt_all_2016, y = arrperswipe)) + #specify columns to use
   geom_point() + #specify plot geometry
   ggtitle('Fare evasion arrest intensity vs. poverty rate') + #add title
   labs(x = 'poverty rate', 
@@ -192,23 +191,20 @@ ggplot(stations, #specify data frame to use
 
 ```{r results = 'hide'}
 #linear model (all stations)
-ols1l <- lm(arrperswipe ~ povrt_all_2016, weights = swipes2016, data = stations)
+ols1l <- lm(arrperswipe ~ povrt_all_2016, data = stations)
 summary(ols1l)
 coeftest(ols1l, vcov = vcovHC(ols1l, type="HC1")) #get robust SEs
 
 #quadratic model(all stations)
-ols1q <- lm(arrperswipe ~ povrt_all_2016 + I(povrt_all_2016^2), weights = swipes2016,
+ols1q <- lm(arrperswipe ~ povrt_all_2016 + I(povrt_all_2016^2), 
             data = stations)
 summary(ols1q) 
 coeftest(ols1q, vcov = vcovHC(ols1q, type="HC1"))
 ```
 
-Based on visual inspection, both the linear and quadratic models appear to fit the relationship between fare evasion arrest intensity and poverty rates across all stations fairly well. We prefer the quadratic model because it explains more of the variation in arrest intensity than the linear model; the quadratic model has an adjusted R-squared of `r round(summary(ols1q)$adj.r.squared, 2)` compared to `r round(summary(ols1l)$adj.r.squared, 2)` for the linear model. 
+Based on visual inspection, both the linear and quadratic models appear to fit the relationship between fare evasion arrest intensity and poverty rates across all stations fairly well. We prefer the quadratic model because it explains more of the variation in arrest intensity than the linear model; the quadratic model has an adjusted R-squared of `r round(summary(ols1q)$adj.r.squared, 2)` compared to `r round(summary(ols1l)$adj.r.squared, 2)` for the linear model. Here we choose not to weight station observations by the number of MetroCard swipes, so that each station area iq equally weighted in the regression analysis. When computing statistics for groups of stations in the next section, we do weight by swipes so that statistics are representative of ridership in each group.
 
 If you prefer the linear specification because it is a bit simpler to interpret without changing the substantive conclusions, that is a reasonable justification.
-
-We opt to weight observations by ridership at each subway station when estimating regressions, to account for busier stations. When computing statistics for groups of stations in the next section, we also weight by swipes so that statistics are representative of ridership in each group.
-
 
 \medskip
 
@@ -239,11 +235,12 @@ ols_diff1_robSE <- coeftest(ols_diff1, vcov = vcovHC(ols_diff1, type="HC1"))
 
 The difference in average fare evasion arrest intensity between high- and low-poverty subway stations (weighted by MetroCard swipes) is `r round(summary(ols_diff1)$coefficients[2,1], 2)` with a p-value of `r round(ols_diff1_robSE[2,4], 4)`. Thus we can conclude that this difference is statistically significant beyond the 1% level.
 
-\medspace
+\newpage
 
 
 # How does neighborhood racial composition mediate the relationship between poverty and arrest intensity? 
 - In this section, you will examine the relationship between arrest intensity & poverty by Black vs. non-Black station area (`nblack`).
+
 
 ### 5a) Present a table showing the difference in mean arrests per swipe for each group in a 2x2 table of `highpov` vs `nblack`. {-}
 
@@ -280,14 +277,14 @@ The above tables show that mean arrests per 100,000 MetroCard swipes are more th
 
 \medskip
 
-### 5b) Show a scatterplot of arrest intensity vs. poverty rates along with the regression line you think best fits this relationship. {-}
+### 5b) Show a scatterplot of arrest intensity vs. poverty rates (with separate aesthetics for Black and non-Black station areas) along with the regression line you think best fits this relationship. {-}
 
   - Which regression specification do you prefer: linear or quadratic? Be clear about your logic and if applicable cite statistical evidence to support your decision.
   - Interpret your preferred regression specification (caerfully)!
   
 ```{r}
 #quadratic
-ggplot(stations, aes(x = povrt_all_2016, y = arrperswipe, weight = swipes2016, color = nblack)) +
+ggplot(stations, aes(x = povrt_all_2016, y = arrperswipe, color = nblack)) +
     geom_point()  +
     geom_smooth(method = 'lm', formula = y ~ x + I(x^2)) + 
     ylab("arrests per 100,000 MetroCard swipes") + xlab("poverty rate") +
@@ -310,19 +307,19 @@ stations_black <- stations %>% filter(nblack == "Majority Black")
 stations_nonblack <- stations %>% filter(nblack == "Majority non-Black")
 
 #nblack == 1: linear model with station observations
-ols_b_l <- lm(arrperswipe ~ povrt_all_2016, weights = swipes2016,
+ols_b_l <- lm(arrperswipe ~ povrt_all_2016, 
               data = stations_black)
 
 #nblack == 1: quadratic model with station observations
-ols_b_q <- lm(arrperswipe ~ povrt_all_2016 + I(povrt_all_2016^2), weights = swipes2016,
+ols_b_q <- lm(arrperswipe ~ povrt_all_2016 + I(povrt_all_2016^2), 
               data = stations_black)
 
 #nblack == 0: linear model with station observations
-ols_nb_l <- lm(arrperswipe ~ povrt_all_2016, weights = swipes2016,
+ols_nb_l <- lm(arrperswipe ~ povrt_all_2016, 
                data = stations_nonblack)
 
 #nblack == 0: quadratic model with station observations
-ols_nb_q <- lm(arrperswipe ~ povrt_all_2016 + I(povrt_all_2016^2), weights = swipes2016,
+ols_nb_q <- lm(arrperswipe ~ povrt_all_2016 + I(povrt_all_2016^2), 
                data = stations_nonblack)
 ```
 
@@ -336,12 +333,27 @@ For both quadratic and linear models, poverty rates explain very little of the v
 
 Regardless of functional form, poverty is only a statistically significant determinant of fare evasion arrest intensity at subway stations in predominantly Black station areas.
 
-
 \medspace
+
+### 5c) Next let's let's think about how measurement error might impact results from 5b. Do you think measurement error could bias your estimates of neighborhood racial gaps in the effect of poverty on enforcement intensity from 5b? Explain, carefully. Do you have any creative ideas to address any concerns you have about potential bias due to measurement error? {-}
+
+  - One source of measurement error owes to the fact that we're using racial-ethnic composition and poverty rates for the neighborhood surrounding each station to proxy for characteristics of riders at each station. These variables are measured with *non-random* error; demographic measures for the surrounding neighborhood will tend to be a less accurate proxy for the demographics of riders at that station for busier stations that are destinations for commuters, tourists and others who may not live in very vicinity close to the station.
+  - Tip: this is a very tricky issue! In order to think through the measurement error problem and it's consequences you will probably want to consult your Quant II notes and/or my Quant II [video lecture 4](https://drive.google.com/file/d/1CsVY04W1EPQQIE4WUP5p-rkXXJLWv5FS/view?usp=sharing) on the course website.
+  - Can you think of any other measurement error problems that might affect your results from 5b?
+  - Do you have any creative ideas for addressing any concerns you have about potential bias due to this source of measurement error, using this data or other data you think might exist?
+
+\medskip
+\medskip
+\medskip
+
+We will discuss your answers and the issue of measurement error during class.
+
+\newpage
+
 
 # Examine the relationship between arrest intensity and crime 
 
-### 6a) Load the crime data and join to the existing stations data frame (`nypd_criminalcomplaints_2016.csv`). {-}
+### 6a) Load the crime data (`nypd_criminalcomplaints_2016.csv`) and join to the existing `stations` data frame. {-}
 
 ```{r}
 st_crime <- read.csv("nypd_criminalcomplaints_2016.csv")
@@ -354,11 +366,11 @@ stations_wcrime <- stations %>%
 
 \medspace
 
-### 6b) Examine the overall relationship between arrest intensity and crime (without taking neighborhood racial composition or poverty into account) (comparable to Section 4.2).{-}
+### 6b) Examine the overall relationship between arrest intensity and crime (without taking neighborhood racial composition or poverty into account) (comparable to Section 4b).{-}
 
 ```{r}
 #linear
-ggplot(stations_wcrime, aes(x = crimes, y = arrperswipe, weight = swipes2016,)) +
+ggplot(stations_wcrime, aes(x = crimes, y = arrperswipe)) +
     geom_point()  +
     geom_smooth(method = 'lm', formula = y ~ x) + 
     ylab("arrests per 100,000 MetroCard swipes") + xlab("criminal complaints") +
@@ -377,7 +389,7 @@ ggplot(stations_wcrime, aes(x = crimes, y = arrperswipe, weight = swipes2016,)) 
 
 ```{r}
 #quadratic
-ggplot(stations_wcrime, aes(x = crimes, y = arrperswipe, weight = swipes2016,)) +
+ggplot(stations_wcrime, aes(x = crimes, y = arrperswipe)) +
     geom_point()  +
     geom_smooth(method = 'lm', formula = y ~ x + I(x^2)) + 
     ylab("arrests per 100,000 MetroCard swipes") + xlab("criminal complaints") +
@@ -395,10 +407,10 @@ ggplot(stations_wcrime, aes(x = crimes, y = arrperswipe, weight = swipes2016,)) 
 ```
 
 ```{r results = 'hide'}
-ols_c_l <- lm(arrperswipe ~ crimes, weights = swipes2016, data = stations_wcrime)
+ols_c_l <- lm(arrperswipe ~ crimes, data = stations_wcrime)
 ols_c_l_robSE <- coeftest(ols_c_l, vcov = vcovHC(ols_c_l, type="HC1")) #get robust SEs
 
-ols_c_q <- lm(arrperswipe ~ crimes + I(crimes^2), weights = swipes2016, data = stations_wcrime)
+ols_c_q <- lm(arrperswipe ~ crimes + I(crimes^2), data = stations_wcrime)
 ols_c_q_robSE <- coeftest(ols_c_q, vcov = vcovHC(ols_c_q, type="HC1")) #get robust SEs
 ```
 
@@ -409,11 +421,11 @@ From the linear model, we can see that the effect of criminal complaints on arre
 \medskip
 
 
-### 6c) Examine how neighborhood racial composition mediates the relationship between arrest intensity and crime (comparable to Section 5.2).{-}
+### 6c) Examine how neighborhood racial composition mediates the relationship between arrest intensity and crime (comparable to Section 5b).{-}
 
 ```{r}
 #linear
-ggplot(stations_wcrime, aes(x = crimes, y = arrperswipe, weight = swipes2016, color = nblack)) +
+ggplot(stations_wcrime, aes(x = crimes, y = arrperswipe, color = nblack)) +
     geom_point()  +
     geom_smooth(method = 'lm', formula = y ~ x) + 
     ylab("arrests per 100,000 MetroCard swipes") + xlab("criminal complaints") +
@@ -439,19 +451,19 @@ stations_wcrime_nonblack <- stations_wcrime %>%
   filter(nblack == "Majority non-Black")
 
 #nblack == 1: linear model with station observations
-ols_c_b_l <- lm(arrperswipe ~ crimes, weights = swipes2016, data = stations_wcrime_black)
+ols_c_b_l <- lm(arrperswipe ~ crimes, data = stations_wcrime_black)
 ols_c_b_l_robSE <- coeftest(ols_c_b_l, vcov = vcovHC(ols_c_b_l, type="HC1")) 
 
 #nblack == 1: quadratic model with station observations
-ols_c_b_q <- lm(arrperswipe ~ crimes + I(crimes^2), weights = swipes2016,
+ols_c_b_q <- lm(arrperswipe ~ crimes + I(crimes^2), 
                 data = stations_wcrime_black)
 
 #nblack == 0: linear model with station observations
-ols_c_nb_l <- lm(arrperswipe ~ crimes, weights = swipes2016, data = stations_wcrime_nonblack)
+ols_c_nb_l <- lm(arrperswipe ~ crimes, data = stations_wcrime_nonblack)
 ols_c_nb_l_robSE <- coeftest(ols_c_nb_l, vcov = vcovHC(ols_c_nb_l, type="HC1")) 
 
 #nblack == 0: quadratic model with station observations
-ols_c_nb_q <- lm(arrperswipe ~ crimes + I(crimes^2), weights = swipes2016,
+ols_c_nb_q <- lm(arrperswipe ~ crimes + I(crimes^2), 
                  data = stations_wcrime_nonblack)
 ```
 
@@ -459,8 +471,7 @@ Estimating separate linear models for the relationship between criminal complain
 
 Focusing on the linear model for ease of interpretation: the linear relationship between criminal complaints and arrest intensity explains under 6% of the variation regardless of neighborhood racial composition, but the estimated positive effect is four times as large in predominantly Black station areas (`r round(ols_c_b_l$coefficients[2], 3)` compared to `r round(ols_c_nb_l$coefficients[2], 3)`) and statistically significant at the 5% level (p-value = `r round(ols_c_nb_l_robSE[2,4], 4)`).
 
-\medspace
-
+\newpage
 
 
 # Summarize and interpret your findings with respect to subway fare evasion enforcement bias based on race

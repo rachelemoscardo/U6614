@@ -23,7 +23,7 @@ urlcolor: blue
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 ```
 
-##### *Please submit your knitted .pdf file along with the corresponding R markdown (.rmd) via Courseworks by 11:59pm on Friday, October 7th.* {-}
+##### *Please submit your knitted .pdf file along with the corresponding R markdown (.rmd) via Courseworks by 11:59pm on Friday, February 17th.* {-}
 
 \medspace
 
@@ -45,8 +45,9 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 
 ### 2c) Plot histogram of arrests and briefly describe the distribution of arrests across stations.{-}
 
+\newpage
 
-\medspace
+
 
 # Joining subway ridership and neighborhood demographic data
 
@@ -65,7 +66,7 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
   - Only display `st_id`, `mta_name`, `arrests_all`, `shareblack`, `povrt_all_2016` (no other columns)
 
 
-\medspace
+\newpage
 
 # Explore relationship between arrest intensity and poverty rates across subway station (areas)
 
@@ -93,8 +94,8 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
   - Report difference and assess statistical significance
   - Weight observations by the number of MetroCard swipes
 
-
 \newpage
+
 
 # How does neighborhood racial composition mediate the relationship between poverty and arrest intensity? 
 - In this section, you will examine the relationship between arrest intensity & poverty by Black vs. non-Black station area (`nblack`).
@@ -105,28 +106,35 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
   - Could the difference in arrest intensity be explained by differences in poverty rate?
 
 
-### 5b) Show a scatterplot of arrest intensity vs. poverty rates along with the regression line you think best fits this relationship. {-}
+### 5b) Show a scatterplot of arrest intensity vs. poverty rates (with separate aesthetics for Black and non-Black station areas) along with the regression line you think best fits this relationship. {-}
 
   - Which regression specification do you prefer: linear or quadratic? Be clear about your logic and if applicable cite statistical evidence to support your decision.
   - Interpret your preferred regression specification (carefully!).
+
+
+### 5c) Next let's let's think about how measurement error might impact results from 5b. Do you think measurement error could bias your estimates of neighborhood racial gaps in the effect of poverty on enforcement intensity from 5b? Explain, carefully. Do you have any creative ideas to address any concerns you have about potential bias due to measurement error? {-}
+
+  - One source of measurement error owes to the fact that we're using racial-ethnic composition and poverty rates for the neighborhood surrounding each station to proxy for characteristics of riders at each station. These variables are measured with *non-random* error; demographic measures for the surrounding neighborhood will tend to be a less accurate proxy for the demographics of riders at that station for busier stations that are destinations for commuters, tourists and others who may not live in very vicinity close to the station.
+  - Tip: this is a very tricky issue! In order to think through the measurement error problem and it's consequences you will probably want to consult your Quant II notes and/or my Quant II [video lecture 4](https://drive.google.com/file/d/1CsVY04W1EPQQIE4WUP5p-rkXXJLWv5FS/view?usp=sharing) on the course website.
+  - Can you think of any other measurement error problems that might affect your results from 5b?
+  - Do you have any creative ideas for addressing any concerns you have about potential bias due to this source of measurement error, using this data or other data you think might exist?
 
 
 \newpage
 
 # Examine the relationship between arrest intensity and crime 
 
-### 6a) Load the crime data and join to the existing stations data frame (`nypd_criminalcomplaints_2016.csv`). {-}
-
+### 6a) Load the crime data (`nypd_criminalcomplaints_2016.csv`) and join to the existing `stations` data frame. {-}
 
 \medspace
 
 *NOTE: For the next two subsections, present your preferred plots to inform the relationships in question, along with any additional data manipulation and evidence to support your decisions/interpretation/conclusions. You'll want to explore the data before arriving at your preferred plots, but don't present everything you tried along the way such as intermediate versions of your preferred plot. Focus on the analysis you eventually settled on to best inform the question at hand, and any critical observations that led you down this path.*
 
 
-### 6b) Examine the overall relationship between arrest intensity and crime (without taking neighborhood racial composition or poverty into account) (comparable to Section 4.2).{-}
+### 6b) Examine the overall relationship between arrest intensity and crime (without taking neighborhood racial composition or poverty into account) (comparable to Section 4b).{-}
 
 
-### 6c) Examine how neighborhood racial composition mediates the relationship between arrest intensity and crime (comparable to Section 5.2).{-}
+### 6c) Examine how neighborhood racial composition mediates the relationship between arrest intensity and crime (comparable to Section 5b).{-}
 
 
 \newpage
