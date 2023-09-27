@@ -227,8 +227,7 @@ load("arrests.clean.RData")
 #4b. 
   ggplot(data = stations, #specify dataframe to use
          aes(x = povrt_all_2016, y = arrperswipe)) + #specify columns to use
-    geom_point(aes(size=pop_all_2016)) + 
-    geom_smooth() #specify plot geometry
+    geom_point(aes(size=pop_all_2016)) #specify plot geometry
     #('Scatterplot of arrest rate vs. poverty rate') + #add title
     #labs(x = 'poverty rate', y = 'arrest rate') #change axis labels
 

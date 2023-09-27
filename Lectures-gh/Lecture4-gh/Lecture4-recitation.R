@@ -1,9 +1,9 @@
 ################################################################################
 ##
-## [ PROJ ] Lecture 4: Subway Fare Evasion Arrests and Racial Bias
+## [ PROJ ] Lecture 4: Subway Fare Evasion Arrests and Racial Bias (part 1)
 ## [ FILE ] Lecture4-recitation.R
 ## [ AUTH ] < YOUR NAME >
-## [ INIT ] < Feb 14, 2023 >
+## [ INIT ] < Sept 27, 2023 >
 ##
 ################################################################################
 
@@ -11,11 +11,16 @@
 ## Police can stop and ticket or arrest people for subway fare evasion. 
 ## Is NYPD enforcement of subway fare evasion enforcement in Brooklyn racist?
 
+## Lecture3/A3 examined this question using variation among arrested individuals.
+
+## Lecture4/A4 examines this question using variation between subway stations
+
+
 ## --------------------------------------
 ## 1. load libraries and check directory
 ## --------------------------------------
 
-#install.packages("weights", dependencies = TRUE)
+#install.packages("weights")
 #install.packages("lmtest")
 #install.packages("sandwich")
 #install.packages("knitr")
@@ -25,6 +30,8 @@ library(weights)
 library(lmtest)
 library(sandwich)
 library(knitr)
+
+getwd()
 
 
 ## -----------------------------------------------------------------------------
@@ -43,12 +50,12 @@ library(knitr)
 #2a.
 load("arrests.clean.RData")
 
-#2b.        
+
+#2b.
   st_arrests <- arrests.clean %>% 
     group_by(st_id, loc2) %>% 
     summarise(arrests_all = n() ) %>% 
-    arrange(desc(arrests_all)) %>% 
-    ungroup()
+    arrange(desc(arrests_all))
 
   #could use count() instead of group_by()+summarise() - shorter but less flexible
   arrests.clean %>% 
@@ -58,18 +65,21 @@ load("arrests.clean.RData")
   #inspect - DO NOT INCLUDE IN RMD SUBMISSION
   str(st_arrests)  #why is this so long?
   str(st_arrests, give.attr = FALSE)
-  #can also consider ungrouping the st_arrests dataframe 
-  
+    #can also consider ungrouping the st_arrests dataframe 
+
 #2c.
   ggplot(data = st_arrests, aes(x = arrests_all)) + geom_histogram()
-
+  
+  #remember ggplot is in the tidyverse, so we can also start by passing the data into a pipe
+    st_arrests %>% ggplot(aes(x = arrests_all)) + geom_histogram()
+  
 
 ## -----------------------------------------------------------------------------
 ## 3. joining ridership and neighborhood demographics to arrest data
 ##
 ##  a. read in other station-level csv files (w/strings as factors) and inspect
 ##      - don't include inspection code in your rmd submission
-##  
+##
 ##  b. join both data frames to st_arrests & inspect results (store new df as st_joined)
 ##      - inspect results of join and describe any issues
 ##      - drop unnecessary columns from the ridership data
@@ -83,7 +93,7 @@ load("arrests.clean.RData")
 
 #3a. 
   st_poverty <- read.csv("station_povdataclean_2016.csv", 
-                         stringsAsFactors = TRUE) %>% select(-nblack)
+                         stringsAsFactors = TRUE)
   
   #background on poverty data (from 2016 American Community Survey): 
   #  Source: https://usa.ipums.org/usa/acs.shtml
@@ -106,49 +116,45 @@ load("arrests.clean.RData")
 
 
 #3b.
-
+  
   #a vector of columns we don't need to keep, will use in 3b
   drop_vars <- c("swipes2011", "swipes2012", "swipes2013", "swipes2014", "swipes2015")
   
   #example: join st_arrests to st_poverty
-  #st_joinedtemp <- inner_join(st_arrests, st_poverty, by = c("st_id" = "st_id"))
-  #uh-oh, doesn't work!
+  st_joinedtemp <- inner_join(st_arrests, st_poverty, by = c("st_id" = "st_id"))
+    #uh-oh, doesn't work!
   
   #what's the problem? st_id is a factor in st_arrests but an integer in st_poverty!
   #need to join on columns of the same data type
-  st_arrests <- st_arrests %>% 
-    mutate(st_id = as.integer(st_id))
+  st_arrests <- st_arrests %>% mutate(st_id = as.integer(st_id))
   st_joinedtemp <- inner_join(st_arrests, st_poverty, by = c("st_id" = "st_id"))
   
   rm(st_joinedtemp)
   
-
+    
   #in-class exercise: join all 3 data frames (in a single pipe if you can):
     #3 data frames to join: st_arrests, st_poverty, st_ridership
   st_joined <- st_arrests %>%
     inner_join(st_poverty, by = c("st_id")) %>%
     inner_join(st_ridership, by = c("st_id" = "st_id",
-                                    "mta_name" = "mta_name"
-                                    )) %>% 
+                                    "mta_name" = "mta_name")) %>% 
     select(-all_of(drop_vars)) %>% 
     group_by(st_id, mta_name) 
-  
-  #why use all_of()? 
-  #https://stackoverflow.com/questions/62397267/why-should-i-use-all-of-to-select-columns
 
-  #inspect - DO NOT INCLUDE IN RMD SUBMISSION
-  summary(st_joined)
+    #why use all_of()? 
+    #https://stackoverflow.com/questions/62397267/why-should-i-use-all-of-to-select-columns
   
+  #inspect - DO NOT INCLUDE IN RMD SUBMISSION
     #display structure of ungrouped data frame to avoid lengthy output listing every group
     st_joined %>% ungroup() %>% str(give.attr = FALSE)
-    
+    summary(st_joined)
       #Note: 157 obs in joined df w/no NAs (except some missing demographics) 
       #inner join worked as intended!
-
+    
   #QUESTION: could we have used full_join or left_join here instead of inner_join?
     #yes! in this case all 3 datasets have been pre-cleaned to have 157 obs.
+
     
-  
 #3c.
   st_joined %>% 
     arrange(desc(arrests_all)) %>% 
@@ -184,7 +190,7 @@ load("arrests.clean.RData")
 
 #4a.
   stations <- st_joined %>%
-    mutate(arrperswipe = round(arrests_all / (swipes2016 / 100000), 2),
+    mutate(arrperswipe = round(arrests_all / (swipes2016/100000), 2), #arrest intensity
            highpov = as.numeric(povrt_all_2016 > median(st_joined$povrt_all_2016)),
            nblack = as.numeric(shareblack > .5),
            shareblack = round(shareblack, 2),
@@ -195,9 +201,9 @@ load("arrests.clean.RData")
                             labels = c("Majority non-Black", "Majority Black"))) %>% 
     filter(st_id != 66)
   
-      #note we can directly test conditions as a logical comparison
+      #in the above code we directly test conditions as a logical comparison
       #then we convert logical results into numeric (i.e. a dummy variable)
-      #we also continued on and converted to factors
+      #lastly we continued on to convert to factors
   
   #some inspection and validation
   
@@ -211,39 +217,31 @@ load("arrests.clean.RData")
       
   
   #display top 10 stations by arrest intensity (show st_id, mta_name, arrests_all and new variables)
-  stations %>% 
-    arrange(desc(arrperswipe)) %>% 
-    select(st_id, mta_name, arrperswipe, arrests_all, shareblack, povrt_all_2016, highpov, nblack) %>% 
-    head(n = 10) %>% 
-    kable() #kable offers better table formatting
-  
+   stations %>% 
+     arrange(desc(arrperswipe)) %>% 
+     select(st_id, mta_name, arrperswipe, arrests_all, shareblack, povrt_all_2016, highpov, nblack) %>% 
+     head(n = 10)  %>% 
+     kable() #kable offers better table formatting
 
   
 #4b. 
-  ggplot(stations, #specify dataframe to use
+  ggplot(data = stations, #specify dataframe to use
          aes(x = povrt_all_2016, y = arrperswipe)) + #specify columns to use
-    geom_point() + #specify plot geometry
-    ggtitle('Scatterplot of arrest rate vs. poverty rate') + #add title
-    labs(x = 'poverty rate', y = 'arrest rate') #change axis labels
+    geom_point(aes(size=pop_all_2016)) #specify plot geometry
+    #('Scatterplot of arrest rate vs. poverty rate') + #add title
+    #labs(x = 'poverty rate', y = 'arrest rate') #change axis labels
 
   #fit linear model with station observations (can also add optional weights argument)
     ols1l <- lm(arrperswipe ~ povrt_all_2016, data = stations)
     summary(ols1l) #get summary of the model
     coeftest(ols1l, vcov = vcovHC(ols1l, type="HC1")) #get robust SEs
-
+  
   #how to refer to specific regression results
     ?summary.lm
     summary(ols1l)$adj.r.squared  #adj R-square
     summary(ols1l)$coefficients   #coefficients
-    
-  #the summary itself can also be stored as an object
-    #this makes accessing the statistics of interest a bit easier
-    ols1l_summary <- summary(ols1l)
-    ols1l_summary$fstatistic
-    
     round(summary(ols1l)$coefficients[2,1],2) #beta1_hat
     coeftest(ols1l, vcov = vcovHC(ols1l, type="HC1"))[2,4] #p-value on beta1_hat
-  
   
   #add linear prediction line to scatter plot
     ggplot(stations, 
@@ -251,26 +249,24 @@ load("arrests.clean.RData")
       geom_point() + 
       ggtitle('Scatterplot of arrest rate vs. poverty rate') + 
       labs(x = 'poverty rate', y = 'arrest rate') + 
-      geom_smooth(method = 'lm', formula = y ~ x) + #add linear SRF
+      geom_smooth(method = "lm", formula = y~x) + #add linear SRF
       geom_smooth(aes(weight = swipes2016), 
                   method = 'lm', formula = y ~ x) #compare to weighted OLS
-  
-#anova(linear, quadratic) --> F-statistic (partial F stat)
-    
+
   #fit quadratic OLS model (arrest rate vs. poverty rate)
-  #HINT: see quadratic syntax from Lecture4.2 (section 4.1)
+    #HINT: see quadratic syntax from Lecture4.2 (section 4.1)
     ols1q <- lm(arrperswipe ~ povrt_all_2016 + I(povrt_all_2016^2),
-               data = stations) #include quadratic term
+                data = stations) 
     summary(ols1q) 
     coeftest(ols1q, vcov = vcovHC(ols1q, type="HC1"))
-
+    
   #add quadratic prediction line to scatter plot
     ggplot(stations,
            aes(x = povrt_all_2016, y = arrperswipe)) + 
       geom_point() + 
       ggtitle('Linear regression fit') + 
       labs(x = 'poverty rate', y = 'arrest rate') + 
-      geom_smooth(method = 'lm', formula = y ~ x + I(x^2)) 
+      geom_smooth(method = 'lm', formula = y ~ x + I(x^2)) #add quadratic SRF
 
   
 #4c. calculate and test difference in means between high/low poverty stations
@@ -282,17 +278,16 @@ load("arrests.clean.RData")
       summarise(n = n(),
                 mean_pov = mean(povrt_all_2016),
                 mean_arrper = mean(arrperswipe))
-
-     #inference with t.test command and unequal variance (doesn't accept weights!)
-    #note, default is unequal variance assumption
-       t.test(arrperswipe ~ highpov, data = stations, var.equal = FALSE)
-
-   
+    
+  #inference with t.test command and unequal variance (doesn't accept weights!)
+    t.test(arrperswipe ~ highpov, data = stations, var.equal = FALSE)
+    
+    
   #instead let's use bivariate regression (accepts weights!) w/robust SEs
-    #QUANT II REVIEW: 
-    # equivalence of diff-in-means test & bivariate regression w/dummmy regressor
-    # consult Video Lecture 2.2a on the class website 
-    diff1 <- lm(arrperswipe ~ highpov, data = stations, weights = swipes2016)
+  #QUANT II REVIEW: 
+  # equivalence of diff-in-means test & bivariate regression w/dummmy regressor
+  # consult Video Lecture 2.2a on the class website  
+    diff1 <- lm(arrperswipe ~ highpov, data = stations, weight = swipes2016)
     summary(diff1) #get summary of the model
     coeftest(diff1, vcov = vcovHC(diff1, type="HC1")) #get robust SEs
     
@@ -305,8 +300,8 @@ load("arrests.clean.RData")
                weight = stations_highpov$swipes2016, 
                weighty = stations_lowpov$swipes2016)
       #compare difference and SE of difference to previous approach
-    
 
+ 
 ## -----------------------------------------------------------------------------
 ## 5. How does neighborhood racial composition mediate the relationship between poverty and arrest intensity
 ##    - examine relationship between arrest intensity & poverty by Black vs non-Black station area (nblack)
@@ -315,27 +310,26 @@ load("arrests.clean.RData")
 ##        - weighted by station swipes
 ##        - could difference in arrest intensity be explained by differences in povrt?
 ##
-##    b. scatterplot of arrperswipe vs povrt_all by nblack
-##       - add linear fit
-##       - add quadratic regression fit
+##    b. show and interpret a scatterplot of arrest intensity vs. pov rates by nblack w/your preferred regression lines
+##        - use separate aesthetics to plot Black and non-Black station areas
+##        - your plot should include your preferred regression estimates: linear or quadratic (not both)
+##        - carefully explain which regression specification you prefer and why (linear or quadratic)
+##        - if applicable, cite statistical evidence to support your decision.
+##        - Interpret your preferred regression specification (carefully)!
 ##
-##    c. which model do you prefer, linear or quadratic?
-##      - why? be clear about your logic and if applicable cite statistical evidence to support your decision
+##    c. Next let's let's think about how measurement error might impact results from 5b.
+##       Do you think measurement error could bias your estimates of neighborhood racial gaps
+##       in the effect of poverty on enforcement intensity from 5b? 
+##       Explain, carefully. 
+##       Do you have any creative ideas to address concerns about potential bias from measurement error?
+##    
+##       (This is tricky!)  
 ##
-##    d. interpret the results from your preferred regression specification (carefully!)
 ## -----------------------------------------------------------------------------
   
-    library(gapminder)
-    gap <- gapminder
-    tapply(gap$lifeExp, list(gap$continent, gap$year), mean)
-    
-    gap %>%
-      group_by(continent, year) %>% 
-      summarise(mean_lifeexp = mean(lifeExp))
-
-    #5a. HINT: use tapply()
+#5a. HINT: use tapply()
   #unweighted difference in mean arrests
-    t1_arrper <- with(stations,  #stations %>%
+    t1_arrper <- with(stations, 
                       tapply(arrperswipe, 
                              list("High Poverty" = highpov, "Predominantly Black" = nblack), 
                              mean) )
@@ -352,29 +346,40 @@ load("arrests.clean.RData")
 
   #ok so arrest intensity is higher in high-pov stations that are majority black
   #are there differences in poverty rates that could in part explain this association?
+    t1_arrper %>% round(2)
+    t1_arrper_wtd %>% round(2)
+    
     t1_povrt <- with(stations, 
                      tapply(povrt_all_2016, 
-                            list("High Poverty" = highpov, 
-                                 "Predominantly Black" = nblack), 
-                            mean)) 
+                            list("High Poverty" = highpov, "Predominantly Black" = nblack), 
+                            mean) )    
     t1_povrt_wtd <-
       tapply(stations$povrt_all_2016 * stations$swipes2016,
-             list(stations$highpov, 
-                  stations$nblack), 
+             list(stations$highpov, stations$nblack), 
              sum) / 
       tapply(stations$swipes2016,
-             list(stations$highpov, 
-                  stations$nblack), 
+             list(stations$highpov, stations$nblack), 
              sum)
-    
-  t1_povrt_wtd
-  t1_arrper_wtd
-  #t1_arrper #note how group means change with weighting
+    t1_povrt_wtd %>% round(2)
   
   
 #5b.
-    
-  #scatterplot by nblack w/linear plots
+  #scatterplot by nblack
+    ggplot(stations, aes(x = povrt_all_2016, y = arrperswipe, color = nblack)) +
+      geom_point() +
+      #Modify legend title and text
+      scale_color_discrete(name = "Predominantly Black Station",
+                           labels=c("No", "Yes"),
+                           # Reverse Label Order
+                           guide = guide_legend(reverse=TRUE)) +
+      #Modify legend aesthetics (optional)
+      theme(legend.position = "bottom", 
+            legend.background = element_rect(color = "black", fill = "grey90", size = .2, linetype = "solid"), 
+            legend.direction = "horizontal",
+            legend.text = element_text(size = 8), 
+            legend.title = element_text(size = 8) )
+  
+  #add linear plot
     ggplot(stations, aes(x = povrt_all_2016, y = arrperswipe, color = nblack)) +
       geom_point()  +
       geom_smooth(method = 'lm', formula = y ~ x) + 
@@ -382,19 +387,20 @@ load("arrests.clean.RData")
       xlab("Station area poverty rate") +
       ggtitle("Fare Evasion Arrest Intensity vs Poverty by Race", 
               subtitle = "Subway stations in Brooklyn (2016)") +
+      #Modify legend title and text
       scale_color_discrete(name = "Predominantly Black Station",
                            labels=c("No", "Yes"),
+                           # Reverse Label Order
                            guide = guide_legend(reverse=TRUE)) +
+      #Modify legend aesthetics (optional)
       theme(legend.position = "bottom", 
-            legend.background = element_rect(color = "black", 
-                                             fill = "grey90", 
-                                             size = .2, 
-                                             linetype = "solid"), 
+            legend.background = element_rect(color = "black", fill = "grey90", size = .2, linetype = "solid"), 
             legend.direction = "horizontal",
             legend.text = element_text(size = 8), 
             legend.title = element_text(size = 8) )
+
   
-  #w/quadratic plots
+  #add quadratic plot
     ggplot(stations, aes(x = povrt_all_2016, 
                          y = arrperswipe, 
                          color = nblack)) +
@@ -404,90 +410,65 @@ load("arrests.clean.RData")
       xlab("Station area poverty rate") +
       ggtitle("Fare Evasion Arrest Intensity vs Poverty by Race", 
               subtitle = "Subway stations in Brooklyn (2016)") +
+      #Modify legend title and text
       scale_color_discrete(name = "Predominantly Black Station",
                            labels=c("No", "Yes"),
+                           # Reverse Label Order
                            guide = guide_legend(reverse=TRUE)) +
+      #Modify legend aesthetics (optional)
       theme(legend.position = "bottom", 
-            legend.background = element_rect(color = "black", 
-                                             fill = "grey90", 
-                                             size = .2, 
-                                             linetype = "solid"), 
+            legend.background = element_rect(color = "black", fill = "grey90", size = .2, linetype = "solid"), 
             legend.direction = "horizontal",
             legend.text = element_text(size = 8), 
             legend.title = element_text(size = 8) )
 
 #5c.  
   
-  #by nblack: get separate data frames
-    stations_black <- stations %>% filter(nblack == "Majority Black")
-    stations_nonblack <- stations %>% filter(nblack == "Majority non-Black")
-    
-  #nblack == 1: linear model with station observations (can also add optional weights argument)
-    ols1lb <- lm(arrperswipe ~ povrt_all_2016, data = stations_black, 
-                 weights = swipes2016)
-    summary(ols1lb) #get summary of the model, can also use coeftest
 
-  #nblack == 1: quadratic model with station observations
-    olsqlb <- lm(arrperswipe ~ povrt_all_2016 + I(povrt_all_2016^2), data = stations_black)
-
-  #nblack == 0: linear model with station observations (can also add optional weights argument)
-    ols1lnb <- lm(arrperswipe ~ FILL IN CODE)
-    
-  #nblack == 0: quadratic model with station observations
-    ols1qnb <- lm(arrperswipe ~ FILL IN CODE) 
-    
-    anova(m1, m2)
-    
-    
+  
 #5d.
-    
   
     
 ## -----------------------------------------------------------------------------
 ## 6. Similar to analysis above, examine relationship between arrest intensity & criminal complaints
 ##  
-##  a. read in "nypd_criminalcomplaints_2016.csv"
-##      - this csv file shows # of criminal complaints for each subway station area
-##      - source: https://data.cityofnewyork.us/Public-Safety/NYPD-Complaint-Data-Historic/qgea-i56i
-##
-##  b. join stations data frame to subway station area crime data
+##  a. read in crime data (nypd_criminalcomplaints_2016.csv) and join to existing stations df
+##      - nypd_criminalcomplaints_2016.csv: 
+##        - shows # of criminal complaints for each subway station area
+##        - https://data.cityofnewyork.us/Public-Safety/NYPD-Complaint-Data-Historic/qgea-i56i
 ##      - join on st_id
 ##      - exclude the stations with the 4 highest counts of criminal complaints
 ##        - why? bc they are in very close proximity to Brooklyn transit policing HQ,
 ##          and to Brooklyn criminal courts, so they don't face comparable
 ##          neighborhood policing conditions
 ##
-##  c. examine relationship between arrest intensity & criminal complaints 
-##      i. First, look at over all relationship (don't take nblack into account)
-##      ii. Then, allow relationship to vary by nblack
-    
-    #do regression w/ full sample
-    #split sample into two (or use interaction term)
-    #run regression for both linear and quadratic, choose your favourite
-    #interpret it.
-    
-    #for plot, just show your favourite one.
 ##
-##  NOTE: you don't need to follow *all* the same steps in questions 3-5.
-##    for 6.c.i. and 6.c.ii:
-##     - focus on showing your preferred plots to inform the relationship, 
-##       along w/any additional data manipulation & evidence to support your decisions/interpretation/conclusions
-##     - you'll want to explore the data before arriving at your preferred plots, 
-##       DON'T show us everything you tried, just the analysis you settled on to support your answers
+## 6b. Examine the overall relationship between arrest intensity and crime 
+##     without taking neighborhood racial composition or poverty into account 
+##     (comparable to Section 4b)
+##
+##
+## 6c. Examine how neighborhood racial composition mediates the relationship 
+##     between arrest intensity and crime (comparable to Section 5b)
+##  
+##
+##  NOTE: for 6b and 6c, you don't need to follow *all* the same steps in questions 3-5.
+##  - focus on showing your preferred plots to inform the relationship, along with
+##    any additional data manipulation & evidence to support your decisions/interpretation/conclusions
+##  - explore the data before arriving at your preferred plots, don't show us everything
+##    you tried, just the analysis you settled on as most relevant to this question
+##
 ## -----------------------------------------------------------------------------
-
-#6a.  
-  st_crime <- read.csv("nypd_criminalcomplaints_2016.csv")
     
-    st_crime_clean <- st_crime %>% 
-      arrange(desc(crimes)) %>% 
-      tail(-4)
+#6a.  
+
     
 #6b.
-  
+
   
 #6c. 
   
+
   
 ## -----------------------------------------------------------------------------
 ## 7. interpret your findings with respect to subway fare evasion enforcement bias based on race
@@ -498,9 +479,4 @@ load("arrests.clean.RData")
 ##    - for this question, try to be specific and avoid vaguely worded concerns
 ## -----------------------------------------------------------------------------
   
-    #bias
-    #significant
-    #accurate
-    #reliable 
-    #representative 
-    
+  
