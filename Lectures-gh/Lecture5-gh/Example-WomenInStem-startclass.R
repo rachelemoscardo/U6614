@@ -3,14 +3,14 @@
 ## [ PROJ ] Supplemental Example: Women in STEM
 ## [ FILE ] womeninstem.r
 ## [ AUTH ] < YOUR NAME >
-## [ INIT ] < Feb 22, 2022 >
+## [ INIT ] < Sept. 29, 2023 >
 ##
 ################################################################################
 
 ## Research question:
 ##  - Do countries with more mandated maternal leave have a greater share of 
 ##    women graduating in STEM fields?
-##  - A more interesting causal framing of that question:
+##  - A more informative causal framing of that question:
 ##     Does maternal leave increase women's representation in STEM fields?
 
 ## Data source: World Bank's DataBank Gender Statistics
@@ -35,13 +35,13 @@ getwd()
 ## 1. load & prep input data
 ##---------------------------
 
-wbgender <- read_csv("worldbank-genderstats.csv", na = "..") #ADD ARGUMENT TO ADDRESS NAs
+wbgender <- read_csv("worldbank-genderstats.csv") #ADD ARGUMENT TO ADDRESS NAs
 
 
 #wait this data isn't "tidy"! 
 #each row is not its own observation! there are diff rows for diff vars
   
-#here are the 3 input variables we want to work with
+#here are the 3 variables we want to work with
   #SE.TER.GRAD.FE.SI.ZS : 
     #Y: Female share of graduates from STEM programmes, tertiary (%)
   #SH.MMR.LEVE :
@@ -77,43 +77,42 @@ wbgender <- read_csv("worldbank-genderstats.csv", na = "..") #ADD ARGUMENT TO AD
 ## B. for each variable, create 'analysis variable' = mean value across all years for each country
 ##  - 1. start by reshaping data from wide to long form in each df using pivot_longer
 ##    - new long form df should have 1 obs for every country-year combination
-##    - i.e. reshape stem.fmshstemgrads into new df stem.fmshstemgrads_long, etc.
+##    - i.e. reshape stem.fmshstemgrads into new data frame.
 ##  - 2. next use group_by + summarise to generate aggregated stats for each group
 ##    - new df should have 3 columns: `Country Name`, `Country Code`, fmshstemgrads
 ##    - repeat for each input variable to end up with 3 data frames
   
   stem.fmshstemgrads_long <- stem.fmshstemgrads %>% 
     pivot_longer(cols = `2011 [YR2011]`:`2020 [YR2020]`,
-                 names_to = "Years",
+                 names_to = "Years",   #ARGUMENT FOR TIME VARIABLE IN THIS EX
                  values_to = "value" ) #ARGUMENT FOR NEW COL NAME W/VARIABLE VALUES
   #here's a basic pivot_longer example: 
   #https://statisticsglobe.com/pivot_longer-and-pivot_wider-functions-in-r
 
   
   #once you get the reshape down above, 
-  #then extend the pipe w/group_by + summarize to get aggregate observations
-  stem.fmshstemgrads_long <- stem.fmshstemgrads %>% 
+  #then extend the pipe w/group_by + summarize to obtain aggregate observations
+  stem.fmshstemgrads_cross <- stem.fmshstemgrads %>% 
     pivot_longer(cols = `2011 [YR2011]`:`2020 [YR2020]`,
                  names_to = "Years",
                  values_to = "value") %>% 
     group_by(`Country Name`,`Country Code`) %>% 
     summarise(fmshstemgrads = round(mean(value, na.rm = TRUE),2) )
   
-  stem.dayspaidmatleave_long  <- stem.dayspaidmatleave  %>% 
+  stem.dayspaidmatleave_cross  <- stem.dayspaidmatleave  %>% 
     pivot_longer(cols = `2011 [YR2011]`:`2020 [YR2020]`,
                  names_to = "Year",
                  values_to = "value") %>% 
     group_by(`Country Name`,`Country Code`) %>% 
     summarise(dayspaidmatleave = round(mean(value, na.rm = TRUE), 2) )
   
-  stem.unmetcontr_long <- stem.unmetcontr %>% 
+  stem.unmetcontr_cross <- stem.unmetcontr %>% 
     pivot_longer(cols = `2011 [YR2011]`:`2020 [YR2020]`,
                  names_to = "Year",
                  values_to = "value") %>% 
     group_by(`Country Name`,`Country Code`) %>% 
     summarise(unmetcontr = round(mean(value, na.rm = TRUE), 2) ) 
   
-
   
   
 ## C. join 3 new df's together to get a single "tidy" dataframe
@@ -152,7 +151,7 @@ wbgender <- read_csv("worldbank-genderstats.csv", na = "..") #ADD ARGUMENT TO AD
 
 ## C. what can we do to improve internal validity?
     #i.e. we at least want to identify a more informative correlation 
-    # (if not a true causal effect)
+    # (if not an arguably causal effect)
     #don't answer with R code, think about research design!
 
 

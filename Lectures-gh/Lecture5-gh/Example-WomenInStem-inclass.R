@@ -3,15 +3,15 @@
 ## [ PROJ ] Supplemental Example: Women in STEM
 ## [ FILE ] womeninstem.r
 ## [ AUTH ] < YOUR NAME >
-## [ INIT ] < Feb 22, 2022 >
+## [ INIT ] < Sept. 29, 2023 >
 ##
 ################################################################################
 
 ## Research question:
 ##  - Do countries with more mandated maternal leave have a greater share of 
 ##    women graduating in STEM fields?
-##  - A more interesting causal framing of that question:
-##     Does maternal leave increase the women's representation in STEM fields?
+##  - A more informative causal framing of that question:
+##     Does maternal leave increase women's representation in STEM fields?
 
 ## Data source: World Bank's DataBank Gender Statistics
 ##  (https://databank.worldbank.org/source/gender-statistics)
@@ -41,7 +41,7 @@ wbgender <- read_csv("worldbank-genderstats.csv", na = "..")
 #wait this data isn't "tidy"! 
 #each row is not its own observation! there are diff rows for diff vars
   
-#here are the 3 input variables we want to work with
+#here are the 3 variables we want to work with
   #SE.TER.GRAD.FE.SI.ZS : 
     #Y: Female share of graduates from STEM programmes, tertiary (%)
   #SH.MMR.LEVE :
@@ -91,21 +91,21 @@ wbgender <- read_csv("worldbank-genderstats.csv", na = "..")
   #here's a basic pivot_longer example: 
     #https://statisticsglobe.com/pivot_longer-and-pivot_wider-functions-in-r
    
-  stem.fmshstemgrads_long <- stem.fmshstemgrads %>% 
+  stem.fmshstemgrads_cross <- stem.fmshstemgrads %>% 
     pivot_longer(cols = `2011 [YR2011]`:`2020 [YR2020]`,
-                 names_to = "Year",
-                 values_to = "value") %>% 
+                 names_to = "Year",       #ARG FOR TIME VARIABLE IN THIS EXAMPLE
+                 values_to = "value") %>% #ARG FOR NEW COL NAME W/VARIABLE VALUES
     group_by(`Country Name`,`Country Code`) %>% 
     summarise(fmshstemgrads = round(mean(value, na.rm = TRUE),2) )
   
-  stem.dayspaidmatleave_long  <- stem.dayspaidmatleave  %>% 
+  stem.dayspaidmatleave_cross  <- stem.dayspaidmatleave  %>% 
     pivot_longer(cols = `2011 [YR2011]`:`2020 [YR2020]`,
                  names_to = "Year",
                  values_to = "value") %>% 
     group_by(`Country Name`,`Country Code`) %>% 
     summarise(dayspaidmatleave = round(mean(value, na.rm = TRUE), 2) )
   
-  stem.unmetcontr_long <- stem.unmetcontr %>% 
+  stem.unmetcontr_cross <- stem.unmetcontr %>% 
     pivot_longer(cols = `2011 [YR2011]`:`2020 [YR2020]`,
                  names_to = "Year",
                  values_to = "value") %>% 
@@ -119,8 +119,8 @@ wbgender <- read_csv("worldbank-genderstats.csv", na = "..")
 ##    - include 3 analysis variables and `Country Name` and `Country Code`
 ##    - how many countries have non-missing values for all 3 vars?
 
-  stem.cross <- inner_join(stem.fmshstemgrads_long, stem.unmetcontr_long) %>% 
-    inner_join(stem.dayspaidmatleave_long) %>% 
+  stem.cross <- inner_join(stem.fmshstemgrads_cross, stem.unmetcontr_cross) %>% 
+    inner_join(stem.dayspaidmatleave_cross) %>% 
     na.omit()
 
   #think about sample selection issues! 
@@ -164,13 +164,13 @@ wbgender <- read_csv("worldbank-genderstats.csv", na = "..")
     
     cor(stem.cross$dayspaidmatleave, stem.cross$unmetcontr)
     
-    #there surely are! this is the usual problem w/cross-sectional variation
+    #surely there are other confounding factors! this is the usual problem w/cross-sectional variation
     #this cross-sectional variation in X (dayspaidmatleave) is endogenous!
     #i.e. it isn't random w/respect to other determinants of Y, such as unmet contraception need (X2)
     
 
 ## C. what can we do to improve internal validity?
-    #i.e. we at least want to identify a more informative correlation, if not a true causal effect
+    #i.e. we at least want to identify a more informative correlation, if not an arguably causal effect
     #trying to explicitly control for all of these other factors is usually an uphill battle
     #a stronger research design might focus on...
       #time variation "within-countries" (using panel data & fixed effects)
