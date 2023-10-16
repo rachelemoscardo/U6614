@@ -3,7 +3,7 @@
 ## [ PROJ ] Lecture 7: Water shutoffs, race, and health in Detroit (Part 1)
 ## [ FILE ] detroit-exploratory.r
 ## [ AUTH ] < YOUR NAME >
-## [ INIT ] <Feb 28, 2022 >
+## [ INIT ] < Oct 17, 2023 >
 ##
 ################################################################################
 
@@ -242,7 +242,7 @@ FILL IN CODE SIMILAR TO ABOVE BUT USE medianinc RATHER THAN blackshare
   
 #get total population of Detroit (for simplicity, assume pop doesn't change over time
   #we estimate it by summing the `pop` column in the dataframe `tract`)
-  detroit_pop <- sum(tract$pop)
+  detroit_pop <- FILL IN CODE
 
 
 #first let's get citywide time series of shutoffs per capita
@@ -294,7 +294,7 @@ FILL IN CODE SIMILAR TO ABOVE BUT USE medianinc RATHER THAN blackshare
 #note that we are missing 1 row (we only have 187 instead of 2 * 94 = 188 rows)
 #the reason is that in Feb 2016 there is only 1 tract with shutoffs (w/income below the median)
 #that means we are missing a row corresponding to Feb 2016, high income
-#in order to solve this, here is a possible solution:
+#in order to solve this, here is one possible solution:
   
   ym_inc <- tract_ym %>% 
     group_by(FILL IN GROUPING VARIABLES TO GET RIGHT UNIT OF ANALYSIS) %>% 
