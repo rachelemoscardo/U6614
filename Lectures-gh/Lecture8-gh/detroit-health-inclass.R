@@ -322,10 +322,10 @@ getwd()
     scale_size(range = c(0.1, 6), 
                guide = "none") +
     geom_smooth(aes(weight = pop),
-                method = 'lm_robust', 
-                formula = y ~ x) #not robust SEs for confidence band!
-  
-#replace confidence bands w/robust confidence bands
+                method = 'lm_robust', #plots robust SEs for confidence band!
+                formula = y ~ x) 
+
+#alternative syntax for estimating and plotting robust SEs
   ggplot(data = zip_cross, 
          aes(x = si_1000, 
              y = total_obs_1000)) + 
@@ -426,9 +426,10 @@ getwd()
                             vcov = "hetero")
     summary(panel_total_2b)
     
-
-    #modelsummary -- fixed effect estimation (feols)
-    #stargazer -- works for lm, plm, a bit more flexible 
+  #packages for displaying formatted regression output:
+    #modelsummary: https://modelsummary.com/articles/modelsummary.html
+    #stargazer: https://cran.r-project.org/web/packages/stargazer/vignettes/stargazer.pdf
+      
     #packages and functions have the same name here:
       #modelsummary::modelsummary()
       #stargazer::stargazer()
@@ -474,10 +475,10 @@ getwd()
                   method.args = list(se_type = "stata") )
     
     #QUESTION: why doesn't this plot correspond to our FEs estimates?
-      #HINT: in the above ggplot object, try mapping zip5.fac to the color aesthetic
+      #HINT: in the above ggplot object, try mapping zip5_fac to the color aesthetic
     
     
-  #can also plot binned data
+  #can also plot binned data (though generally not desirable to do so)
   ggplot(zip_panel, 
          aes(x = si_1000, y = total_obs_1000, weight = pop)) +
     geom_point(alpha = 0.4) +
