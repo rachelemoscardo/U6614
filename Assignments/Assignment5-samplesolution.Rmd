@@ -23,7 +23,7 @@ urlcolor: blue
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 ```
 
-##### *Please submit your knitted .pdf file along with the corresponding R markdown (.rmd) via Courseworks by 11:59pm on Monday, March 7th.* {-}
+##### *Please submit your knitted .pdf file along with the corresponding R markdown (.rmd) via Courseworks by 11:59pm on Monday, October 23rd.* {-}
 
 ##### Remember to think carefully about what code you include in your knitted document. Only include code chunks that you need to generate the plots and statistics to answer the questions below. Don't include code from your working R script (that we started in class) that was only used to inspect and validate your results, and isn't necessary to answer the questions. {-}
 
@@ -47,49 +47,29 @@ In this section we'll explore variation in shutoffs *across* Census tracts (one 
 
 ```{r, results = 'hide', echo = FALSE}
 
-#get census tract level demographic data from ACS 
-  input_acs_tract <- read.dta13("../data/ACS_10_17_5YR_CensusTract.dta")
+#load ACS data
+MI_acs_tract_10_17 <- readRDS("Data/MI_acs_tract_10_17.rds")
 
-#clean, rename/construct key variables, prep for merge on a tractid
-  acs_tract.clean <- input_acs_tract %>% 
-    select(census_tract_long, year, num_pop_total, num_income_median, 
-           per_race_black_alone_or_combo, geodisplaylabel) %>% 
-    rename(tractid = census_tract_long, 
-           pop = num_pop_total,
-           medianinc = num_income_median,
-           blackshare = per_race_black_alone_or_combo) %>% 
-    mutate(black75 = as.numeric(blackshare >= 75),
-           inc_above_median = as.numeric(medianinc > 26884.59)) %>%
-    arrange(tractid, year)
+input_si <- read.dta13("Data/si_1017_cleaned.dta")
   
-#get service interruption data
-input_si <- read.dta13("../data/si_1017_cleaned.dta")
-  
-    
-#focus on key variables to identify period/location of every shutoff
-#we'll want to join to demographic data based on tractid and get tract-level obs
 si.clean <- input_si %>% 
   select(si_order_number, census_tract_long, year, month) %>% 
   rename(tractid = census_tract_long) %>% 
   arrange(tractid, year, month)
 
-#aggregate to tract-year/month totals
 si_tract_ym <- si.clean %>% 
   group_by(tractid, year, month) %>% 
   summarise(si_count = n_distinct(si_order_number)) %>% 
   arrange(tractid, year, month)
 
-#join tract-year demographic data to tract-month level SI data
-#want a tract-month panel
-tract_ym <- left_join(si_tract_ym, acs_tract.clean, 
+tract_ym <- left_join(si_tract_ym, MI_acs_tract_10_17,
                       by = c("tractid", "year")) %>% 
   mutate(date = make_date(year, month, 1)) %>% 
   arrange(tractid, year, month) %>% 
   filter(date != "2017-11-01")
 
-#collapse to tract-level totals (disregard within-tract variation across years)
 tract <- tract_ym %>% 
-  group_by(tractid) %>% 
+  group_by(tractid) %>% #kills time dimension
   summarise(si_count = sum(si_count),
             pop = mean(pop, na.rm = TRUE),
             blackshare = mean(blackshare, na.rm = TRUE),
@@ -99,7 +79,6 @@ tract <- tract_ym %>%
                                           na.rm = TRUE), 0) ) %>% 
   mutate(si_1000 = si_count / (pop / 1000) ) %>% #shutoffs per 1000 people
   arrange(tractid)
-
 ```
 
 
@@ -111,7 +90,6 @@ tract <- tract_ym %>%
   ggplot(data = tract, aes(x = blackshare, 
                            y = si_1000, weight = pop, size = pop)) + 
     geom_point(alpha = 0.1) +
-    geom_smooth(method = 'lm', formula = y ~ x)  +
     scale_size(range = c(0.1, 6), guide = "none") +
     ggtitle("Shutoffs per capita on Black share of population")
 ```
@@ -129,7 +107,6 @@ Also note that all Census tract statistics based on the American Community Surve
   ggplot(data = tract, aes(x = medianinc, 
                            y = si_1000, weight = pop, size = pop)) + 
     geom_point(alpha = 0.1) +
-    geom_smooth(method = 'lm', formula = y ~ x)  +
     scale_size(range = c(0.1, 6), guide = "none") +
     ggtitle("Shutoffs per capita on median income")
 
@@ -147,11 +124,17 @@ The above scatterplot plots the relationship between shutoffs per capita and med
   #      then experiment w/marker size and color to indicate greater shutoff rates
 
   ggplot(data = tract, 
-         aes(x = blackshare, y = medianinc, size = si_1000, color = si_1000)) + 
+         aes(x = blackshare, 
+             y = medianinc, 
+             size = si_1000,
+             color = si_1000)) + 
     geom_point(alpha = 0.1) +
-    scale_size(range = c(0.1, 6), guide = "none") + 
+    scale_size(range = c(0.1, 6), guide = "none") +
     scale_color_gradient(low="purple", high="red") +
-    ggtitle("Shutoffs per capita by median income and Black share")
+    ggtitle("Shutoffs per capita by median income and Black share") + 
+    xlab("Share of Black Residents") +
+    ylab("Median Income") + 
+    labs(color = "Shutoff Intensity")
 
 ```
 
@@ -201,9 +184,15 @@ In this section, we'll explore variation *between* different groups of Census tr
 
 ```{r q2.1}
 #time series plot of SI per capita for tracts above/below citywide median income
-  ggplot(ym_inc, aes(x = date, y = si_1000)) + 
-    geom_line(aes(color = inc_above_median)) +
-    ggtitle("Time series plot of shutoffs by tracts above/below median income")
+   ggplot(ym_inc, 
+         aes(x = date, y = si_1000)) + 
+    geom_line(aes(color = inc_above_median)) + 
+    ggtitle("Time series plot of shutoffs by tracts above/below median income") + 
+  xlab("Year") +
+    ylab("Shutoff Intensity") + 
+    labs(color = "Tract Income") +
+    scale_color_brewer(palette = "Set2")
+
 ```
 
 Shutoffs per capita exhibit pronounced seasonal variation, but beginning in 2014 monthly shutoffs per capita are nearly identical in Census tracts above and below the citywide median. 
@@ -242,10 +231,15 @@ Shutoffs per capita exhibit pronounced seasonal variation, but beginning in 2014
 
 ```{r q2.2}
 #time series plot of SI per capita by tracts above/below 75% black
-  ggplot(data = ym_race, 
-         aes(x = date, y = si_1000, group = black75)) + 
-    geom_line(aes(color = black75)) +
-    ggtitle("Time series plot of shutoffs per capita by tracts above/below 75% black")
+   ggplot(ym_race, 
+         aes(x = date, y = si_1000)) + 
+    geom_line(aes(color = black75)) + 
+    ggtitle("Time series plot of shutoffs by tracts above/below 75% Black") + 
+    xlab("Year") +
+    ylab("Shutoff Intensity") + 
+    labs(color = "Tract Share Black") +
+    scale_color_brewer(palette = "Set2") 
+
 
 ```
 
