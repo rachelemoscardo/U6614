@@ -3,7 +3,7 @@
 ## [ PROJ ] Standardizing variables 
 ## [ FILE ] StandardizingTestScores.r
 ## [ AUTH ] < YOUR NAME >
-## [ INIT ] < Oct. 27, 2022 >
+## [ INIT ] < March 21, 2023 >
 ##
 ################################################################################
 
@@ -39,8 +39,10 @@ getwd()
   scores <- read_csv("elementary_score.csv") %>% 
     select(wave, Prefecture, Japanese) %>% 
     filter(wave != 2011, wave != 2020) %>% #data missing in 2011 and 2020
-    filter(wave < 2010) #let's focus on the first 3 years for this exercise
-
+    filter(wave < 2010) %>% #let's focus on the first 3 years for this exercise
+    filter(Prefecture != "AverageAll") %>% 
+    filter(Prefecture != "AveragePublic")
+    
     #is this wide-form or long-form panel data?
   
   
