@@ -13,7 +13,9 @@
 #The spatial unit of analysis will be "second level" administrative units: 
 # regency (kabupaten) and kota (city)
 
-#we'll focus on the tmap package for mapping: https://github.com/r-tmap/tmap
+#we'll focus on two packages for mapping:
+#   1. the tmap package: https://github.com/r-tmap/tmap
+#   2. ggplot
 
 
 ## -----------------------------------------------------------------------------
@@ -43,7 +45,7 @@ getwd()
 #a shapefile is format for storing geospatial information for GIS applications
 #shapefiles contain geometry for maps (points and polygons that represent geographic features)
 
-indonesia <- st_read(dsn = 'indonesia/indonesia.shp')
+indonesia <- st_read(dsn = 'indonesia.shp')
   #shape file can also be downloaded from https://gadm.org/download_country_v3.html
 
 
@@ -142,12 +144,6 @@ t1
 
   indonesia$name <- plyr::mapvalues(indonesia$name, from = from, to = to)
   
-  #dplyr version
-  indonesia <- indonesia %>%
-    mutate(name2 = to[match(indonesia$name, from)])
-
-  setdiff(indonesia$name, indonesia$name2)
-
   
 #let's do the join once again
   vf_joined2 <- indonesia %>%
