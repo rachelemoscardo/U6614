@@ -101,7 +101,7 @@ These results suggest that our treatment (i.e., high AFDC rates) has a strong po
 
 Failing to control for these factors introduces **omitted variable bias**. In an ideal quasi-experimental setting, we could collect enough data to control for every potential confounding variable and isolate the effect of Medicaid eligibility; in reality, however, this is almost always impractical. 
 
-Thus, a **cross-sectional comparison** (i.e., *between* countries within a single period) likely produces a *biased* estimate of the causal relationship between eligibility and public insurance take-up. For similar reasons, we should also be concerned about using this strategy to estimate the downstream causal relationship between eligibility and mortality. 
+Thus, a **cross-sectional comparison** (i.e., *between* states within a single period) likely produces a *biased* estimate of the causal relationship between eligibility and public insurance take-up. For similar reasons, we should also be concerned about using this strategy to estimate the downstream causal relationship between eligibility and mortality. 
 
 
 ## How does panel data help?
