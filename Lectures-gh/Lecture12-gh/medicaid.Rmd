@@ -18,7 +18,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # Introduction
 
-This document walks through a simplified replication of [Goodman-Bacon (2018)](https://www.journals.uchicago.edu/doi/abs/10.1086/695528) (GB18), which uses an **event study research design** to estimate the causal effect of means-tested public health insurance on infant and child mortality in the United States. Estimation generally relies on OLS regression with two-way fixed effects (TWFE), i.e. fixed effects for treatment/control entities and another set of fixed effects for time periods. The idea is that TWFE models can allows us to exploit differential timing in treatment across entities to identify the causal effect of interest.
+This document walks through a simplified replication of [Goodman-Bacon (2018)](https://www.journals.uchicago.edu/doi/abs/10.1086/695528) (GB18), which uses an **event study research design** to estimate the causal effect of means-tested public health insurance on infant and child mortality in the United States. Estimation traditionally relies on OLS regression with two-way fixed effects (TWFE), i.e. fixed effects for treatment/control entities and another set of fixed effects for time periods. The idea is that TWFE models can allows us to exploit differential timing in treatment across entities to identify the causal effect of interest.
 
 The public health insurance policy of interest is called **Medicaid**. It was rolled out at the state level between 1966 and 1970, along with a new federal requirement that states cover the medical expenses of all cash welfare recipients. Linking public health insurance eligibility to state-specific welfare payments generated large differences in eligibility between demographic groups and states, based upon long-standing, institutional differences in existing state welfare programs. Said another way, states that already had more generous cash welfare programs in place that reached more people had to offer public health insurance to more people upon implementation.
 
@@ -75,7 +75,7 @@ Why is an event study approach necessary to answer these questions? One might co
 
 $$Y_{s} = \beta_0 + \beta_1 D_{s} + X_{s}' \gamma + \varepsilon_{s}$$
 
-where $Y_{st}$ is the outcome of interest (public insurance rates, or mortality a bit later on) in state $s$ after the roll-out of medicaid, $D_{st}$ is a binary variable that identifies treatment status (i.e. being a *high-eligibility state*), $X_{s}$ is a vector of controls, and $\varepsilon_{s}$ is an idiosyncratic error term. Estimates are shown below with robust standard errors.
+where $Y_{s}$ is the outcome of interest (public insurance rates, or mortality a bit later on) in state $s$ after the roll-out of medicaid, $D_{s}$ is a binary variable that identifies treatment status (i.e. being a *high-eligibility state*), $X_{s}$ is a vector of controls, and $\varepsilon_{s}$ is an idiosyncratic error term. Estimates are shown below with robust standard errors.
 
 ```{r}
 # Generate cross-sectional data set

@@ -2885,11 +2885,11 @@ Fixed Effects Models</h3>
 (2018)</a> (GB18), which uses an <strong>event study research
 design</strong> to estimate the causal effect of means-tested public
 health insurance on infant and child mortality in the United States.
-Estimation generally relies on OLS regression with two-way fixed effects
-(TWFE), i.e. fixed effects for treatment/control entities and another
-set of fixed effects for time periods. The idea is that TWFE models can
-allows us to exploit differential timing in treatment across entities to
-identify the causal effect of interest.</p>
+Estimation traditionally relies on OLS regression with two-way fixed
+effects (TWFE), i.e. fixed effects for treatment/control entities and
+another set of fixed effects for time periods. The idea is that TWFE
+models can allows us to exploit differential timing in treatment across
+entities to identify the causal effect of interest.</p>
 <p>The public health insurance policy of interest is called
 <strong>Medicaid</strong>. It was rolled out at the state level between
 1966 and 1970, along with a new federal requirement that states cover
@@ -2992,10 +2992,10 @@ implementation). Let’s estimate the following population regression
 function (PRF),</p>
 <p><span class="math display">\[Y_{s} = \beta_0 + \beta_1 D_{s} +
 X_{s}&#39; \gamma + \varepsilon_{s}\]</span></p>
-<p>where <span class="math inline">\(Y_{st}\)</span> is the outcome of
+<p>where <span class="math inline">\(Y_{s}\)</span> is the outcome of
 interest (public insurance rates, or mortality a bit later on) in state
 <span class="math inline">\(s\)</span> after the roll-out of medicaid,
-<span class="math inline">\(D_{st}\)</span> is a binary variable that
+<span class="math inline">\(D_{s}\)</span> is a binary variable that
 identifies treatment status (i.e. being a <em>high-eligibility
 state</em>), <span class="math inline">\(X_{s}\)</span> is a vector of
 controls, and <span class="math inline">\(\varepsilon_{s}\)</span> is an
