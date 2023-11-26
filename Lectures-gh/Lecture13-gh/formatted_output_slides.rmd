@@ -70,7 +70,7 @@ This presentation uses some familiar packages to generate and display results:
 - `kableExtra` 
 </div>
 <div>
-And some new packages for creating tables with formatted output:
+Plus some packages for creating tables with formatted output:
 
 - `stargazer`
 - `modelsummary`
