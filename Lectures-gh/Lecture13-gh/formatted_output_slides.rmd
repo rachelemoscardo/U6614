@@ -168,7 +168,7 @@ kable(vf_diff,
 ## Difference-in-means tables {.smaller .build}
 
 <div>
-Here is another example using the `datasummary_balance()` [function](https://vincentarelbundock.github.io/modelsummary/articles/datasummary.html) in the `modelsummary` [package](https://vincentarelbundock.github.io/modelsummary/index.html).
+Here is another example using the `datasummary_balance()` [function](https://modelsummary.com/man/datasummary_balance.html) in the `modelsummary` [package](https://vincentarelbundock.github.io/modelsummary/index.html).
 
 ```{r datasummary}
 #only look at year of Medicaid implementation for this example
