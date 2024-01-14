@@ -63,8 +63,8 @@ Transitioned from Stata to R after years of using and teaching Stata.
 
 ### Teaching Assistants
 
-- Javier Baranda Alonso (morning section)
-- Jack Shanley (afternoon section)
+- Mae Ruth Lewis-Workman (morning lecture, afternoon recitation)
+- Manisha Swain (afternoon lecture, morning recitation)
 
 
 
