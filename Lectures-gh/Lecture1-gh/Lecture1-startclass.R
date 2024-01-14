@@ -3,7 +3,7 @@
 ## [ PROJ ] Lecture1-startclass: Getting familiar with RStudio
 ## [ FILE ] Lecture1-startclass.r
 ## [ AUTH ] INSTRUCTOR FILE 
-## [ INIT ] Sept 5, 2023 
+## [ INIT ] Jan 16, 2024 
 ##
 ################################################################################
 
@@ -17,7 +17,7 @@
 ## -----------------------------------------------------------------------------
 
 #get working directory
-
+  getwd()
 
 
 ## -----------------------------------------------------------------------------
@@ -25,6 +25,7 @@
 ## -----------------------------------------------------------------------------
 
 #first we have to install the package
+  install.packages("gapminder")
 
 #load this package
 
