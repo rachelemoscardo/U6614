@@ -2,7 +2,7 @@
 ##
 ## [ PROJ ] < Assessing gender wage gaps using the Current Population Survey >
 ## [ FILE ] < Lecture2-startclass.R >
-## [ INIT ] < Jan 25, 2022 >
+## [ INIT ] < Jan 23, 2024 >
 ##
 ################################################################################
 
