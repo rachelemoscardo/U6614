@@ -1,8 +1,8 @@
 ################################################################################
 ##
 ## [ PROJ ] < Assessing gender wage gaps using the Current Population Survey >
-## [ FILE ] < Lecture2-inclass-recitation.R >
-## [ INIT ] < Jan 25, 2022 >
+## [ FILE ] < Lecture2-inclass.R >
+## [ INIT ] < Jan 23, 2024 >
 ##
 ################################################################################
 
@@ -15,7 +15,6 @@ library(tidyverse)
 ## ---------------------------
 ## directory paths
 ## ---------------------------
-
 getwd()
 
 
@@ -31,7 +30,7 @@ getwd()
 ##
 ##    c. include sex.fac in a new data frame called cps.temp1, 
 ##       also create factors for race and college education,
-##        use a pipe to exclude the columns for serial, ind
+##        use a pipe to exclude the columns for serial and ind
 ##        after creating cps.temp1, print the first 5 observations
 ##
 ##    d. inspect race.fac, sex.fac, and college.fac using the levels() function,
@@ -47,13 +46,16 @@ getwd()
 
 # load the CPS data frame and store as an object 'cps'
   cps <- read.csv("cps_june_22-23.csv")
-# should we explore why there are so many NA values?
+
+# this time we will remove NA values from the outset in the interest of time
+# general rule: need to understand why NA values arise before deciding what to do 
   cps <- na.omit(cps) #remove all observations with NA values
-  
+
 # 1a. 
   str(cps)
   View(cps)
   #we can also inspect the data frame by double-clicking in the Environment tab
+  #NOTE: DON'T INCLUDE View() IN YOUR R MARKDOWN SUBMISSION!
   
   summary(cps$age)
   summary(cps$sex) #summary is not very useful with character variables
@@ -62,19 +64,22 @@ getwd()
   
   
 # 1b.
-  mutate(cps, sex.fac = as.factor(sex)) # note: here we're not storing this result in memory
-  str(mutate(cps, sex.fac = as.factor(sex))) # you can put the entire operation within str()
+  mutate(cps, sex.fac = as.factor(sex)) 
+    #note: here we're not storing this result in memory
+  
+  str(mutate(cps, sex.fac = as.factor(sex))) 
+    #you can put the entire operation within str() to inspect the output
   
   
-# 1c.
+# 1c. best way (using a pipe)
   cps.temp1 <- cps %>% 
     mutate(sex.fac = as.factor(sex),
            race.fac = as.factor(race),
            college.fac = as.factor(college)) %>% 
     select(-serial, -ind) 
   
-  #alternatively:
-  cps.temp1 <- mutate(cps, 
+  #alternatively, you can initialize without a pipe
+  cps.temp1 <- mutate(cps,
                       sex.fac = as.factor(sex), 
                       race.fac = as.factor(race),
                       college.fac = as.factor(college)) %>%
@@ -96,7 +101,7 @@ getwd()
   
   ?levels   
   #note that levels is a base R function
-  #so levels cannot be used with columns using the tidyverse language
+  #so levels cannot be used with columns using tidyverse syntax
   #make sure you understand why this won't work: cps.temp1 %>% levels(sex.fac)
   #Documentation: https://cps.ipums.org/cps-action/variables/sex
   
@@ -118,7 +123,7 @@ getwd()
 ## -----------------------------------------------------------------------------
 ## 2. Describe the cps_2022 data frame
 ##
-##    a. what is the unit of observation? 
+##    a. what is the unit of observation (or unit of analysis)?
 ##
 ##    b. how many individuals are observed? from how many households?
 ##
@@ -128,7 +133,7 @@ getwd()
 # 2a.
   
   #NOTE: don't include all of your inspection commands in your R Markdown submission
-  #      I've included view() as a reminder, but shouldn't be in your submission
+  #      I've included view() as a reminder, but it should never be in your submission
   #      neither should clunky str() output, be selective about the output you show!
   
   
@@ -146,6 +151,7 @@ getwd()
   n_distinct(cps_2022$personid)
   n_distinct(cps_2022$hhid)
   
+  
 # 2c. 
   #use summarise with multiple arguments, one for each statistic
   #try ?summarise to find the syntax for different summary statistics
@@ -154,6 +160,7 @@ getwd()
     summarise(avg_age = mean(age),
               min_age = min(age),
               max_age = max(age))
+
   
 ## -----------------------------------------------------------------------------
 ## 3. Let's now look at earnings per week for different groups in June 2022
@@ -176,17 +183,23 @@ getwd()
 ## -----------------------------------------------------------------------------
   
 # 3a. 
-  max_earnings <- cps_2022 %>% 
-    summarise(max_earnings = max(earnweek))
+  cps_2022 %>% summarise(max_earnings=max(earnweek))
   #Documentation: https://cps.ipums.org/cps-action/variables/EARNWEEK#codes_section
+  
+  #assign to object
+  max_earnings <- cps_2022 %>%
+    summarise(max_earnings=max(earnweek))
+  max_earnings
     
 # 3b. 
   cps_2022 %>% 
-    arrange(desc(earnweek)) %>% 
-    select(earnweek) %>% #this line is not necessary, but makes it tidier
-    head(n = 1)
+    arrange(desc(earnweek)) %>%
+    select(earnweek) %>%
+    head (n = 1)
+  
   
 # 3c. 
+  
   #HINT: your condition needs to refer to the max weekly earnings.
   # you created max_earnings as a data frame in part a,
   # so in your filter() call refer to the value from max_earnings that you want to filter on
@@ -194,32 +207,34 @@ getwd()
   # (in this case just the 1st row of a 1-row data frame).
   # See Lecture2.1/Section 4.2 for examples of how to subset matrix/df elements
   
-  cps_max_earn <- cps_2022 %>% 
-    filter(earnweek == max_earnings[1,])
+  cps_max_earn <- cps_2022 %>% filter (earnweek == max_earnings[1,])
+  
   
 # 3d. 
-  cps_max_earn %>% 
-    select(age,sex,race) %>% 
-    head(n = 1)
-  
+
   #obviously better to refer to column names when you know them as we do here
   #alternatively, you could refer to the elements you want within the cps_max_earn object
   #by calling the 4th, 5th, and 6th columns from the first row
   cps_max_earn[1,4:6]
   
+  cps_max_earn %>%
+    select(age, sex, race) %>%
+    head (n=1)
   
 # 3e.
-  cps_2022 %>% 
-    arrange(desc(earnweek)) %>% 
-    select(age, sex, race, earnweek) %>% 
-    head(n = 10)
-  
+
+  cps_max_earn %>%
+    select(age, sex, race) %>%
+    head (n=10)
   
 # 3f.
-  #use the nrow() function to return the number of observations
-  cps_2022 %>% 
-    filter(earnweek>=2000) %>% 
+  
+  #HINT: use the nrow() function to return the number of observations
+  cps_2022 %>%
+    select(age,sex,race,earnweek) %>%
+    filter(earnweek>2000) %>%
     nrow()
+
   
 ## -----------------------------------------------------------------------------
 ## 4. Let's look at wage gaps between males and females:
@@ -235,10 +250,11 @@ getwd()
 ##        name each statistic appropriately (i.e. name each column in the 1-row table of stats)
 ##        what is the gender gap in mean weekly earnings?
 ##
-##    d. what is the wage gap in weekly earnings between white males and Black females?
+##    d. What is the wage gap in weekly earnings ($) between 
+##        white males and Black females?
 ##
-##    e. what is the wage gap between college educated white males and college educated
-##       Black females?
+##    e. What is the wage gap in weekly earnings ($) between 
+##        college educated white males and college educated Black females? 
 ## -----------------------------------------------------------------------------
   
 # 4a. 

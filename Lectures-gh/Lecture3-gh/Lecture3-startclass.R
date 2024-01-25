@@ -3,7 +3,7 @@
 ## [ PROJ ] Lecture 3: Subway Fare Evasion Arrests in Brooklyn
 ## [ FILE ] Lecture3-startclass.r
 ## [ AUTH ] < YOUR NAME >
-## [ INIT ] < Sept 19, 2023 >
+## [ INIT ] < Jan 30, 2024 >
 ##
 ################################################################################
 
@@ -277,10 +277,13 @@ getwd()
 ##
 ##    b. show a table with the proportion of total arrests in each race_eth category
 ##
-##    c. compute avg age, share male, and dismissal rate for each race_eth group
-##        (store as race_eth_stats)
-##        HINT: similar to (a) above, but specify different stats in summarise()
-##        HINT: make sure you tell R to ignore missing elements
+##    c. compute avg age, share male, and dismissal rate for each race_eth group, 
+##       along with the total sample size. 
+##       also try to include the sample size for the dismissal variabe as well
+##        (just the number of non-NA observations for dimissal)
+##        - store as race_eth_stats)
+##        - HINT: similar to (a) above, but specify different stats in summarise()
+##        - HINT: for most of the requested stats, you'll need to tell R to ignore NA values
 ##
 ##    d. what, if anything, do you think is interesting to note about the
 ##       distribution of:
