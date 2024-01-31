@@ -252,7 +252,7 @@ prop.table(table(arrests.clean$race_eth)) %>%
   rename(race_eth = Var1)
 ```
 
-### 6c) Show the average age, share male, and dimissal rate for each race/ethnicity category. Describe any noteworthy findings. {-}
+### 6c) Show the average age, share male, and dimissal rate for each race/ethnicity category. Include the total sample size (all observations), and if you can, include the sample size for the dismissal variabe as well (number of non-NA observations). {-}
 
 ```{r}
   race_eth_stats <- arrests.clean %>%
@@ -260,9 +260,13 @@ prop.table(table(arrests.clean$race_eth)) %>%
     summarise(n = n(), 
               mean_age = mean(age, na.rm = TRUE),
               mean_male = mean(male, na.rm = TRUE),
-              mean_dismissal = mean(dismissal, na.rm = TRUE) )
+              mean_dismissal = mean(dismissal, na.rm = TRUE),
+              n_dismissal = sum(!is.na(dismissal)) )
   race_eth_stats 
 ```
+
+
+### 6d) Describe any noteworthy findings from the table you presented in 6c. {-}
 
 Interestingly, arrested individuals with NA race/ethnicity are 3 to 4 years younger on average, and only 61% male compared to 83 to 94% male for those with race/ethnicity specified in the data.
 

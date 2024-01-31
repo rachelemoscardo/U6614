@@ -92,7 +92,9 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 
 ### 6b) Print the proportion of total arrests for each race/ethnicity category. How does excluding NAs change the results? {-}
 
-### 6c) Show the average age, share male, and dimissal rate for each race/ethnicity category. Describe any noteworthy findings. {-}
+### 6c) Show the average age, share male, and dimissal rate for each race/ethnicity category. Include the total sample size (all observations), and if you can, include the sample size for the dismissal variabe as well (number of non-NA observations). {-}
+
+### 6d) Describe any noteworthy findings from the table you presented in 6c. {-}
 
 
 \medspace
