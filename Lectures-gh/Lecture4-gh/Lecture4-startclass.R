@@ -104,7 +104,7 @@ getwd()
   #background on MTA ridership data:
   #  Source: http://web.mta.info/nyct/facts/ridership/ridership_sub_annual.htm
   #  each observation is a subway station (area) w/a unique identifier (st_id)
-  #  includes annual # of MetroCard swipes at each station for 2011-16
+  #  includes annual ridership (# of MetroCard 'swipes') at each station for 2011-16
 
   #make sure to inspect these new df's before we join them in 3b!
   
@@ -159,7 +159,7 @@ getwd()
 ##  a. compute variables for arrest intensity and other explanatory variables
 ##     - exclude coney island station from the analysis sample
 ##     - create new variable measuring fare evasion arrest intensity:
-##       - arrperswipe_2016 = arrests per 100,000 swipes
+##       - arrperswipe_2016 = arrests per 100,000 ridership (swipes)
 ##     - create new dummy variable indicating high poverty station area:
 ##       - highpov = 1 if pov rate is > median pov rate across stations
 ##     - create new dummy for majority Black station areas (shareblack > .5)
@@ -171,11 +171,12 @@ getwd()
 ##
 ##  b. investigate arrests intensity vs poverty rates 
 ##     - plot arrperswipe vs povrt_all_2016
-##     - should we weight stations by # of MetroCard swipes?
+##     - should we weight stations by annual ridership?
 ##     - investigate linear and quadratic model fit 
+##     - interpret your preferred regression specification (carefully!)
 ##  
 ##  c. report diff in mean arrest intensity between high/low pov areas
-##     - weight observations by swipes for difference in group means
+##     - weight observations by ridership for difference in group means
 ##     - is this difference statistically significant?
 ## ---------------------------------------------------------------------------
 
@@ -217,10 +218,10 @@ getwd()
   ggplot(stations, #specify dataframe to use
          aes(x = povrt_all_2016, y = arrperswipe)) + #specify columns to use
     geom_point() + #specify plot geometry
-    ggtitle('Scatterplot of arrest rate vs. poverty rate') + #add title
-    labs(x = 'poverty rate', y = 'arrest rate') #change axis labels
+    ggtitle('Scatterplot of arrest intensity vs. poverty rate') + #add title
+    labs(x = 'poverty rate', y = 'arrests per 100,000 ridership') #change axis labels
     
-  #fit linear model with station observations weighted by swipes
+  #fit linear model with station observations weighted by ridership
     ols1l <- lm(FILL IN FORMULA, DATA, OPTIONAL WEIGHTS)
     summary(ols1l) #get summary of the model
     coeftest(ols1l, vcov = vcovHC(ols1l, type="HC1")) #get robust SEs
@@ -236,11 +237,11 @@ getwd()
     ggplot(stations, 
            aes(x = povrt_all_2016, y = arrperswipe)) + 
       geom_point() + 
-      ggtitle('Scatterplot of arrest rate vs. poverty rate') + 
-      labs(x = 'poverty rate', y = 'arrest rate') + 
+      ggtitle('Scatterplot of arrest intensity vs. poverty rate') + 
+      labs(x = 'poverty rate', y = 'arrests per 100,000 ridership') + 
       ADD GEOMETRY FOR REGRESSION LINE #add linear SRF
     
-  #fit quadratic OLS model (arrest rate vs. poverty rate)
+  #fit quadratic OLS model (arrest intensity vs. poverty rate)
   #HINT: see quadratic syntax from Lecture4.2 (section 4.1)
     ols1q <- lm(FILL IN FORMULA FOR QUADRATIC SYNTAX, #include quadratic term
                 data = stations) 
@@ -252,7 +253,7 @@ getwd()
            aes(x = povrt_all_2016, y = arrperswipe)) + 
       geom_point() + 
       ggtitle('Linear regression fit') + 
-      labs(x = 'poverty rate', y = 'arrest rate') + 
+      labs(x = 'poverty rate', y = 'arrests per 100,000 ridership') + 
       ADD GEOMETRY FOR REGRESSION LINE #add quadratic SRF
     
     
@@ -293,8 +294,8 @@ getwd()
 ## 5. How does neighborhood racial composition mediate the relationship between poverty and arrest intensity
 ##    - examine relationship between arrest intensity & poverty by Black vs non-Black station area (nblack)
 ##
-##    a. difference in means table: arrests per swipe by highpov vs nblack
-##        - weighted by station swipes
+##    a. difference in means table: arrests per ridership by highpov vs nblack
+##        - weighted by station ridership
 ##        - could difference in arrest intensity be explained by differences in povrt?
 ##
 ##    b. show and interpret a scatterplot of arrest intensity vs. pov rates by nblack w/your preferred regression lines
