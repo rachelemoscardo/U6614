@@ -74,7 +74,7 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 
   - Drop the observation for the Coney Island station and very briefly explain your logic
   - Create new column of data for the following:
-    + fare evasion arrest intensity: `arrperswipe_2016` = arrests per 100,000 swipes
+    + fare evasion arrest intensity: `arrperswipe_2016` = arrests per 100,000 ridership ('swipes')
     + a dummy indicating if a station is high poverty: `highpov` = 1 if pov rate is > median pov rate across all Brooklyn station areas
     + a dummy for majority Black station areas: `nblack` = 1 if `shareblack` > 0.5
   - Coerce new dummy variables into factors with category labels
@@ -87,12 +87,13 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
   - Show a scatterplot of arrest intensity vs. poverty rates along with the regression line you think best fits this relationship.
   - Which regression specification do you prefer: linear or quadratic? Be clear about your logic and if applicable cite statistical evidence to support your decision.
   - Explain your logic about whether to weight observations or not.
+  - Interpret your preferred regression specification (carefully!).
   
   
-### 4c) Estimate and test difference in mean arrest intensity between high/low poverty areas {-}
+### 4c) Estimate and test the difference in mean arrest intensity between high/low poverty areas {-}
 
   - Report difference and assess statistical significance
-  - Weight observations by the number of MetroCard swipes
+  - Weight observations by ridership
 
 \newpage
 
@@ -100,9 +101,9 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 # How does neighborhood racial composition mediate the relationship between poverty and arrest intensity? 
 - In this section, you will examine the relationship between arrest intensity & poverty by Black vs. non-Black station area (`nblack`).
 
-### 5a) Present a table showing the difference in mean arrests per swipe for each group in a 2x2 table of `highpov` vs `nblack`. {-}
+### 5a) Present a table showing the difference in mean arrests intensity for each group in a 2x2 table of `highpov` vs `nblack`. {-}
 
-  - Remember to weight by the number of MetroCard swipes at each station
+  - Remember to weight by ridership at each station
   - Could the difference in arrest intensity be explained by differences in poverty rate?
 
 
@@ -131,10 +132,10 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
 *NOTE: For the next two subsections, present your preferred plots to inform the relationships in question, along with any additional data manipulation and evidence to support your decisions/interpretation/conclusions. You'll want to explore the data before arriving at your preferred plots, but don't present everything you tried along the way such as intermediate versions of your preferred plot. Focus on the analysis you eventually settled on to best inform the question at hand, and any critical observations that led you down this path.*
 
 
-### 6b) Examine the overall relationship between arrest intensity and crime (without taking neighborhood racial composition or poverty into account) (comparable to Section 4b).{-}
+### 6b) Examine the overall relationship between arrest intensity and crime (without taking neighborhood racial composition or poverty into account) (comparable to Section 4b). Carefully interpret the results you choose to present.{-}
 
 
-### 6c) Examine how neighborhood racial composition mediates the relationship between arrest intensity and crime (comparable to Section 5b).{-}
+### 6c) Examine how neighborhood racial composition mediates the relationship between arrest intensity and crime (comparable to Section 5b). Carefully interpret the results you choose to present.{-}
 
 
 \newpage
