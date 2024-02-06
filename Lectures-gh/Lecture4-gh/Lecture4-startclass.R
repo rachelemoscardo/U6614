@@ -3,13 +3,13 @@
 ## [ PROJ ] Lecture 4: Subway Fare Evasion Arrests and Racial Bias
 ## [ FILE ] Lecture4-startclass.r
 ## [ AUTH ] < YOUR NAME >
-## [ INIT ] < Sept 26, 2023 >
+## [ INIT ] < Feb 6, 2024 >
 ##
 ################################################################################
 
 ## POLICY QUESTION FOR THIS WEEK & NEXT:
 ## Police can stop and ticket or arrest people for subway fare evasion. 
-## Is NYPD enforcement of subway fare evasion enforcement in Brooklyn discriminatory?
+## Is there racial bias in NYPD enforcement of subway fare evasion?
 
 ## Lecture3/A3 examined this question using variation among arrested individuals.
 
