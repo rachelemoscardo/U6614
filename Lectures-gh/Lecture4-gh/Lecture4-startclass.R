@@ -294,7 +294,7 @@ getwd()
 ## 5. How does neighborhood racial composition mediate the relationship between poverty and arrest intensity
 ##    - examine relationship between arrest intensity & poverty by Black vs non-Black station area (nblack)
 ##
-##    a. difference in means table: arrests per ridership by highpov vs nblack
+##    a. show a difference in means table: arrests per ridership by highpov vs nblack
 ##        - weighted by station ridership
 ##        - could difference in arrest intensity be explained by differences in povrt?
 ##
@@ -315,40 +315,65 @@ getwd()
 ##
 ## -----------------------------------------------------------------------------
   
-#5a. HINT: use tapply()
-  #unweighted difference in mean arrests
+#5a. 
+  #the tapply() function from base R can help here, let's see how it works
+    
+  #let's apply the median function to the arrperswipe column by highpov groups
+    tapply(stations$arrperswipe, stations$highpov, median) 
+  #to answer 5a we want to use the mean function
+    tapply(stations$arrperswipe, stations$highpov, mean)
+    
+  #the with() function can help streamline our code a bit
+    with(stations, 
+         tapply(arrperswipe, highpov, mean))  
+    
+  #we can also report mean arrest intensity for more than 1 grouping variable,
+  #let's group by highpov x nblack and show unweighted mean arrest intensity by group
+  #we can pass the whole table into the round() function to make it easier to read
+  #and store the results so we can refer back to them in our write-up
     t1_arrper <- with(stations, 
                       tapply(arrperswipe, 
-                             list("High Poverty" = highpov, "Predominantly Black" = nblack), 
-                             mean) )
-  
-  #weighted difference in mean arrests
-  #formula for the weighted mean = Σxw / Σw
-    t1_arrper_wtd <-
-      tapply(stations$arrperswipe * stations$swipes2016,
-             list(stations$highpov, stations$nblack), 
-             sum) / 
-      tapply(stations$swipes2016,
-             list(stations$highpov, stations$nblack), 
-             sum)  
-  
-  #ok so arrest intensity is higher in high-pov stations that are majority black
-  #are there differences in poverty rates that could in part explain this association?
-    t1_arrper %>% round(2)
-    t1_arrper_wtd %>% round(2)
+                             list(highpov, nblack), 
+                             mean) ) %>% round(2)
+    t1_arrper
     
-    t1_povrt <- with(stations, 
-                     tapply(povrt_all_2016, 
-                            list("High Poverty" = highpov, "Predominantly Black" = nblack), 
-                            mean) )    
-    t1_povrt_wtd <-
-      tapply(stations$povrt_all_2016 * stations$swipes2016,
-             list(stations$highpov, stations$nblack), 
-             sum) / 
-      tapply(stations$swipes2016,
-             list(stations$highpov, stations$nblack), 
-             sum)
-    t1_povrt_wtd %>% round(2)
+  #tapply doesn't allow for weights to be passed to the function it uses
+  #how do we replicate the table above w/the weighted difference in mean arrests?
+  #one alternative approach is to use tapply but incorporate weights 'manually'
+  #here's the formula for the weighted mean = Σ(x*w) / Σw
+    t1_arrper_wtd <-
+      with(stations,
+           tapply(arrperswipe * swipes2016,
+                  list(highpov, nblack),
+                  sum))  /
+      with(stations,
+           tapply(swipes2016,
+                  list(highpov, nblack),
+                  sum) )
+    t1_arrper_wtd <- t1_arrper_wtd %>% round(2)
+    t1_arrper_wtd 
+    
+  #note how group means can change with weighting 
+    t1_arrper 
+    t1_arrper_wtd
+    
+    
+  #ok so arrest intensity is higher in high-pov stations that are majority black
+  #do differences in poverty rates in part explain this association?
+  #let's do a quick check
+    t1_povrt_wtd <- 
+      with(stations,
+           tapply(povrt_all_2016 * swipes2016,
+                  list(highpov, nblack),
+                  sum)) / 
+      with(stations,
+           tapply(swipes2016,
+                  list(highpov, nblack),
+                  sum)) 
+    t1_povrt_wtd <- t1_povrt_wtd %>% round(2)
+    
+    t1_povrt_wtd
+    t1_arrper_wtd
   
   
 #5b.

@@ -3,13 +3,13 @@
 ## [ PROJ ] Lecture 4: Subway Fare Evasion Arrests and Racial Bias (part 1)
 ## [ FILE ] Lecture4-inclass.R
 ## [ AUTH ] < YOUR NAME >
-## [ INIT ] < Sept 26, 2023 >
+## [ INIT ] < Feb 6, 2024 >
 ##
 ################################################################################
 
 ## POLICY QUESTION FOR THIS WEEK & NEXT:
 ## Police can stop and ticket or arrest people for subway fare evasion. 
-## Is NYPD enforcement of subway fare evasion enforcement in Brooklyn racist?
+## Is there racial bias in NYPD enforcement of subway fare evasion?
 
 ## Lecture3/A3 examined this question using variation among arrested individuals.
 
@@ -110,7 +110,7 @@ load("arrests.clean.RData")
   #background on MTA ridership data:
   #  Source: http://web.mta.info/nyct/facts/ridership/ridership_sub_annual.htm
   #  each observation is a subway station w/a unique identifier (st_id)
-  #  includes annual # of MetroCard swipes at each station for 2011-16
+  #  includes annual ridership (# of MetroCard 'swipes') at each station for 2011-16
 
   #make sure to inspect these new df's before we join them in 3b!
 
@@ -168,7 +168,7 @@ load("arrests.clean.RData")
 ##  a. compute variables for arrest intensity and other explanatory variables
 ##     - exclude coney island station from the analysis sample
 ##     - create new variable measuring fare evasion arrest intensity:
-##       - arrperswipe_2016 = arrests per 100,000 swipes
+##       - arrperswipe_2016 = arrests per 100,000 ridership (swipes)
 ##     - create new dummy variable indicating high poverty station area:
 ##       - highpov = 1 if pov rate is > median pov rate across stations
 ##     - create new dummy for majority Black station areas (shareblack > .5)
@@ -180,11 +180,12 @@ load("arrests.clean.RData")
 ##
 ##  b. investigate arrests intensity vs poverty rates 
 ##     - plot arrperswipe vs povrt_all_2016
-##     - should we weight stations by # of MetroCard swipes?
+##     - should we weight stations by ridership?
 ##     - investigate linear and quadratic model fit 
+##     - interpret your preferred regression specification (carefully!)
 ##  
 ##  c. report diff in mean arrest intensity between high/low pov areas
-##     - weight observations by swipes for difference in group means
+##     - weight observations by ridership (swipes) for difference in group means
 ##     - is this difference statistically significant?
 ## ---------------------------------------------------------------------------
 
@@ -228,8 +229,8 @@ load("arrests.clean.RData")
   ggplot(data = stations, #specify dataframe to use
          aes(x = povrt_all_2016, y = arrperswipe)) + #specify columns to use
     geom_point(aes(size=pop_all_2016)) #specify plot geometry
-    #('Scatterplot of arrest rate vs. poverty rate') + #add title
-    #labs(x = 'poverty rate', y = 'arrest rate') #change axis labels
+    #('Scatterplot of arrest intensity vs. poverty rate') + #add title
+    #labs(x = 'poverty rate', y = 'arrests per 100,000 ridership') #change axis labels
 
   #fit linear model with station observations (can also add optional weights argument)
     ols1l <- lm(arrperswipe ~ povrt_all_2016, data = stations)
@@ -247,11 +248,11 @@ load("arrests.clean.RData")
     ggplot(stations, 
            aes(x = povrt_all_2016, y = arrperswipe)) + 
       geom_point() + 
-      ggtitle('Scatterplot of arrest rate vs. poverty rate') + 
-      labs(x = 'poverty rate', y = 'arrest rate') + 
+      ggtitle('Scatterplot of arrest intensity vs. poverty rate') + 
+      labs(x = 'poverty rate', y = 'arrests per 100,000 ridership') + 
       geom_smooth(method = "lm", formula = y~x) + #add linear SRF
 
-  #fit quadratic OLS model (arrest rate vs. poverty rate)
+  #fit quadratic OLS model (arrest intensity vs. poverty rate)
     #HINT: see quadratic syntax from Lecture4.2 (section 4.1)
     ols1q <- lm(arrperswipe ~ povrt_all_2016 + I(povrt_all_2016^2),
                 data = stations) 
@@ -263,7 +264,7 @@ load("arrests.clean.RData")
            aes(x = povrt_all_2016, y = arrperswipe)) + 
       geom_point() + 
       ggtitle('Linear regression fit') + 
-      labs(x = 'poverty rate', y = 'arrest rate') + 
+      labs(x = 'poverty rate', y = 'arrests per 100,000 ridership') + 
       ADD GEOMETRY FOR REGRESSION LINE #add quadratic SRF
 
   
@@ -304,8 +305,8 @@ load("arrests.clean.RData")
 ## 5. How does neighborhood racial composition mediate the relationship between poverty and arrest intensity
 ##    - examine relationship between arrest intensity & poverty by Black vs non-Black station area (nblack)
 ##
-##    a. difference in means table: arrests per swipe by highpov vs nblack
-##        - weighted by station swipes
+##    a. show a difference in means table: arrests per ridership (swipes) by highpov vs nblack
+##        - weighted by station ridership
 ##        - could difference in arrest intensity be explained by differences in povrt?
 ##
 ##    b. show and interpret a scatterplot of arrest intensity vs. pov rates by nblack w/your preferred regression lines
@@ -325,40 +326,65 @@ load("arrests.clean.RData")
 ##
 ## -----------------------------------------------------------------------------
   
-#5a. HINT: use tapply()
-  #unweighted difference in mean arrests
+#5a. 
+  #the tapply() function from base R can help here, let's see how it works
+    
+  #let's apply the median function to the arrperswipe column by highpov groups
+    tapply(stations$arrperswipe, stations$highpov, median) 
+  #to answer 5a we want to use the mean function
+    tapply(stations$arrperswipe, stations$highpov, mean)
+    
+  #the with() function can help streamline our code a bit
+    with(stations, 
+         tapply(arrperswipe, highpov, mean))  
+    
+  #we can also report mean arrest intensity for more than 1 grouping variable,
+  #let's group by highpov x nblack and show unweighted mean arrest intensity by group
+  #we can pass the whole table into the round() function to make it easier to read
+  #and store the results so we can refer back to them in our write-up
     t1_arrper <- with(stations, 
                       tapply(arrperswipe, 
-                             list("High Poverty" = highpov, "Predominantly Black" = nblack), 
-                             mean) )
-  
-  #weighted difference in mean arrests
-  #formula for the weighted mean = Σxw / Σw
-    t1_arrper_wtd <-
-      tapply(stations$arrperswipe * stations$swipes2016,
-             list(stations$highpov, stations$nblack), 
-             sum) / 
-      tapply(stations$swipes2016,
-             list(stations$highpov, stations$nblack), 
-             sum)  
-
-  #ok so arrest intensity is higher in high-pov stations that are majority black
-  #are there differences in poverty rates that could in part explain this association?
-    t1_arrper %>% round(2)
-    t1_arrper_wtd %>% round(2)
+                             list(highpov, nblack), 
+                             mean) ) %>% round(2)
+    t1_arrper
     
-    t1_povrt <- with(stations, 
-                     tapply(povrt_all_2016, 
-                            list("High Poverty" = highpov, "Predominantly Black" = nblack), 
-                            mean) )    
-    t1_povrt_wtd <-
-      tapply(stations$povrt_all_2016 * stations$swipes2016,
-             list(stations$highpov, stations$nblack), 
-             sum) / 
-      tapply(stations$swipes2016,
-             list(stations$highpov, stations$nblack), 
-             sum)
-    t1_povrt_wtd %>% round(2)
+  #tapply doesn't allow for weights to be passed to the function it uses
+  #how do we replicate the table above w/the weighted difference in mean arrests?
+  #one alternative approach is to use tapply but incorporate weights 'manually'
+  #here's the formula for the weighted mean = Σ(x*w) / Σw
+    t1_arrper_wtd <-
+      with(stations,
+           tapply(arrperswipe * swipes2016,
+                  list(highpov, nblack),
+                  sum))  /
+      with(stations,
+           tapply(swipes2016,
+                  list(highpov, nblack),
+                  sum) )
+    t1_arrper_wtd <- t1_arrper_wtd %>% round(2)
+    t1_arrper_wtd 
+    
+  #note how group means can change with weighting 
+    t1_arrper 
+    t1_arrper_wtd
+    
+    
+  #ok so arrest intensity is higher in high-pov stations that are majority black
+  #do differences in poverty rates in part explain this association?
+  #let's do a quick check
+    t1_povrt_wtd <- 
+      with(stations,
+           tapply(povrt_all_2016 * swipes2016,
+                  list(highpov, nblack),
+                  sum)) / 
+      with(stations,
+           tapply(swipes2016,
+                  list(highpov, nblack),
+                  sum)) 
+    t1_povrt_wtd <- t1_povrt_wtd %>% round(2)
+    
+    t1_povrt_wtd
+    t1_arrper_wtd
   
   
 #5b.
