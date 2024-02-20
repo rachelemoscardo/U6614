@@ -136,7 +136,7 @@ st_joined %>%
 
   - Drop the observation for the Coney Island station and very briefly explain your logic
   - Create new column of data for the following:
-    + fare evasion arrest intensity: `arrperswipe_2016` = arrests per 100,000 swipes
+    + fare evasion arrest intensity: `arrperswipe_2016` = arrests per 100,000 ridership ('swipes')
     + a dummy indicating if a station is high poverty: `highpov` = 1 if pov rate is > median pov rate across all Brooklyn station areas
     + a dummy for majority Black station areas: `nblack` = 1 if `shareblack` > 0.5
   - Coerce new dummy variables into factors with category labels
@@ -173,6 +173,7 @@ stations <- st_joined %>%
   - Show a scatterplot of arrest intensity vs. poverty rates along with the regression line you think best fits this relationship.
   - Which regression specification do you prefer: linear or quadratic? Be clear about your logic and if applicable cite statistical evidence to support your decision.
   - Explain your logic about whether to weight observations or not.
+  - Interpret your preferred regression specification (carefully!).
 
 \medspace
 
@@ -183,7 +184,7 @@ ggplot(stations, #specify data frame to use
   geom_point() + #specify plot geometry
   ggtitle('Fare evasion arrest intensity vs. poverty rate') + #add title
   labs(x = 'poverty rate', 
-       y = 'arrests per 100,000 MetroCard swipes') + #change axis labels
+       y = 'arrests per 100,000 ridership') + #change axis labels
   geom_smooth(method = 'lm', formula = y ~ x + I(x^2)) #add regression line
 ```
 
@@ -202,17 +203,19 @@ summary(ols1q)
 coeftest(ols1q, vcov = vcovHC(ols1q, type="HC1"))
 ```
 
-Based on visual inspection, both the linear and quadratic models appear to fit the relationship between fare evasion arrest intensity and poverty rates across all stations fairly well. We prefer the quadratic model because it explains more of the variation in arrest intensity than the linear model; the quadratic model has an adjusted R-squared of `r round(summary(ols1q)$adj.r.squared, 2)` compared to `r round(summary(ols1l)$adj.r.squared, 2)` for the linear model. Here we choose not to weight station observations by the number of MetroCard swipes, so that each station area iq equally weighted in the regression analysis. When computing statistics for groups of stations in the next section, we do weight by swipes so that statistics are representative of ridership in each group.
+Based on visual inspection, both the linear and quadratic models appear to fit the relationship between fare evasion arrest intensity and poverty rates across all stations fairly well. We prefer the quadratic model because it explains more of the variation in arrest intensity than the linear model; the quadratic model has an adjusted R-squared of `r round(summary(ols1q)$adj.r.squared, 2)` compared to `r round(summary(ols1l)$adj.r.squared, 2)` for the linear model. 
 
-If you prefer the linear specification because it is a bit simpler to interpret without changing the substantive conclusions, that is a reasonable justification.
+Here we choose not to weight station observations by ridership, so that each station area is equally weighted in the regression analysis. Here weighting by station ridership would give less weight when estimating the regression to less busy stations in more peripherally located neighborhoods of color where they may be heightened enforcement. Weighting by ridership also exacerbates a measurement error problem that we will discuss further in class. When computing statistics for groups of stations in the next section (e.g. stations in high-poverty neighborhoods), we do weight by ridership so that statistics are representative of ridership in each group.
+
+If you prefer the linear specification because you find it simpler to interpret without changing the substantive conclusions, that is a reasonable justification.
 
 \medskip
 
 
-### 4c) Estimate and test difference in mean arrest intensity between high/low poverty areas {-}
+### 4c) Estimate and test the difference in mean arrest intensity between high/low poverty areas {-}
 
   - Report difference and assess statistical significance
-  - Weight observations by the number of MetroCard swipes
+  - Weight observations by ridership
 
 
 \medskip
@@ -233,7 +236,7 @@ ols_diff1 <- lm(formula = arrperswipe ~ highpov, data = stations,
 ols_diff1_robSE <- coeftest(ols_diff1, vcov = vcovHC(ols_diff1, type="HC1"))
 ```
 
-The difference in average fare evasion arrest intensity between high- and low-poverty subway stations (weighted by MetroCard swipes) is `r round(summary(ols_diff1)$coefficients[2,1], 2)` with a p-value of `r round(ols_diff1_robSE[2,4], 4)`. Thus we can conclude that this difference is statistically significant beyond the 1% level.
+The difference in average fare evasion arrest intensity between high- and low-poverty subway stations (weighted by ridership) is `r round(summary(ols_diff1)$coefficients[2,1], 2)` with a p-value of `r round(ols_diff1_robSE[2,4], 4)`. Thus we can conclude that this difference is statistically significant beyond the 1% level.
 
 \newpage
 
@@ -242,9 +245,9 @@ The difference in average fare evasion arrest intensity between high- and low-po
 - In this section, you will examine the relationship between arrest intensity & poverty by Black vs. non-Black station area (`nblack`).
 
 
-### 5a) Present a table showing the difference in mean arrests per swipe for each group in a 2x2 table of `highpov` vs `nblack`. {-}
+### 5a) Present a table showing the difference in mean arrests intensity for each group in a 2x2 table of `highpov` vs `nblack`. {-}
 
-  - Remember to weight by the number of MetroCard swipes at each station
+  - Remember to weight by ridership at each station
   - Could the difference in arrest intensity be explained by differences in poverty rate?
   
 \medspace
@@ -273,21 +276,21 @@ t1_povrt_wtd <- with(stations,
 round(t1_arrper_wtd, 2)
 round(t1_povrt_wtd, 2)
 ```
-The above tables show that mean arrests per 100,000 MetroCard swipes are more than 3 times as high at subway stations in majority Black areas compared to non-Black areas. Poverty rates, on the other hand, are very similar between majority-Black and non-Black high-poverty subway station areas, suggesting this is not a likely explanation for the difference in fare evasion arrest intensity (but we can use regression analysis to explore how the relationship between poverty rates and fare evasion differs based on neighborhood racial composition).
+The above tables show that mean arrests per 100,000 ridership are more than 3 times as high at subway stations in majority Black areas compared to non-Black areas. Poverty rates, on the other hand, are very similar between majority-Black and non-Black high-poverty subway station areas, suggesting this is not a likely explanation for the difference in fare evasion arrest intensity (but we can use regression analysis to explore how the relationship between poverty rates and fare evasion differs based on neighborhood racial composition).
 
 \medskip
 
 ### 5b) Show a scatterplot of arrest intensity vs. poverty rates (with separate aesthetics for Black and non-Black station areas) along with the regression line you think best fits this relationship. {-}
 
   - Which regression specification do you prefer: linear or quadratic? Be clear about your logic and if applicable cite statistical evidence to support your decision.
-  - Interpret your preferred regression specification (caerfully)!
+  - Interpret your preferred regression specification (carefully)!
   
 ```{r}
 #quadratic
 ggplot(stations, aes(x = povrt_all_2016, y = arrperswipe, color = nblack)) +
     geom_point()  +
     geom_smooth(method = 'lm', formula = y ~ x + I(x^2)) + 
-    ylab("arrests per 100,000 MetroCard swipes") + xlab("poverty rate") +
+    ylab("arrests per 100,000 ridership") + xlab("poverty rate") +
     ggtitle("Fare evasion arrest intensity vs poverty by race", 
             subtitle = "Subway stations in Brooklyn (2016)") +
     scale_color_discrete(name = "Predominantly Black Station",
@@ -366,14 +369,14 @@ stations_wcrime <- stations %>%
 
 \medspace
 
-### 6b) Examine the overall relationship between arrest intensity and crime (without taking neighborhood racial composition or poverty into account) (comparable to Section 4b).{-}
+### 6b) Examine the overall relationship between arrest intensity and crime (without taking neighborhood racial composition or poverty into account) (comparable to Section 4b). Carefully interpret the results you choose to present.{-}
 
 ```{r}
 #linear
 ggplot(stations_wcrime, aes(x = crimes, y = arrperswipe)) +
     geom_point()  +
     geom_smooth(method = 'lm', formula = y ~ x) + 
-    ylab("arrests per 100,000 MetroCard swipes") + xlab("criminal complaints") +
+    ylab("arrests per 100,000 ridership") + xlab("criminal complaints") +
     ggtitle("Fare evasion arrest intensity vs criminal complaints", 
             subtitle = "subway stations in Brooklyn (2016)") +
     scale_color_discrete(name = "Predominantly Black Station",
@@ -392,7 +395,7 @@ ggplot(stations_wcrime, aes(x = crimes, y = arrperswipe)) +
 ggplot(stations_wcrime, aes(x = crimes, y = arrperswipe)) +
     geom_point()  +
     geom_smooth(method = 'lm', formula = y ~ x + I(x^2)) + 
-    ylab("arrests per 100,000 MetroCard swipes") + xlab("criminal complaints") +
+    ylab("arrests per 100,000 ridership") + xlab("criminal complaints") +
     ggtitle("Fare evasion arrest intensity vs criminal complaints", 
             subtitle = "Subway stations in Brooklyn (2016)") +
     scale_color_discrete(name = "Predominantly Black Station",
@@ -421,14 +424,14 @@ From the linear model, we can see that the effect of criminal complaints on arre
 \medskip
 
 
-### 6c) Examine how neighborhood racial composition mediates the relationship between arrest intensity and crime (comparable to Section 5b).{-}
+### 6c) Examine how neighborhood racial composition mediates the relationship between arrest intensity and crime (comparable to Section 5b). Carefully interpret the results you choose to present.{-}
 
 ```{r}
 #linear
 ggplot(stations_wcrime, aes(x = crimes, y = arrperswipe, color = nblack)) +
     geom_point()  +
     geom_smooth(method = 'lm', formula = y ~ x) + 
-    ylab("arrests per 100,000 MetroCard swipes") + xlab("criminal complaints") +
+    ylab("arrests per 100,000 ridership") + xlab("criminal complaints") +
     ggtitle("Fare evasion arrest intensity vs criminal complaints", 
             subtitle = "Subway stations in Brooklyn (2016)") +
     scale_color_discrete(name = "Predominantly Black Station",
