@@ -3,7 +3,7 @@
 ## [ PROJ ] Lecture 7: Water shutoffs, race, and health in Detroit (Part 1)
 ## [ FILE ] detroit-exploratory.r
 ## [ AUTH ] < YOUR NAME >
-## [ INIT ] < Feb 27, 2024 >
+## [ INIT ] < Oct 17, 2023 >
 ##
 ################################################################################
 
@@ -108,57 +108,46 @@ getwd()
 ### START HERE IN CLASS
 
 #load ACS data
-  MI_acs_tract_10_17 <- readRDS("Data/MI_acs_tract_10_17.rds")
+MI_acs_tract_10_17 <- readRDS("Data/MI_acs_tract_10_17.rds")
 
 #inspect
-  str(MI_acs_tract_10_17)
-  summary(MI_acs_tract_10_17)
-  
+summary(MI_acs_tract_10_17)
 
 #what is the unit of observation?
-  table(MI_acs_tract_10_17$tractid, MI_acs_tract_10_17$year) %>%
-    head(n = 10)
-  #we have a balanced year-tract panel!
+table(MI_acs_tract_10_17$tractid, MI_acs_tract_10_17$year) %>% head(n = 10)
+#we have a balanced year-tract panel!
 
-  #population represented by the sample? 
-    #all tracts in Michigan (MI)
-    #tract-level data from ACS is representative of total pop in each tract
+#population represented by the sample? 
+#tract-level data from the ACS is representative of the total pop in each tract
 
-  #why the NA values? let's explore 
-    MI_acs_tract_10_17 %>% 
-      filter(is.na(medianinc) == TRUE) %>% 
-      select(year, tractid, pop, medianinc, whiteshare) %>% 
-      arrange(desc(pop))
+#why the NA values?
+MI_acs_tract_10_17 %>% filter(is.na(year) == TRUE)
+MI_acs_tract_10_17 %>% filter(is.na(medianinc) == TRUE)
+MI_acs_tract_10_17 %>% filter(tractid == 26033980200) %>% view()
+
     
-    MI_acs_tract_10_17 %>% 
-      filter(is.na(whiteshare) == TRUE) %>% 
-      select(year, tractid, pop, medianinc, whiteshare) %>% 
-      arrange(desc(pop))
-  
-
-      
 ## -----------------------------------------------------------------------------
 ## Get service interruption (SI) data - i.e. shutoff records (microdata)
 ## -----------------------------------------------------------------------------
   
 #get service interruption data
-  input_si <- read.dta13("Data/si_1017_cleaned.dta")
+input_si <- read.dta13("Data/si_1017_cleaned.dta")
   
   #what is the unit of observation? each observation is a shutoff record.
       
     
 #focus on key variables to identify period/location of every shutoff
 #we'll want to join to demographic data based on tractid and get tract-level obs
-  si.clean <- input_si %>% 
-    select(si_order_number, census_tract_long, year, month) %>% 
-    rename(tractid = census_tract_long) %>% 
-    arrange(tractid, year, month)
+si.clean <- input_si %>% 
+  select(si_order_number, census_tract_long, year, month) %>% 
+  rename(tractid = census_tract_long) %>% 
+  arrange(tractid, year, month)
 
 #aggregate to tract-year/month totals
-  si_tract_ym <- si.clean %>% 
-    group_by(tractid, year, month) %>% 
-    summarise(si_count = n_distinct(si_order_number)) %>% 
-    arrange(tractid, year, month)
+si_tract_ym <- si.clean %>% 
+  group_by(tractid, year, month) %>% 
+  summarise(si_count = n_distinct(si_order_number)) %>% 
+  arrange(tractid, year, month)
 
   #inspect
     summary(si_tract_ym)
@@ -176,7 +165,7 @@ getwd()
   #but also tracts outside of Detroit across the state of Michigan
 #want to end up with a tract-year-month panel
 #new df should include: all columns from two dfs and a new date column
-#also filter out observation for 2017-11-01 due to incomplete data
+#also filter out observation for 2017-11-01
     
 #HINT: what column(s) do you want to join on?
 #HINT: what kind of join would work here?
@@ -195,9 +184,8 @@ tract_ym <- left_join(si_tract_ym, MI_acs_tract_10_17,
   
   tract_ym %>% 
     group_by(tractid) %>%
-    count(tractid) %>% 
-    arrange(n)
-    #nope, if a tract had 0 shutoffs one month -> no row for that tract-month
+    count(tractid)
+  #nope, if a tract had 0 shutoffs one month -> no row for that tract-month
 
 
 #collapse to tract-level totals (summed over all year-months)
@@ -206,17 +194,17 @@ tract_ym <- left_join(si_tract_ym, MI_acs_tract_10_17,
 #NOTE: this allows us to focus on variation between tracts 
   # (not within-tracts over time)
   # will no longer be a panel dataframe
-  tract <- tract_ym %>% 
-    group_by(tractid) %>% #kills time dimension
-    summarise(si_count = sum(si_count),
-              pop = mean(pop, na.rm = TRUE),
-              blackshare = mean(blackshare, na.rm = TRUE),
-              black75 = round(mean(black75, na.rm = TRUE), 0),
-              medianinc = mean(medianinc, na.rm = TRUE),
-              inc_above_median = round(mean(inc_above_median, 
-                                            na.rm = TRUE), 0) ) %>% 
-    mutate(si_1000 = si_count / (pop / 1000) ) %>% #shutoffs per 1000 people
-    arrange(tractid)
+tract <- tract_ym %>% 
+  group_by(tractid) %>% #kills time dimension
+  summarise(si_count = sum(si_count),
+            pop = mean(pop, na.rm = TRUE),
+            blackshare = mean(blackshare, na.rm = TRUE),
+            black75 = round(mean(black75, na.rm = TRUE), 0),
+            medianinc = mean(medianinc, na.rm = TRUE),
+            inc_above_median = round(mean(inc_above_median, 
+                                          na.rm = TRUE), 0) ) %>% 
+  mutate(si_1000 = si_count / (pop / 1000) ) %>% #shutoffs per 1000 people
+  arrange(tractid)
   
   #inspect
   summary(tract)
@@ -231,14 +219,12 @@ tract_ym <- left_join(si_tract_ym, MI_acs_tract_10_17,
 #NOTE: here "cross-sectional" means 1 obs per tract 
   # (w/shutoffs summed over all years)
     
-#scatterplot: % black vs shutoffs
-  ggplot(data = tract, 
-         aes(x = blackshare, y = si_1000)) + 
-    geom_point() 
-
-#compute correlation to assess model fit (in addition to visual inspection)
-  cor(tract$blackshare, tract$si_1000, use = "pairwise.complete.obs")
-  wtd.cor(tract$blackshare, tract$si_1000, weight = tract$pop)    
+  #scatterplot: % black vs shutoffs
+    ggplot(data = tract, 
+           aes(x = blackshare, y = si_1000)) + 
+      geom_point() +
+      geom_smooth(method = 'lm', formula = y ~ x) 
+    
     
   #QUESTION: how can we improve the above plot?
     #do you want to consider weighting observations?
@@ -252,8 +238,9 @@ tract_ym <- left_join(si_tract_ym, MI_acs_tract_10_17,
     geom_point(alpha = 0.1) + #alpha adjusts the transparency of points
     scale_size(range = c(0.1, 6), guide = "none")  
 
-#for A5: 
-  #play around w/aesthetics including color, labels etc. to improve this plot
+  #compute correlation to assess model fit (in addition to visual inspection)
+    cor(tract$blackshare, tract$si_1000, use = "pairwise.complete.obs")
+    wtd.cor(tract$blackshare, tract$si_1000, weight = tract$pop)
   
   
 #scatterplot: median income vs shutoffs
@@ -281,9 +268,6 @@ tract_ym <- left_join(si_tract_ym, MI_acs_tract_10_17,
   #HINT: try ?scale_size, this is a function to adjust the size aesthetic
   #HINT: try ?scale_color_gradient for help creating a diverging color gradient
 
-#for A5: 
-  #play around w/aesthetics including color, labels etc. to improve this plot
-  
   
 ## -----------------------------------------------------------------------------
 ## 2.0 Time series plots of citywide shutoffs (aggregate monthly over all tracts
@@ -328,7 +312,7 @@ tract_ym <- left_join(si_tract_ym, MI_acs_tract_10_17,
 #time series of shutoffs per capita for tracts above/below citywide median inc
   #what should the unit of observation be for this new data frame?
   ym_inc <- tract_ym %>% 
-    group_by(FILL IN GROUPING VARIABLE(S) TO GET RIGHT UNIT OF ANALYSIS) %>% 
+    group_by(date, inc_above_median) %>% 
     summarise(si_count = sum(si_count)) %>%
     mutate(pop = if_else(inc_above_median == 1, 
                          detroit_pop_hi_inc, 
@@ -348,13 +332,13 @@ tract_ym <- left_join(si_tract_ym, MI_acs_tract_10_17,
 #in order to solve this, here is one possible solution:
 
   ym_inc <- tract_ym %>% 
-    group_by(FILL IN GROUPING VARIABLES TO GET RIGHT UNIT OF ANALYSIS) %>% 
+    group_by(date, inc_above_median) %>% 
     summarise(si_count = sum(si_count)) %>%
     na.omit() %>% 
     ungroup() %>%
     complete(date, 
              inc_above_median, 
-             fill = list(si_count = 0)) %>% #this fills in a new obs for Feb 2016
+             fill = list(si_count = 0)) %>% #this fills in a new obs for Feb 16
     mutate(pop = if_else(inc_above_median == 1, 
                          detroit_pop_hi_inc, 
                          detroit_pop_lo_inc),
