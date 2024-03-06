@@ -26,6 +26,7 @@
 #install.packages("multiwayvcov")
 #install.packages("estimatr")
 #install.packages("modelsummary")
+#install.packages("tidycensus")
 
 library(readstata13)  #imports .dta files from Stata 13 and up
 library(tidyverse)
